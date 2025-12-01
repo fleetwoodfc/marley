@@ -1,4 +1,4 @@
-import frappeUIPreset from 'frappe-ui/src/tailwind/preset'
+import frappeUIPreset from 'frappe-ui'
 const colors = require('tailwindcss/colors')
 
 export default {
