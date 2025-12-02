@@ -99,11 +99,13 @@ def _create_patient_from_pid(pid_3, pid_5=None, pid_7=None):
 			new_doc.dob = pid_7
 
 		# Set a default gender if not available from HL7 message
-		# Using frappe.db.exists to check if the Gender doctype has an entry
-		# Default to a neutral/unknown option if available, otherwise use a common default
-		default_gender = frappe.db.get_value("Gender", {"name": "Other"}) or \
-			frappe.db.get_value("Gender", {"name": "Prefer not to say"}) or \
-			frappe.db.get_value("Gender", {"name": "Male"})
+		# Query available genders once and select the most appropriate default
+		available_genders = frappe.get_all("Gender", pluck="name")
+		default_gender = None
+		for preferred in ["Other", "Prefer not to say", "Male"]:
+			if preferred in available_genders:
+				default_gender = preferred
+				break
 		if default_gender:
 			new_doc.sex = default_gender
 
