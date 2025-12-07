@@ -10,6 +10,12 @@ app_email = "info@earthianslive.com"
 app_license = "GNU GPL V3"
 required_apps = ["erpnext"]
 app_home = "/app/healthcare"
+#
+#  Setup Demo data
+#
+app_install = [
+    "healthcare.setup.install.setup_healthcare"
+]
 
 add_to_apps_screen = [
 	{
