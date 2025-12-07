@@ -26,7 +26,7 @@ from healthcare.healthcare.doctype.observation.observation import add_observatio
 from healthcare.healthcare.doctype.observation_template.observation_template import (
 	get_observation_template_details,
 )
-from healthcare.setup import setup_healthcare
+from healthcare.setup_data import setup_healthcare
 
 
 @frappe.whitelist()

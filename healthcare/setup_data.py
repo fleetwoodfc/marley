@@ -252,7 +252,7 @@ data = {
 			}
 		],
 	},
-	"on_setup": "healthcare.setup.setup_healthcare",
+	"on_setup": "healthcare.setup_data.setup_healthcare",
 }
 
 

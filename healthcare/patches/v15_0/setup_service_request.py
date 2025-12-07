@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 import frappe
 
-from healthcare.setup import setup_service_request_masters
+from healthcare.setup_data import setup_service_request_masters
 
 
 def execute():
