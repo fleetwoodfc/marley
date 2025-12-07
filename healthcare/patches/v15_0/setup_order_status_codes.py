@@ -1,4 +1,4 @@
-from healthcare.setup import setup_order_status_codes
+from healthcare.setup_data import setup_order_status_codes
 
 
 def execute():

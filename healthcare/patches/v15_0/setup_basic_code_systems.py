@@ -1,4 +1,4 @@
-from healthcare.setup import (
+from healthcare.setup_data import (
 	setup_code_sysem_for_version,
 	setup_fhir_code_systems,
 	setup_non_fhir_code_systems,

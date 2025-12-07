@@ -1,4 +1,4 @@
-from healthcare.setup import setup_diagnostic_module_codes
+from healthcare.setup_data import setup_diagnostic_module_codes
 
 
 def execute():
