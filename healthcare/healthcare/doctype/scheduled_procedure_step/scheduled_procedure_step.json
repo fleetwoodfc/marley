@@ -1,0 +1,302 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-02-10 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "sop_instance_uid",
+  "ups_state",
+  "transaction_uid",
+  "column_break_1",
+  "ups_sync_status",
+  "ups_sync_error",
+  "ups_sync_at",
+  "references_section",
+  "imaging_service_request",
+  "requested_procedure",
+  "study_instance_uid",
+  "column_break_ref",
+  "patient",
+  "patient_name",
+  "scheduling_section",
+  "scheduled_datetime",
+  "expected_duration",
+  "modality",
+  "column_break_sched",
+  "station_name",
+  "station_aet",
+  "worklist_label",
+  "procedure_section",
+  "procedure_step_label",
+  "protocol_codes_section",
+  "protocol_codes",
+  "claim_section",
+  "claimed_by",
+  "claimed_at",
+  "column_break_claim",
+  "performing_practitioner",
+  "input_section",
+  "input_information"
+ ],
+ "fields": [
+  {
+   "default": "SPS-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "SPS-.#####"
+  },
+  {
+   "fieldname": "sop_instance_uid",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "SOP Instance UID",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "default": "SCHEDULED",
+   "fieldname": "ups_state",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "UPS State",
+   "options": "SCHEDULED\nIN PROGRESS\nCOMPLETED\nCANCELED",
+   "read_only": 1
+  },
+  {
+   "fieldname": "transaction_uid",
+   "fieldtype": "Data",
+   "label": "Transaction UID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "pending",
+   "fieldname": "ups_sync_status",
+   "fieldtype": "Select",
+   "label": "Sync Status",
+   "options": "pending\nsynced\nerror",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ups_sync_error",
+   "fieldtype": "Small Text",
+   "label": "Sync Error",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ups_sync_at",
+   "fieldtype": "Datetime",
+   "label": "Last Synced At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "imaging_service_request",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Imaging Service Request",
+   "options": "Imaging Service Request",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "requested_procedure",
+   "fieldtype": "Data",
+   "label": "Requested Procedure",
+   "read_only": 1
+  },
+  {
+   "fieldname": "study_instance_uid",
+   "fieldtype": "Data",
+   "label": "Study Instance UID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ref",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Patient",
+   "options": "Patient",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fetch_from": "patient.patient_name",
+   "fieldname": "patient_name",
+   "fieldtype": "Data",
+   "label": "Patient Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "scheduling_section",
+   "fieldtype": "Section Break",
+   "label": "Scheduling"
+  },
+  {
+   "fieldname": "scheduled_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Scheduled Date/Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expected_duration",
+   "fieldtype": "Int",
+   "label": "Expected Duration (min)"
+  },
+  {
+   "fieldname": "modality",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Modality",
+   "options": "CT\nMR\nUS\nXA\nNM\nPT\nCR\nDX\nMG\nRF\nOT",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_sched",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "station_name",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Station Name"
+  },
+  {
+   "fieldname": "station_aet",
+   "fieldtype": "Data",
+   "label": "Station AE Title"
+  },
+  {
+   "fieldname": "worklist_label",
+   "fieldtype": "Data",
+   "label": "Worklist Label"
+  },
+  {
+   "fieldname": "procedure_section",
+   "fieldtype": "Section Break",
+   "label": "Procedure"
+  },
+  {
+   "fieldname": "procedure_step_label",
+   "fieldtype": "Data",
+   "label": "Procedure Step Label"
+  },
+  {
+   "fieldname": "protocol_codes_section",
+   "fieldtype": "Section Break",
+   "label": "Protocol Codes"
+  },
+  {
+   "fieldname": "protocol_codes",
+   "fieldtype": "Table",
+   "label": "Protocol Codes",
+   "options": "Protocol Code Item"
+  },
+  {
+   "fieldname": "claim_section",
+   "fieldtype": "Section Break",
+   "label": "Claim Information"
+  },
+  {
+   "fieldname": "claimed_by",
+   "fieldtype": "Link",
+   "label": "Claimed By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "claimed_at",
+   "fieldtype": "Datetime",
+   "label": "Claimed At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_claim",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "performing_practitioner",
+   "fieldtype": "Link",
+   "label": "Performing Practitioner",
+   "options": "Healthcare Practitioner"
+  },
+  {
+   "fieldname": "input_section",
+   "fieldtype": "Section Break",
+   "label": "Input Information"
+  },
+  {
+   "fieldname": "input_information",
+   "fieldtype": "Table",
+   "label": "Input Information",
+   "options": "Input Information Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Performed Procedure Step",
+   "link_fieldname": "scheduled_procedure_step"
+  }
+ ],
+ "modified": "2026-02-10 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Scheduled Procedure Step",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Laboratory User",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Physician"
+  }
+ ],
+ "restrict_to_domain": "Healthcare",
+ "search_fields": "patient, patient_name, modality, procedure_step_label",
+ "sort_field": "scheduled_datetime",
+ "sort_order": "ASC",
+ "states": [],
+ "title_field": "procedure_step_label",
+ "track_changes": 1
+}

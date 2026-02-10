@@ -1,0 +1,85 @@
+{
+ "actions": [],
+ "creation": "2026-02-10 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "sequence",
+  "step_label",
+  "protocol_code",
+  "protocol_code_system",
+  "column_break_1",
+  "protocol_code_meaning",
+  "modality",
+  "expected_duration",
+  "instructions"
+ ],
+ "fields": [
+  {
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Sequence",
+   "reqd": 1
+  },
+  {
+   "fieldname": "step_label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Step Label",
+   "reqd": 1
+  },
+  {
+   "fieldname": "protocol_code",
+   "fieldtype": "Data",
+   "label": "Protocol Code"
+  },
+  {
+   "fieldname": "protocol_code_system",
+   "fieldtype": "Select",
+   "label": "Code System",
+   "options": "CPT\nLOINC\nSNOMED-CT\nLOCAL"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "protocol_code_meaning",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Code Meaning"
+  },
+  {
+   "fieldname": "modality",
+   "fieldtype": "Select",
+   "label": "Modality",
+   "options": "\nCT\nMR\nUS\nXA\nNM\nPT\nCR\nDX\nMG\nRF\nOT"
+  },
+  {
+   "fieldname": "expected_duration",
+   "fieldtype": "Int",
+   "label": "Expected Duration (min)"
+  },
+  {
+   "fieldname": "instructions",
+   "fieldtype": "Small Text",
+   "label": "Instructions"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-02-10 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Procedure Plan Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

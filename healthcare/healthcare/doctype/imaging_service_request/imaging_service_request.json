@@ -1,0 +1,231 @@
+{
+ "actions": [],
+ "autoname": "field:accession_number",
+ "creation": "2026-02-10 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "accession_number",
+  "issuer_of_accession_number",
+  "status",
+  "column_break_1",
+  "order_datetime",
+  "priority",
+  "patient_section",
+  "patient",
+  "patient_name",
+  "patient_sex",
+  "column_break_patient",
+  "patient_age",
+  "visit",
+  "practitioner_section",
+  "requesting_practitioner",
+  "requesting_practitioner_name",
+  "clinical_section",
+  "clinical_indication",
+  "patient_history",
+  "requested_procedures_section",
+  "requested_procedures",
+  "comments_section",
+  "comments"
+ ],
+ "fields": [
+  {
+   "fieldname": "accession_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Accession Number",
+   "read_only": 1,
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "issuer_of_accession_number",
+   "fieldtype": "Data",
+   "label": "Issuer of Accession Number",
+   "read_only": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Draft\nOrdered\nIn Progress\nCompleted\nCancelled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Now",
+   "fieldname": "order_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Order Date/Time",
+   "reqd": 1
+  },
+  {
+   "default": "ROUTINE",
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Priority",
+   "options": "STAT\nHIGH\nROUTINE\nLOW",
+   "reqd": 1
+  },
+  {
+   "fieldname": "patient_section",
+   "fieldtype": "Section Break",
+   "label": "Patient Information"
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Patient",
+   "options": "Patient",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "patient.patient_name",
+   "fieldname": "patient_name",
+   "fieldtype": "Data",
+   "label": "Patient Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "patient.sex",
+   "fieldname": "patient_sex",
+   "fieldtype": "Data",
+   "label": "Sex",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_patient",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "patient_age",
+   "fieldtype": "Data",
+   "label": "Age",
+   "read_only": 1
+  },
+  {
+   "fieldname": "visit",
+   "fieldtype": "Link",
+   "label": "Visit",
+   "options": "Patient Encounter"
+  },
+  {
+   "fieldname": "practitioner_section",
+   "fieldtype": "Section Break",
+   "label": "Requesting Practitioner"
+  },
+  {
+   "fieldname": "requesting_practitioner",
+   "fieldtype": "Link",
+   "label": "Requesting Practitioner",
+   "options": "Healthcare Practitioner",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "requesting_practitioner.practitioner_name",
+   "fieldname": "requesting_practitioner_name",
+   "fieldtype": "Data",
+   "label": "Practitioner Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "clinical_section",
+   "fieldtype": "Section Break",
+   "label": "Clinical Information"
+  },
+  {
+   "fieldname": "clinical_indication",
+   "fieldtype": "Small Text",
+   "label": "Clinical Indication"
+  },
+  {
+   "fieldname": "patient_history",
+   "fieldtype": "Text",
+   "label": "Patient History"
+  },
+  {
+   "fieldname": "requested_procedures_section",
+   "fieldtype": "Section Break",
+   "label": "Requested Procedures"
+  },
+  {
+   "fieldname": "requested_procedures",
+   "fieldtype": "Table",
+   "label": "Requested Procedures",
+   "options": "Requested Procedure",
+   "reqd": 1
+  },
+  {
+   "fieldname": "comments_section",
+   "fieldtype": "Section Break",
+   "label": "Comments"
+  },
+  {
+   "fieldname": "comments",
+   "fieldtype": "Text",
+   "label": "Comments"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Scheduled Procedure Step",
+   "link_fieldname": "imaging_service_request"
+  }
+ ],
+ "modified": "2026-02-10 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Imaging Service Request",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Physician",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Laboratory User"
+  }
+ ],
+ "restrict_to_domain": "Healthcare",
+ "search_fields": "accession_number, patient, patient_name",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "accession_number",
+ "track_changes": 1
+}

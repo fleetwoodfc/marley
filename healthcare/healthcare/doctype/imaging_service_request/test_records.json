@@ -1,0 +1,17 @@
+[
+	{
+		"doctype": "Imaging Service Request",
+		"patient": "Test ISR Patient",
+		"requesting_practitioner": "Test ISR Practitioner",
+		"order_datetime": "2026-01-15 09:00:00",
+		"priority": "ROUTINE",
+		"clinical_indication": "Chronic cough, rule out pulmonary pathology",
+		"requested_procedures": [
+			{
+				"procedure_type": "Test CT Chest",
+				"requested_procedure_id": "RP-001",
+				"requested_procedure_description": "CT Chest without contrast"
+			}
+		]
+	}
+]

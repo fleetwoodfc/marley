@@ -1,0 +1,239 @@
+{
+    "actions": [],
+    "allow_rename": 0,
+    "autoname": "naming_series:",
+    "creation": "2026-02-10 10:00:00.000000",
+    "doctype": "DocType",
+    "engine": "InnoDB",
+    "field_order": [
+        "section_break_patient",
+        "scheduled_procedure_step",
+        "patient",
+        "column_break_1",
+        "status",
+        "section_break_timing",
+        "start_datetime",
+        "performing_operator",
+        "column_break_2",
+        "end_datetime",
+        "performing_practitioner",
+        "section_break_protocol",
+        "performed_protocol_codes",
+        "section_break_output",
+        "output_information",
+        "section_break_discontinuation",
+        "discontinuation_reason",
+        "discontinuation_code",
+        "section_break_details",
+        "radiation_dose",
+        "contrast_used",
+        "contrast_agent",
+        "comments",
+        "naming_series"
+    ],
+    "fields": [
+        {
+            "fieldname": "section_break_patient",
+            "fieldtype": "Section Break",
+            "label": "Procedure Information"
+        },
+        {
+            "fieldname": "scheduled_procedure_step",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "in_standard_filter": 1,
+            "label": "Scheduled Procedure Step",
+            "options": "Scheduled Procedure Step",
+            "reqd": 1
+        },
+        {
+            "fieldname": "patient",
+            "fieldtype": "Link",
+            "in_list_view": 1,
+            "in_standard_filter": 1,
+            "label": "Patient",
+            "options": "Patient",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_1",
+            "fieldtype": "Column Break"
+        },
+        {
+            "default": "In Progress",
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "in_standard_filter": 1,
+            "label": "Status",
+            "options": "In Progress\nCompleted\nDiscontinued",
+            "reqd": 1
+        },
+        {
+            "fieldname": "section_break_timing",
+            "fieldtype": "Section Break",
+            "label": "Timing"
+        },
+        {
+            "default": "Now",
+            "fieldname": "start_datetime",
+            "fieldtype": "Datetime",
+            "in_list_view": 1,
+            "label": "Start Date/Time",
+            "reqd": 1
+        },
+        {
+            "fieldname": "performing_operator",
+            "fieldtype": "Link",
+            "label": "Performing Operator",
+            "options": "User",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_2",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "end_datetime",
+            "fieldtype": "Datetime",
+            "label": "End Date/Time"
+        },
+        {
+            "fieldname": "performing_practitioner",
+            "fieldtype": "Link",
+            "label": "Performing Practitioner",
+            "options": "Healthcare Practitioner"
+        },
+        {
+            "collapsible": 0,
+            "fieldname": "section_break_protocol",
+            "fieldtype": "Section Break",
+            "label": "Performed Protocol Codes"
+        },
+        {
+            "fieldname": "performed_protocol_codes",
+            "fieldtype": "Table",
+            "label": "Performed Protocol Codes",
+            "options": "Protocol Code Item"
+        },
+        {
+            "collapsible": 0,
+            "fieldname": "section_break_output",
+            "fieldtype": "Section Break",
+            "label": "Output Information"
+        },
+        {
+            "fieldname": "output_information",
+            "fieldtype": "Table",
+            "label": "Output Information",
+            "options": "Output Information Item"
+        },
+        {
+            "collapsible": 1,
+            "collapsible_depends_on": "eval:doc.status == 'Discontinued'",
+            "fieldname": "section_break_discontinuation",
+            "fieldtype": "Section Break",
+            "label": "Discontinuation"
+        },
+        {
+            "depends_on": "eval:doc.status == 'Discontinued'",
+            "fieldname": "discontinuation_reason",
+            "fieldtype": "Small Text",
+            "label": "Discontinuation Reason",
+            "mandatory_depends_on": "eval:doc.status == 'Discontinued'"
+        },
+        {
+            "depends_on": "eval:doc.status == 'Discontinued'",
+            "fieldname": "discontinuation_code",
+            "fieldtype": "Link",
+            "label": "Discontinuation Code",
+            "options": "Code Value"
+        },
+        {
+            "collapsible": 1,
+            "fieldname": "section_break_details",
+            "fieldtype": "Section Break",
+            "label": "Additional Details"
+        },
+        {
+            "fieldname": "radiation_dose",
+            "fieldtype": "Float",
+            "label": "Radiation Dose (mGy)"
+        },
+        {
+            "default": "0",
+            "fieldname": "contrast_used",
+            "fieldtype": "Check",
+            "label": "Contrast Used"
+        },
+        {
+            "depends_on": "contrast_used",
+            "fieldname": "contrast_agent",
+            "fieldtype": "Data",
+            "label": "Contrast Agent"
+        },
+        {
+            "fieldname": "comments",
+            "fieldtype": "Text",
+            "label": "Comments"
+        },
+        {
+            "default": "PPS-.#####",
+            "fieldname": "naming_series",
+            "fieldtype": "Select",
+            "hidden": 1,
+            "label": "Naming Series",
+            "options": "PPS-.#####"
+        }
+    ],
+    "index_web_pages_for_search": 0,
+    "links": [
+        {
+            "link_doctype": "Scheduled Procedure Step",
+            "link_fieldname": "name"
+        }
+    ],
+    "modified": "2026-02-10 10:00:00.000000",
+    "modified_by": "Administrator",
+    "module": "Healthcare",
+    "name": "Performed Procedure Step",
+    "naming_rule": "By \"Naming Series\" field",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Healthcare Administrator",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Physician",
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Laboratory User",
+            "write": 1
+        }
+    ],
+    "sort_field": "modified",
+    "sort_order": "DESC",
+    "track_changes": 1
+}

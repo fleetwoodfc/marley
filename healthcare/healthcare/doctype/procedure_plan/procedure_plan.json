@@ -1,0 +1,108 @@
+{
+ "actions": [],
+ "autoname": "format:{plan_name}-{procedure_type}",
+ "creation": "2026-02-10 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "plan_name",
+  "procedure_type",
+  "is_default",
+  "column_break_1",
+  "description",
+  "equipment_requirements",
+  "consumables",
+  "plan_items_section",
+  "plan_items"
+ ],
+ "fields": [
+  {
+   "fieldname": "plan_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Plan Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "procedure_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Procedure Type",
+   "options": "Procedure Type",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_default",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Default"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "equipment_requirements",
+   "fieldtype": "Small Text",
+   "label": "Equipment Requirements"
+  },
+  {
+   "fieldname": "consumables",
+   "fieldtype": "Small Text",
+   "label": "Consumables"
+  },
+  {
+   "fieldname": "plan_items_section",
+   "fieldtype": "Section Break",
+   "label": "Plan Steps"
+  },
+  {
+   "fieldname": "plan_items",
+   "fieldtype": "Table",
+   "label": "Plan Items",
+   "options": "Procedure Plan Item",
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-02-10 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Procedure Plan",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Physician"
+  }
+ ],
+ "restrict_to_domain": "Healthcare",
+ "search_fields": "plan_name, procedure_type",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "plan_name",
+ "track_changes": 1
+}

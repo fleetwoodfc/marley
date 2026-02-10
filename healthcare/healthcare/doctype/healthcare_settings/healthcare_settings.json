@@ -39,6 +39,17 @@
   "lab_test_approval_required",
   "employee_name_and_designation_in_print",
   "custom_signature_in_print",
+  "dicom_tab",
+  "dicom_settings_section",
+  "enable_ups_sync",
+  "ups_rs_url",
+  "dicom_aet",
+  "column_break_dicom",
+  "accession_number_format",
+  "accession_number_issuer",
+  "ups_sync_section",
+  "ups_sync_retry_enabled",
+  "max_ups_sync_retries",
   "billing_accounts",
   "healthcare_service_items",
   "inpatient_visit_charge_item",
@@ -189,6 +200,73 @@
    "fieldname": "custom_signature_in_print",
    "fieldtype": "Small Text",
    "label": "Custom Signature in Print"
+  },
+  {
+   "fieldname": "dicom_tab",
+   "fieldtype": "Tab Break",
+   "label": "DICOM"
+  },
+  {
+   "fieldname": "dicom_settings_section",
+   "fieldtype": "Section Break",
+   "label": "DICOM Server Settings"
+  },
+  {
+   "default": "0",
+   "description": "Enable synchronization of Scheduled Procedure Steps with DICOM server via UPS-RS",
+   "fieldname": "enable_ups_sync",
+   "fieldtype": "Check",
+   "label": "Enable UPS-RS Sync"
+  },
+  {
+   "depends_on": "eval:doc.enable_ups_sync",
+   "description": "Base URL for UPS-RS endpoints (e.g., http://localhost:8080/dcm4chee-arc/aets/DCM4CHEE/rs)",
+   "fieldname": "ups_rs_url",
+   "fieldtype": "Data",
+   "label": "UPS-RS URL"
+  },
+  {
+   "description": "DICOM Application Entity Title for this system",
+   "fieldname": "dicom_aet",
+   "fieldtype": "Data",
+   "label": "DICOM AE Title"
+  },
+  {
+   "fieldname": "column_break_dicom",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "ACC-.YYYY.-.#####",
+   "description": "Format for auto-generating Accession Numbers (uses Frappe naming series syntax)",
+   "fieldname": "accession_number_format",
+   "fieldtype": "Data",
+   "label": "Accession Number Format"
+  },
+  {
+   "description": "Issuer of Accession Number (typically hospital/facility identifier)",
+   "fieldname": "accession_number_issuer",
+   "fieldtype": "Data",
+   "label": "Accession Number Issuer"
+  },
+  {
+   "fieldname": "ups_sync_section",
+   "fieldtype": "Section Break",
+   "label": "UPS Sync Options",
+   "depends_on": "eval:doc.enable_ups_sync"
+  },
+  {
+   "default": "1",
+   "description": "Retry failed UPS-RS sync operations",
+   "fieldname": "ups_sync_retry_enabled",
+   "fieldtype": "Check",
+   "label": "Enable Sync Retry"
+  },
+  {
+   "default": "4",
+   "description": "Maximum number of retry attempts for failed sync operations",
+   "fieldname": "max_ups_sync_retries",
+   "fieldtype": "Int",
+   "label": "Max Sync Retries"
   },
   {
    "fieldname": "laboratory_sms_alerts",

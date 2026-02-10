@@ -1,0 +1,74 @@
+{
+ "actions": [],
+ "creation": "2026-02-10 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "study_instance_uid",
+  "series_instance_uid",
+  "sop_instance_uid",
+  "column_break_1",
+  "sop_class_uid",
+  "retrieve_ae_title",
+  "retrieve_url",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "study_instance_uid",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Study Instance UID"
+  },
+  {
+   "fieldname": "series_instance_uid",
+   "fieldtype": "Data",
+   "label": "Series Instance UID"
+  },
+  {
+   "fieldname": "sop_instance_uid",
+   "fieldtype": "Data",
+   "label": "SOP Instance UID"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sop_class_uid",
+   "fieldtype": "Data",
+   "label": "SOP Class UID"
+  },
+  {
+   "fieldname": "retrieve_ae_title",
+   "fieldtype": "Data",
+   "label": "Retrieve AE Title"
+  },
+  {
+   "fieldname": "retrieve_url",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Retrieve URL"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-02-10 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Input Information Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

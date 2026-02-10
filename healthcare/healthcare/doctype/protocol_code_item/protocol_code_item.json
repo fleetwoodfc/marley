@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "creation": "2026-02-10 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "code_value",
+  "coding_scheme_designator",
+  "code_meaning",
+  "column_break_1",
+  "coding_scheme_version"
+ ],
+ "fields": [
+  {
+   "fieldname": "code_value",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Code Value",
+   "reqd": 1
+  },
+  {
+   "fieldname": "coding_scheme_designator",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Code System",
+   "options": "CPT\nLOINC\nSNOMED-CT\nLOCAL\nDCM",
+   "reqd": 1
+  },
+  {
+   "fieldname": "code_meaning",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Code Meaning",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "coding_scheme_version",
+   "fieldtype": "Data",
+   "label": "Code Version"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-02-10 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Protocol Code Item",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

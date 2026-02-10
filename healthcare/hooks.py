@@ -137,6 +137,10 @@ doc_events = {
 		"on_cancel": "healthcare.healthcare.custom_doctype.payment_entry.manage_payment_entry_submit_cancel",
 		"validate": "healthcare.healthcare.doctype.insurance_claim.insurance_claim.validate_payment_entry_and_set_claim_fields",
 	},
+	"Scheduled Procedure Step": {
+		"on_update": "healthcare.healthcare.dicom.ups_sync.on_scheduled_procedure_step_update",
+		"after_insert": "healthcare.healthcare.dicom.ups_sync.on_scheduled_procedure_step_insert",
+	},
 }
 
 scheduler_events = {

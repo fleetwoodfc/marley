@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "autoname": "field:procedure_name",
+ "creation": "2026-02-10 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "procedure_name",
+  "description",
+  "default_modality",
+  "column_break_1",
+  "body_part",
+  "laterality",
+  "typical_duration",
+  "is_active",
+  "billing_section",
+  "is_billable",
+  "item",
+  "codes_section",
+  "codification_table",
+  "contrast_section",
+  "contrast_required",
+  "column_break_contrast",
+  "preparation_instructions"
+ ],
+ "fields": [
+  {
+   "fieldname": "procedure_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Procedure Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "default_modality",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Default Modality",
+   "options": "CT\nMR\nUS\nXA\nNM\nPT\nCR\nDX\nMG\nRF\nOT",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "body_part",
+   "fieldtype": "Link",
+   "label": "Body Part",
+   "options": "Body Part"
+  },
+  {
+   "fieldname": "laterality",
+   "fieldtype": "Select",
+   "label": "Laterality",
+   "options": "\nLeft\nRight\nBoth\nUnspecified"
+  },
+  {
+   "fieldname": "typical_duration",
+   "fieldtype": "Int",
+   "label": "Typical Duration (min)"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Active"
+  },
+  {
+   "fieldname": "billing_section",
+   "fieldtype": "Section Break",
+   "label": "Billing"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_billable",
+   "fieldtype": "Check",
+   "label": "Is Billable"
+  },
+  {
+   "depends_on": "eval:doc.is_billable",
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "label": "Billing Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "codes_section",
+   "fieldtype": "Section Break",
+   "label": "Procedure Codes"
+  },
+  {
+   "fieldname": "codification_table",
+   "fieldtype": "Table",
+   "label": "Codes",
+   "options": "Codification Table Row"
+  },
+  {
+   "fieldname": "contrast_section",
+   "fieldtype": "Section Break",
+   "label": "Contrast & Preparation"
+  },
+  {
+   "fieldname": "contrast_required",
+   "fieldtype": "Select",
+   "label": "Contrast Required",
+   "options": "No\nOptional\nRequired"
+  },
+  {
+   "fieldname": "column_break_contrast",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "preparation_instructions",
+   "fieldtype": "Text",
+   "label": "Preparation Instructions"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Procedure Plan",
+   "link_fieldname": "procedure_type"
+  }
+ ],
+ "modified": "2026-02-10 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Procedure Type",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Physician"
+  },
+  {
+   "read": 1,
+   "role": "Laboratory User"
+  }
+ ],
+ "restrict_to_domain": "Healthcare",
+ "search_fields": "procedure_name, default_modality",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "procedure_name",
+ "track_changes": 1
+}
