@@ -127,6 +127,33 @@ def validate_service_item(item, msg):
 
 @frappe.whitelist()
 @frappe.validate_and_sanitize_search_inputs
+def get_users_in_healthcare_practitioners_group(doctype, txt, searchfield, start, page_len, filters=None):
+	"""Search users that are members of the 'Healthcare Practitioners' User Group."""
+	user_group_member = frappe.qb.DocType("User Group Member")
+	user = frappe.qb.DocType("User")
+
+	query = (
+		frappe.qb.from_(user)
+		.join(user_group_member)
+		.on(
+			(user.name == user_group_member.user)
+			& (user_group_member.parent == "Healthcare Practitioners")
+			& (user_group_member.parenttype == "User Group")
+		)
+		.select(user.name, user.full_name)
+		.where(user.enabled == 1)
+	)
+
+	if txt:
+		query = query.where(
+			(user.name.like(f"%{txt}%")) | (user.full_name.like(f"%{txt}%"))
+		)
+
+	return query.offset(start).limit(page_len).run()
+
+
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
 def get_practitioner_list(doctype, txt, searchfield, start, page_len, filters=None):
 	active_filter = {"status": "Active"}
 

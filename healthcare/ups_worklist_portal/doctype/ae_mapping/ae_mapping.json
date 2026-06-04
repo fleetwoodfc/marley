@@ -1,0 +1,150 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:ae_title",
+ "creation": "2026-02-24 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "ae_title",
+  "display_name",
+  "node_type",
+  "modality",
+  "station_name",
+  "station_class_code",
+  "assigned_user",
+  "active",
+  "network_section",
+  "host",
+  "port",
+  "dicomweb_url"
+ ],
+ "fields": [
+  {
+   "fieldname": "ae_title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "AE Title",
+   "reqd": 1,
+   "unique": 1,
+   "description": "DICOM Application Entity Title (uppercase, no spaces)"
+  },
+  {
+   "fieldname": "display_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Display Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "node_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Node Type",
+   "options": "Acquisition Modality\nPost-Processing Workstation\nReporting Workstation\nPACS Archive\nRIS / Portal\nOther",
+   "description": "Role of this DICOM entity in the imaging workflow"
+  },
+  {
+   "fieldname": "modality",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Modality",
+   "description": "DICOM modality code (CT, MR, US, DX, MG, NM, PT, RF, CR …)"
+  },
+  {
+   "fieldname": "station_name",
+   "fieldtype": "Data",
+   "label": "Station Name",
+   "description": "Optional physical station identifier"
+  },
+  {
+   "fieldname": "station_class_code",
+   "fieldtype": "Data",
+   "label": "Station Class Code",
+   "description": "DICOM Scheduled Station Class Code Sequence (0040,4026) code value — e.g. CTSCANNER, MRSCANNER, DXSCANNER. Used to group stations by capability for pool-based routing. Leave blank for non-acquisition nodes."
+  },
+  {
+   "fieldname": "assigned_user",
+   "fieldtype": "Link",
+   "label": "Assigned User",
+   "options": "User",
+   "description": "Default technologist for this AE Title"
+  },
+  {
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Active",
+   "default": "1"
+  },
+  {
+   "fieldname": "network_section",
+   "fieldtype": "Section Break",
+   "label": "Network Connection"
+  },
+  {
+   "fieldname": "host",
+   "fieldtype": "Data",
+   "label": "Host / IP Address",
+   "description": "IP address or hostname of this DICOM node"
+  },
+  {
+   "fieldname": "port",
+   "fieldtype": "Int",
+   "label": "DICOM Port",
+   "description": "DICOM listener port (standard: 104 or 11112)"
+  },
+  {
+   "fieldname": "dicomweb_url",
+   "fieldtype": "Data",
+   "label": "DICOMweb Base URL",
+   "description": "WADO-RS / STOW-RS / QIDO-RS base URL (e.g. http://host:8080/dcm4chee-arc/aets/DCM4CHEE/rs)"
+  }
+ ],
+ "issingle": 0,
+ "links": [],
+ "modified": "2026-02-24 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "UPS Worklist",
+ "name": "AE Mapping",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "UPS Supervisor",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "UPS Technologist"
+  },
+  {
+   "read": 1,
+   "export": 1,
+   "role": "UPS Integration Engineer"
+  }
+ ],
+ "search_fields": "ae_title,display_name",
+ "sort_field": "ae_title",
+ "sort_order": "ASC",
+ "track_changes": 1
+}

@@ -14,15 +14,41 @@ from healthcare.healthcare.dicom.accession_number import (
     get_accession_number_issuer,
     validate_accession_number,
 )
+from healthcare.healthcare.dicom.mwl_rs import (
+    MwlRSClient,
+    MwlItem,
+    MwlStatus,
+    MwlRSError,
+)
+from healthcare.healthcare.dicom.mwl_sync import (
+    sync_to_mwl,
+    remove_from_mwl,
+    update_mwl_attributes,
+    bulk_sync_to_mwl,
+    reconcile_mwl,
+)
 
 __all__ = [
+    # UPS-RS
     "UpsRSClient",
+    # UID Generator
     "generate_dicom_uid",
     "generate_study_instance_uid",
     "generate_sop_instance_uid",
     "generate_transaction_uid",
     "validate_dicom_uid",
+    # Accession Number
     "generate_accession_number",
     "get_accession_number_issuer",
     "validate_accession_number",
+    # MWL-RS
+    "MwlRSClient",
+    "MwlItem",
+    "MwlStatus",
+    "MwlRSError",
+    "sync_to_mwl",
+    "remove_from_mwl",
+    "update_mwl_attributes",
+    "bulk_sync_to_mwl",
+    "reconcile_mwl",
 ]

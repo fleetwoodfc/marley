@@ -1,0 +1,196 @@
+{
+ "actions": [],
+ "creation": "2026-02-19 00:00:00.000000",
+ "description": "An individual finding within a radiology report. Captures structured and narrative content per IHE IRA Content Creator model.",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "finding_title",
+  "finding_type",
+  "sequence",
+  "column_break_1",
+  "status",
+  "is_significant",
+  "section_break_narrative",
+  "description",
+  "section_break_structured",
+  "body_site",
+  "laterality",
+  "column_break_structured2",
+  "observation_template",
+  "observation_value",
+  "observation_unit",
+  "section_break_imaging_ref",
+  "imaging_selection_uid",
+  "series_uid",
+  "sop_instance_uid",
+  "column_break_imaging_ref2",
+  "frame_numbers",
+  "annotation_type",
+  "annotation_data"
+ ],
+ "fields": [
+  {
+   "columns": 3,
+   "fieldname": "finding_title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Finding Title",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "fieldname": "finding_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Finding Type",
+   "options": "Observation\nImpression\nRecommendation\nMeasurement\nAnnotation\nComparison\nTechnique\nLimitation",
+   "reqd": 1,
+   "default": "Observation"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Sequence"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Draft\nConfirmed\nRefuted\nProvisional"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_significant",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Significant",
+   "description": "Flag this finding as clinically significant / critical"
+  },
+  {
+   "fieldname": "section_break_narrative",
+   "fieldtype": "Section Break",
+   "label": "Narrative Description"
+  },
+  {
+   "columns": 4,
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "in_list_view": 1,
+   "label": "Description",
+   "description": "Rich text narrative description of the finding"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_structured",
+   "fieldtype": "Section Break",
+   "label": "Structured Data"
+  },
+  {
+   "fieldname": "body_site",
+   "fieldtype": "Link",
+   "label": "Body Site",
+   "options": "Body Part"
+  },
+  {
+   "fieldname": "laterality",
+   "fieldtype": "Select",
+   "label": "Laterality",
+   "options": "\nN/A\nLeft\nRight\nBilateral"
+  },
+  {
+   "fieldname": "column_break_structured2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "observation_template",
+   "fieldtype": "Link",
+   "label": "Observation Template",
+   "options": "Observation Template",
+   "description": "Link to an Observation Template for structured data capture"
+  },
+  {
+   "fieldname": "observation_value",
+   "fieldtype": "Data",
+   "label": "Observation Value",
+   "description": "Quantitative or categorical value (e.g., '4.2', 'Present')"
+  },
+  {
+   "fieldname": "observation_unit",
+   "fieldtype": "Data",
+   "label": "Unit",
+   "description": "Unit of measurement (e.g., 'mm', 'cm', 'HU')"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_imaging_ref",
+   "fieldtype": "Section Break",
+   "label": "Image Reference",
+   "description": "DICOM image references for this finding (ImagingSelection per IHE IRA)"
+  },
+  {
+   "fieldname": "imaging_selection_uid",
+   "fieldtype": "Data",
+   "label": "Imaging Selection UID",
+   "description": "FHIR ImagingSelection resource identifier"
+  },
+  {
+   "fieldname": "series_uid",
+   "fieldtype": "Data",
+   "label": "Series Instance UID"
+  },
+  {
+   "fieldname": "sop_instance_uid",
+   "fieldtype": "Data",
+   "label": "SOP Instance UID"
+  },
+  {
+   "fieldname": "column_break_imaging_ref2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "frame_numbers",
+   "fieldtype": "Data",
+   "label": "Frame Numbers",
+   "description": "Comma-separated frame numbers for multi-frame images"
+  },
+  {
+   "fieldname": "annotation_type",
+   "fieldtype": "Select",
+   "label": "Annotation Type",
+   "options": "\nArrow\nCircle\nEllipse\nLine\nPolyline\nPolygon\nPoint\nRectangle\nText"
+  },
+  {
+   "fieldname": "annotation_data",
+   "fieldtype": "Code",
+   "label": "Annotation Data",
+   "options": "JSON",
+   "description": "JSON-encoded annotation coordinates/parameters"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-02-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Radiology Reporting",
+ "name": "Report Finding",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "sequence",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 0
+}

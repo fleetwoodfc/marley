@@ -1,0 +1,38 @@
+[
+ {
+  "creation": "2026-02-24 00:00:00.000000",
+  "desk_access": 1,
+  "doctype": "Role",
+  "home_page": "",
+  "modified": "2026-02-24 00:00:00.000000",
+  "modified_by": "Administrator",
+  "name": "UPS Technologist",
+  "owner": "Administrator",
+  "role_name": "UPS Technologist",
+  "two_factor_auth": 0
+ },
+ {
+  "creation": "2026-02-24 00:00:00.000000",
+  "desk_access": 1,
+  "doctype": "Role",
+  "home_page": "",
+  "modified": "2026-02-24 00:00:00.000000",
+  "modified_by": "Administrator",
+  "name": "UPS Supervisor",
+  "owner": "Administrator",
+  "role_name": "UPS Supervisor",
+  "two_factor_auth": 0
+ },
+ {
+  "creation": "2026-02-24 00:00:00.000000",
+  "desk_access": 1,
+  "doctype": "Role",
+  "home_page": "",
+  "modified": "2026-02-24 00:00:00.000000",
+  "modified_by": "Administrator",
+  "name": "UPS Integration Engineer",
+  "owner": "Administrator",
+  "role_name": "UPS Integration Engineer",
+  "two_factor_auth": 0
+ }
+]

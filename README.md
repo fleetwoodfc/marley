@@ -31,6 +31,46 @@ Key feature sets include Patient management, Outpatient / Inpatient management, 
 By integrating with ERPNext, features of ERPNext can also be utilized to manage Pharmacy and supplies, Purchases, Human Resources, Accounts and Finance, Asset Management, Quality etc. Along with authentication and role based access permissions, RESTfullness, extensibility, responsiveness and other goodies, the framework also allows setting up Website, payment integration and Patient portal.
 
 
+### DICOM Radiology Module
+
+The Healthcare app includes a comprehensive DICOM radiology module that integrates with DICOM servers via UPS-RS (Unified Procedure Step RESTful Services).
+
+#### Key Features
+
+- **Imaging Service Request**: FHIR-aligned orders for radiology procedures
+- **Requested Procedure**: Links imaging requests to schedulable procedure steps
+- **Scheduled Procedure Step (SPS)**: Worklist management with DICOM state machine
+- **Performed Procedure Step (PPS)**: Capture acquisition results and timing
+- **Procedure Type Catalog**: Standardized procedure definitions with CPT/LOINC/SNOMED codes
+- **Procedure Plans**: Reusable templates for multi-step protocols
+
+#### DICOM Integration
+
+- **UPS-RS Client**: Full implementation of DICOMweb UPS-RS operations
+- **Real-time Sync**: WebSocket-based event subscription for worklist updates
+- **dcm4chee-arc Compatible**: Tested with dcm4chee-arc DICOM archive
+- **State Machine**: SCHEDULED → IN PROGRESS → COMPLETED/CANCELED
+
+#### DocTypes
+
+| DocType | Purpose |
+|---------|---------|
+| Imaging Service Request | Radiology order (FHIR ServiceRequest) |
+| Requested Procedure | Procedure to be performed |
+| Scheduled Procedure Step | Worklist item (DICOM MWL) |
+| Performed Procedure Step | Acquisition record (DICOM MPPS) |
+| Procedure Type | Procedure catalog with codes |
+| Procedure Plan | Reusable protocol templates |
+| Cancellation Request | Third-party cancellation workflow |
+
+#### Configuration
+
+Configure DICOM settings in Healthcare Settings:
+- **UPS-RS URL**: URL to dcm4chee-arc or other UPS-RS server
+- **DICOM AET**: Application Entity Title for this system
+- **Enable UPS Sync**: Toggle automatic synchronization
+
+
 ### Installation
 
 Using bench, [install ERPNext](https://github.com/frappe/bench#installation) as mentioned here.

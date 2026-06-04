@@ -1,0 +1,104 @@
+{
+ "actions": [],
+ "creation": "2026-02-19 00:00:00.000000",
+ "description": "An addendum or amendment to a finalized radiology report, per IHE RRR-WF report amendment workflow.",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "addendum_type",
+  "addendum_datetime",
+  "column_break_1",
+  "addendum_by",
+  "addendum_by_name",
+  "signed_at",
+  "section_break_content",
+  "addendum_text",
+  "section_break_reason",
+  "reason"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "addendum_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "Addendum\nAmendment\nCorrection\nClarification",
+   "reqd": 1,
+   "default": "Addendum"
+  },
+  {
+   "columns": 2,
+   "fieldname": "addendum_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Date/Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "addendum_by",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Author",
+   "options": "Healthcare Practitioner",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "addendum_by.practitioner_name",
+   "fieldname": "addendum_by_name",
+   "fieldtype": "Data",
+   "label": "Author Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signed_at",
+   "fieldtype": "Datetime",
+   "label": "Signed At",
+   "description": "Timestamp when this addendum was electronically signed"
+  },
+  {
+   "fieldname": "section_break_content",
+   "fieldtype": "Section Break",
+   "label": "Content"
+  },
+  {
+   "columns": 4,
+   "fieldname": "addendum_text",
+   "fieldtype": "Text Editor",
+   "in_list_view": 1,
+   "label": "Addendum Text",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_reason",
+   "fieldtype": "Section Break",
+   "label": "Reason"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason",
+   "description": "Reason for the addendum/amendment"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-02-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Radiology Reporting",
+ "name": "Report Addendum",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "addendum_datetime",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 0
+}

@@ -2,6 +2,56 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on("Healthcare Settings", {
+	refresh: function (frm) {
+		// Add MWL Bulk Sync button if MWL sync is enabled
+		if (frm.doc.enable_mwl_sync) {
+			frm.add_custom_button(
+				__("Bulk Sync to MWL"),
+				function () {
+					frappe.confirm(
+						__("This will sync all SCHEDULED procedures to the Modality Worklist. Continue?"),
+						function () {
+							frm.trigger("run_bulk_mwl_sync");
+						}
+					);
+				},
+				__("MWL Actions")
+			);
+		}
+	},
+
+	run_bulk_mwl_sync: function (frm) {
+		frappe.call({
+			method: "healthcare.healthcare.dicom.mwl_sync.bulk_sync_scheduled_to_mwl",
+			freeze: true,
+			freeze_message: __("Syncing scheduled procedures to Modality Worklist..."),
+			callback: function (r) {
+				if (r.message) {
+					let result = r.message;
+					let msg = __("MWL Bulk Sync Complete") + "<br><br>";
+					msg += __("Total: {0}", [result.total]) + "<br>";
+					msg += __("Synced: {0}", [result.synced]) + "<br>";
+					msg += __("Skipped: {0}", [result.skipped]) + "<br>";
+					msg += __("Failed: {0}", [result.failed]);
+
+					if (result.errors && result.errors.length > 0) {
+						msg += "<br><br><b>" + __("Errors:") + "</b><br>";
+						msg += result.errors.slice(0, 10).join("<br>");
+						if (result.errors.length > 10) {
+							msg += "<br>... " + __("and {0} more", [result.errors.length - 10]);
+						}
+					}
+
+					frappe.msgprint({
+						title: __("MWL Bulk Sync Results"),
+						message: msg,
+						indicator: result.failed > 0 ? "orange" : "green"
+					});
+				}
+			}
+		});
+	},
+
 	setup: function (frm) {
 		frm.set_query("default_google_calendar", function (doc) {
 			return {

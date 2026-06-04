@@ -1,0 +1,166 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "prompt",
+ "creation": "2026-02-26 00:00:00.000000",
+ "description": "DICOM Coded Entry as defined in IHE RRR-WF §40.4.1.2. Stores standard and deployment-specific code values used in UPS workitems (Scheduled Workitem Code, Processing Parameters, Report Requested, etc.).",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "codeset_type",
+  "coding_scheme_designator",
+  "code_value",
+  "code_meaning",
+  "cb_concept",
+  "concept_code_value",
+  "concept_coding_scheme",
+  "concept_meaning",
+  "cb_meta",
+  "dicom_tag",
+  "sequence_name",
+  "active",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "codeset_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Codeset Type",
+   "options": "\nModality to Read\nSpecialty to Read\nReport Requested\nWorkitem\nConcept Code\nOther",
+   "reqd": 1,
+   "description": "IHE RRR-WF §40.4.1.2 table to which this code belongs."
+  },
+  {
+   "fieldname": "coding_scheme_designator",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Coding Scheme",
+   "reqd": 1,
+   "description": "DICOM Coding Scheme Designator (0008,0102), e.g. 99IHE, DCM, SRT, LN, SCT."
+  },
+  {
+   "fieldname": "code_value",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Code Value",
+   "reqd": 1,
+   "search_index": 1,
+   "description": "DICOM Code Value (0008,0100), e.g. ReadCT, RRR001, Abdomen."
+  },
+  {
+   "fieldname": "code_meaning",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Code Meaning",
+   "reqd": 1,
+   "description": "DICOM Code Meaning (0008,0104), human-readable display string."
+  },
+  {
+   "fieldname": "cb_concept",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "concept_code_value",
+   "fieldtype": "Data",
+   "label": "Concept Name Code Value",
+   "description": "Code Value of the concept-name code item (the container) in the Scheduled Processing Parameters Sequence (0074,1210). E.g. RRR004 for 'Modality to Read'."
+  },
+  {
+   "fieldname": "concept_coding_scheme",
+   "fieldtype": "Data",
+   "label": "Concept Name Coding Scheme",
+   "description": "Coding Scheme for the concept-name code item. E.g. 99IHE."
+  },
+  {
+   "fieldname": "concept_meaning",
+   "fieldtype": "Data",
+   "label": "Concept Name Meaning",
+   "description": "Human-readable meaning of the concept-name code, e.g. 'Modality to Read'."
+  },
+  {
+   "fieldname": "cb_meta",
+   "fieldtype": "Section Break",
+   "label": "DICOM Metadata"
+  },
+  {
+   "fieldname": "dicom_tag",
+   "fieldtype": "Data",
+   "label": "DICOM Tag",
+   "description": "Primary DICOM attribute tag where this code is placed, e.g. (0040,4018) for Scheduled Workitem Code Sequence."
+  },
+  {
+   "fieldname": "sequence_name",
+   "fieldtype": "Data",
+   "label": "Sequence Name",
+   "description": "Human-readable name of the DICOM sequence that contains this code, e.g. 'Scheduled Workitem Code Sequence'."
+  },
+  {
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Active",
+   "default": "1",
+   "description": "Inactive codes are hidden from UI pickers but retained for historical reference."
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes",
+   "description": "Optional deployment-specific notes or constraints."
+  }
+ ],
+ "issingle": 0,
+ "links": [],
+ "modified": "2026-02-26 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "UPS Worklist",
+ "name": "UPS DICOM Code",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "UPS Supervisor",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "export": 1,
+   "report": 1,
+   "role": "UPS Technologist"
+  },
+  {
+   "read": 1,
+   "export": 1,
+   "report": 1,
+   "role": "UPS Integration Engineer"
+  }
+ ],
+ "quick_entry": 1,
+ "search_fields": "code_value,code_meaning,coding_scheme_designator",
+ "sort_field": "codeset_type",
+ "sort_order": "ASC",
+ "title_field": "code_meaning",
+ "track_changes": 0
+}

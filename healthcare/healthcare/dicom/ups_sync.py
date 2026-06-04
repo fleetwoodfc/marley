@@ -12,7 +12,7 @@ import frappe
 from frappe import _
 from frappe.utils import now_datetime
 
-from healthcare.healthcare.dicom.ups_rs import UpsRSClient
+from healthcare.healthcare.dicom.ups_rs import UpsRSClient, ProcedureStepState, Workitem
 
 
 def get_ups_client():
@@ -34,10 +34,22 @@ def get_ups_client():
         )
         return None
     
-    return UpsRSClient(settings.ups_rs_url)
+    # Extract AET from URL if not separately configured
+    # URL format: http://host:port/dcm4chee-arc/aets/{AET}/rs
+    aet = getattr(settings, "ups_aet", None)
+    if not aet:
+        # Try to extract from URL
+        import re
+        match = re.search(r'/aets/([^/]+)/rs', settings.ups_rs_url)
+        if match:
+            aet = match.group(1)
+        else:
+            aet = "DCM4CHEE"  # Default fallback
+    
+    return UpsRSClient(settings.ups_rs_url, aet=aet)
 
 
-def sync_state_change(procedure_step):
+def sync_state_change(procedure_step, **kwargs):
     """
     Sync a Scheduled Procedure Step state change to the DICOM server.
     
@@ -45,6 +57,7 @@ def sync_state_change(procedure_step):
     
     Args:
         procedure_step: Name of the Scheduled Procedure Step document
+        **kwargs: Additional arguments passed by the job queue (ignored)
     """
     client = get_ups_client()
     if not client:
@@ -53,9 +66,20 @@ def sync_state_change(procedure_step):
     try:
         sps = frappe.get_doc("Scheduled Procedure Step", procedure_step)
         
-        if sps.ups_state == "SCHEDULED":
-            # Create new workitem
+        # Check if workitem exists on server
+        workitem_exists = _workitem_exists(client, sps.sop_instance_uid)
+        
+        # If workitem doesn't exist and we're not in SCHEDULED state,
+        # we need to create it first (with SCHEDULED state) then transition
+        if not workitem_exists:
+            # Always create with SCHEDULED state first
             _create_workitem(client, sps)
+            workitem_exists = True
+        
+        # Now apply the state transition if needed
+        if sps.ups_state == "SCHEDULED":
+            # Already in scheduled state, nothing more to do
+            pass
         elif sps.ups_state == "IN PROGRESS":
             # Claim workitem
             _claim_workitem(client, sps)
@@ -99,6 +123,24 @@ def sync_state_change(procedure_step):
         _schedule_retry(procedure_step)
 
 
+def _workitem_exists(client, sop_instance_uid):
+    """
+    Check if a workitem exists on the DICOM server.
+    
+    Args:
+        client: UpsRSClient instance
+        sop_instance_uid: SOP Instance UID to check
+    
+    Returns:
+        True if workitem exists, False otherwise
+    """
+    try:
+        workitem = client.retrieve_workitem(sop_instance_uid)
+        return workitem is not None
+    except Exception:
+        return False
+
+
 def _create_workitem(client, sps):
     """
     Create a new UPS workitem on the DICOM server.
@@ -106,23 +148,28 @@ def _create_workitem(client, sps):
     Args:
         client: UpsRSClient instance
         sps: Scheduled Procedure Step document
+        
+    Returns:
+        The UID of the created workitem (may be server-assigned)
     """
-    # Build workitem data from SPS
-    workitem_data = _build_workitem_json(sps)
+    # Build Workitem object from SPS
+    workitem = _build_workitem(sps)
     
     # Create via UPS-RS
-    result = client.create_workitem(workitem_data)
+    result = client.create_workitem(workitem, uid=sps.sop_instance_uid)
     
     # Store any server-assigned values if needed
-    if result and "sop_instance_uid" in result:
-        # Server may assign a different UID (rare)
-        if result["sop_instance_uid"] != sps.sop_instance_uid:
-            frappe.db.set_value(
-                "Scheduled Procedure Step",
-                sps.name,
-                "sop_instance_uid",
-                result["sop_instance_uid"]
-            )
+    if result and result != sps.sop_instance_uid:
+        frappe.db.set_value(
+            "Scheduled Procedure Step",
+            sps.name,
+            "sop_instance_uid",
+            result
+        )
+        # Update the in-memory object too
+        sps.sop_instance_uid = result
+    
+    return result
 
 
 def _claim_workitem(client, sps):
@@ -133,25 +180,56 @@ def _claim_workitem(client, sps):
         client: UpsRSClient instance
         sps: Scheduled Procedure Step document
     """
-    client.change_state(
+    transaction_uid = client.change_state(
         sps.sop_instance_uid,
-        "IN PROGRESS",
+        ProcedureStepState.IN_PROGRESS,
         transaction_uid=sps.transaction_uid
     )
+    # Store the transaction UID for subsequent state changes
+    if transaction_uid and not sps.transaction_uid:
+        frappe.db.set_value(
+            "Scheduled Procedure Step",
+            sps.name,
+            "transaction_uid",
+            transaction_uid
+        )
 
 
 def _complete_workitem(client, sps):
     """
-    Complete a UPS workitem.
+    Complete a UPS workitem with Final State Requirements.
     
     Args:
         client: UpsRSClient instance
         sps: Scheduled Procedure Step document
     """
-    client.change_state(
+    from healthcare.healthcare.dicom.ups_rs import DicomCode
+    
+    # Get performed station name if available
+    performed_station = None
+    if hasattr(sps, 'modality') and sps.modality:
+        # Use modality as a simple station code
+        performed_station = DicomCode(
+            code_value=sps.modality,
+            code_meaning=sps.modality,
+            coding_scheme_designator="DCM"
+        )
+    
+    # Get performed workitem code if available  
+    performed_workitem = None
+    if hasattr(sps, 'procedure_description') and sps.procedure_description:
+        performed_workitem = DicomCode(
+            code_value="LOCAL001",
+            code_meaning=sps.procedure_description[:64],  # Truncate to fit LO VR
+            coding_scheme_designator="LOCAL"
+        )
+    
+    # Complete with Final State Requirements
+    client.complete_workitem(
         sps.sop_instance_uid,
-        "COMPLETED",
-        transaction_uid=sps.transaction_uid
+        transaction_uid=sps.transaction_uid,
+        performed_workitem_code=performed_workitem,
+        performed_station_name=performed_station
     )
 
 
@@ -165,8 +243,125 @@ def _cancel_workitem(client, sps):
     """
     client.change_state(
         sps.sop_instance_uid,
-        "CANCELED",
+        ProcedureStepState.CANCELED,
         transaction_uid=sps.transaction_uid
+    )
+
+
+def send_cancel_request(procedure_step, reason=None, contact_name=None, contact_uri=None):
+    """
+    Send a cancellation request for a workitem being performed by another station.
+    
+    This implements the UPS-RS Request Cancellation operation for third-party
+    cancellation workflow. The performing station will receive an event and
+    can choose to accept or decline the request.
+    
+    Args:
+        procedure_step: Name of the Scheduled Procedure Step document
+        reason: Optional reason for the cancellation request
+        contact_name: Optional name of the requester for callback
+        contact_uri: Optional URI for callback (e.g., email, tel)
+    
+    Returns:
+        dict with success status and message
+    
+    Raises:
+        frappe.ValidationError: If the procedure cannot be canceled
+    """
+    from healthcare.healthcare.dicom.ups_rs import CancellationRequest
+    
+    client = get_ups_client()
+    if not client:
+        frappe.throw(_("UPS sync is not enabled or configured"))
+    
+    sps = frappe.get_doc("Scheduled Procedure Step", procedure_step)
+    
+    # Can only request cancellation for IN PROGRESS workitems
+    if sps.ups_state != "IN PROGRESS":
+        frappe.throw(
+            _("Can only request cancellation for procedures IN PROGRESS. Current state: {0}").format(sps.ups_state)
+        )
+    
+    # Cannot request cancellation of own procedure
+    if sps.claimed_by == frappe.session.user:
+        frappe.throw(
+            _("Cannot request cancellation of your own procedure. Use Cancel Procedure instead.")
+        )
+    
+    try:
+        # Build cancellation request
+        cancel_request = CancellationRequest(
+            reason=reason or _("Cancellation requested"),
+            contact_name=contact_name,
+            contact_uri=contact_uri
+        )
+        
+        # Send via UPS-RS
+        client.request_cancellation(sps.sop_instance_uid, cancel_request)
+        
+        frappe.log_error(
+            f"Cancellation requested for {procedure_step} by {frappe.session.user}",
+            "UPS Cancel Request Sent"
+        )
+        
+        return {
+            "success": True,
+            "message": _("Cancellation request sent to performing station")
+        }
+        
+    except Exception as e:
+        frappe.log_error(
+            f"Cancel request failed for {procedure_step}: {str(e)}",
+            "UPS Cancel Request Error"
+        )
+        raise
+
+
+def _build_workitem(sps):
+    """
+    Build a Workitem object from a Scheduled Procedure Step.
+    
+    Args:
+        sps: Scheduled Procedure Step document
+    
+    Returns:
+        Workitem object for UPS-RS API
+    """
+    from datetime import datetime
+    
+    # Get patient info
+    patient = frappe.get_cached_doc("Patient", sps.patient)
+    
+    # Parse scheduled_datetime
+    scheduled_dt = None
+    if sps.scheduled_datetime:
+        if isinstance(sps.scheduled_datetime, str):
+            scheduled_dt = datetime.fromisoformat(sps.scheduled_datetime.replace(" ", "T"))
+        else:
+            scheduled_dt = sps.scheduled_datetime
+    
+    # Always create workitems with SCHEDULED state (required by UPS-RS)
+    # State transitions happen via change_state() calls
+    state = ProcedureStepState.SCHEDULED
+    
+    # Get accession number from parent ISR if available
+    accession_number = None
+    if sps.imaging_service_request:
+        accession_number = frappe.db.get_value(
+            "Imaging Service Request",
+            sps.imaging_service_request,
+            "accession_number"
+        )
+    
+    return Workitem(
+        uid=sps.sop_instance_uid,
+        procedure_step_state=state,
+        scheduled_start_datetime=scheduled_dt,
+        procedure_step_label=sps.procedure_step_label or sps.name,
+        patient_id=sps.patient,
+        patient_name=patient.patient_name if patient else None,
+        study_instance_uid=sps.study_instance_uid,
+        accession_number=accession_number,
     )
 
 

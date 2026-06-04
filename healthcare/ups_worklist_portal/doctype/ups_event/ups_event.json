@@ -1,0 +1,181 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-02-24 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "ups_instance",
+  "event_type",
+  "event_timestamp",
+  "col_break_1",
+  "actor",
+  "actor_aet",
+  "state_section",
+  "old_state",
+  "new_state",
+  "transaction_uid",
+  "details",
+  "raw_section",
+  "raw_request",
+  "raw_response",
+  "http_status"
+ ],
+ "fields": [
+  {
+   "fieldname": "ups_instance",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "UPS Instance",
+   "options": "UPS Instance",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Event Type",
+   "options": "CREATE\nCLAIM\nUPDATE\nCOMPLETE\nCANCEL\nCANCEL_REQUEST\nREASSIGN\nRECONCILE",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "event_timestamp",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Event Timestamp",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "col_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "actor",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Actor",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "actor_aet",
+   "fieldtype": "Data",
+   "label": "Actor AET"
+  },
+  {
+   "fieldname": "state_section",
+   "fieldtype": "Section Break",
+   "label": "State Transition"
+  },
+  {
+   "fieldname": "old_state",
+   "fieldtype": "Select",
+   "in_list_view": 0,
+   "label": "State Before",
+   "options": "\nSCHEDULED\nIN PROGRESS\nCOMPLETED\nCANCELED"
+  },
+  {
+   "fieldname": "new_state",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "State After",
+   "options": "\nSCHEDULED\nIN PROGRESS\nCOMPLETED\nCANCELED"
+  },
+  {
+   "fieldname": "transaction_uid",
+   "fieldtype": "Data",
+   "label": "Transaction UID"
+  },
+  {
+   "fieldname": "details",
+   "fieldtype": "Small Text",
+   "label": "Details"
+  },
+  {
+   "fieldname": "raw_section",
+   "fieldtype": "Section Break",
+   "label": "Raw Audit Data",
+   "collapsible": 1
+  },
+  {
+   "fieldname": "raw_request",
+   "fieldtype": "Long Text",
+   "label": "Raw Request (DICOM+JSON)",
+   "permlevel": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "raw_response",
+   "fieldtype": "Long Text",
+   "label": "Raw Response",
+   "permlevel": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "http_status",
+   "fieldtype": "Int",
+   "label": "HTTP Status Code",
+   "read_only": 1
+  }
+ ],
+ "issingle": 0,
+ "links": [],
+ "modified": "2026-02-24 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "UPS Worklist",
+ "name": "UPS Event",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager"
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "role": "UPS Technologist"
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "read": 1,
+   "report": 1,
+   "export": 1,
+   "role": "UPS Supervisor"
+  },
+  {
+   "read": 1,
+   "export": 1,
+   "report": 1,
+   "role": "UPS Integration Engineer"
+  },
+  {
+   "permlevel": 1,
+   "read": 1,
+   "role": "UPS Integration Engineer"
+  },
+  {
+   "permlevel": 1,
+   "read": 1,
+   "write": 1,
+   "role": "System Manager"
+  }
+ ],
+ "sort_field": "event_timestamp",
+ "sort_order": "ASC",
+ "track_changes": 0
+}

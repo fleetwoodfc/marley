@@ -12,6 +12,8 @@
   "column_break_1",
   "order_datetime",
   "priority",
+  "service_request",
+  "radiology_procedure_template",
   "patient_section",
   "patient",
   "patient_name",
@@ -38,7 +40,6 @@
    "in_standard_filter": 1,
    "label": "Accession Number",
    "read_only": 1,
-   "reqd": 1,
    "unique": 1
   },
   {
@@ -77,6 +78,22 @@
    "label": "Priority",
    "options": "STAT\nHIGH\nROUTINE\nLOW",
    "reqd": 1
+  },
+  {
+   "description": "Originating Service Request (FHIR order)",
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "label": "Service Request",
+   "options": "Service Request",
+   "read_only": 1
+  },
+  {
+   "description": "The Radiology Procedure Template that was ordered",
+   "fieldname": "radiology_procedure_template",
+   "fieldtype": "Link",
+   "label": "Radiology Procedure Template",
+   "options": "Radiology Procedure Template",
+   "read_only": 1
   },
   {
    "fieldname": "patient_section",
@@ -165,7 +182,7 @@
    "fieldname": "requested_procedures",
    "fieldtype": "Table",
    "label": "Requested Procedures",
-   "options": "Requested Procedure",
+    "options": "Requested Procedure Link",
    "reqd": 1
   },
   {

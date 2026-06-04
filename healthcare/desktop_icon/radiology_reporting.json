@@ -1,0 +1,22 @@
+{
+ "app": "healthcare",
+ "bg_color": "blue",
+ "creation": "2026-01-15 10:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "file",
+ "icon_type": "Link",
+ "idx": 0,
+ "label": "Radiology Reporting",
+ "link_to": "Radiology Reporting",
+ "link_type": "Workspace Sidebar",
+ "modified": "2026-01-15 10:00:00.000000",
+ "modified_by": "Administrator",
+ "name": "Radiology Reporting",
+ "owner": "Administrator",
+ "parent_icon": "Marley Health",
+ "restrict_removal": 0,
+ "roles": [],
+ "standard": 1
+}

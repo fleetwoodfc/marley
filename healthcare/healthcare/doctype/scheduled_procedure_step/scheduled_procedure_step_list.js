@@ -2,7 +2,7 @@
 // For license information, please see license.txt
 
 frappe.listview_settings["Scheduled Procedure Step"] = {
-	add_fields: ["ups_state", "modality", "priority", "scheduled_datetime"],
+	add_fields: ["ups_state", "modality", "priority", "scheduled_datetime", "mwl_sync_status"],
 	
 	filters: [
 		["ups_state", "in", ["SCHEDULED", "IN PROGRESS"]]
@@ -41,60 +41,67 @@ frappe.listview_settings["Scheduled Procedure Step"] = {
 	},
 	
 	onload: function(listview) {
-		// Add custom filters
-		listview.page.add_field({
-			label: __("Modality"),
-			fieldtype: "Select",
-			fieldname: "modality_filter",
-			options: "\nCT\nMR\nUS\nXR\nNM\nPT",
-			change: function() {
-				const modality = this.get_value();
-				if (modality) {
-					listview.filter_area.add(
-						["Scheduled Procedure Step", "modality", "=", modality]
-					);
-				} else {
-					listview.filter_area.remove("modality");
-				}
+		// Add quick filter buttons using inner buttons
+		listview.page.add_inner_button(__("Today"), function() {
+			const today = frappe.datetime.get_today();
+			const tomorrow = frappe.datetime.add_days(today, 1);
+			listview.filter_area.clear(false).then(() => {
+				listview.filter_area.add([
+					[listview.doctype, "scheduled_datetime", "between", [today, tomorrow]],
+					[listview.doctype, "ups_state", "in", ["SCHEDULED", "IN PROGRESS"]]
+				]);
 				listview.refresh();
-			}
-		});
+			});
+		}, __("Quick Filters"));
 		
-		listview.page.add_field({
-			label: __("Station"),
-			fieldtype: "Data",
-			fieldname: "station_filter",
-			change: function() {
-				const station = this.get_value();
-				if (station) {
-					listview.filter_area.add(
-						["Scheduled Procedure Step", "station_aet", "like", `%${station}%`]
-					);
-				} else {
-					listview.filter_area.remove("station_aet");
-				}
+		listview.page.add_inner_button(__("All Scheduled"), function() {
+			listview.filter_area.clear(false).then(() => {
+				listview.filter_area.add([[listview.doctype, "ups_state", "=", "SCHEDULED"]]);
 				listview.refresh();
-			}
-		});
+			});
+		}, __("Quick Filters"));
 		
-		listview.page.add_field({
-			label: __("Scheduled Date"),
-			fieldtype: "Date",
-			fieldname: "date_filter",
-			default: frappe.datetime.get_today(),
-			change: function() {
-				const date = this.get_value();
-				if (date) {
-					const next_day = frappe.datetime.add_days(date, 1);
-					listview.filter_area.add(
-						["Scheduled Procedure Step", "scheduled_datetime", "between", [date, next_day]]
-					);
-				} else {
-					listview.filter_area.remove("scheduled_datetime");
-				}
+		listview.page.add_inner_button(__("In Progress"), function() {
+			listview.filter_area.clear(false).then(() => {
+				listview.filter_area.add([[listview.doctype, "ups_state", "=", "IN PROGRESS"]]);
 				listview.refresh();
-			}
-		});
+			});
+		}, __("Quick Filters"));
+		
+		listview.page.add_inner_button(__("Completed"), function() {
+			listview.filter_area.clear(false).then(() => {
+				listview.filter_area.add([[listview.doctype, "ups_state", "=", "COMPLETED"]]);
+				listview.refresh();
+			});
+		}, __("Quick Filters"));
+		
+		// MWL Sync Status Filters
+		listview.page.add_inner_button(__("MWL Synced"), function() {
+			listview.filter_area.clear(false).then(() => {
+				listview.filter_area.add([
+					[listview.doctype, "mwl_sync_status", "=", "synced"],
+					[listview.doctype, "ups_state", "=", "SCHEDULED"]
+				]);
+				listview.refresh();
+			});
+		}, __("MWL Filters"));
+		
+		listview.page.add_inner_button(__("MWL Pending"), function() {
+			listview.filter_area.clear(false).then(() => {
+				listview.filter_area.add([
+					[listview.doctype, "mwl_sync_status", "in", ["pending", ""]],
+					[listview.doctype, "ups_state", "=", "SCHEDULED"]
+				]);
+				listview.refresh();
+			});
+		}, __("MWL Filters"));
+		
+		listview.page.add_inner_button(__("MWL Errors"), function() {
+			listview.filter_area.clear(false).then(() => {
+				listview.filter_area.add([[listview.doctype, "mwl_sync_status", "=", "error"]]);
+				listview.refresh();
+			});
+		}, __("MWL Filters"));
 		
 		// Add quick actions
 		listview.page.add_inner_button(__("Refresh Worklist"), function() {
@@ -123,36 +130,6 @@ frappe.listview_settings["Scheduled Procedure Step"] = {
 				}
 			});
 		});
-	},
-	
-	primary_action: function() {
-		// Quick claim from list (if single row selected)
-		const selected = this.get_checked_items();
-		if (selected.length === 1) {
-			const sps = selected[0];
-			if (sps.ups_state === "SCHEDULED") {
-				frappe.confirm(
-					__("Claim this procedure and start work?"),
-					() => {
-						frappe.call({
-							method: "healthcare.healthcare.doctype.scheduled_procedure_step.api.claim_procedure",
-							args: { procedure_step: sps.name },
-							callback: (r) => {
-								if (r.message && r.message.success) {
-									frappe.show_alert({
-										message: __("Procedure claimed. Transaction UID: {0}", [r.message.transaction_uid]),
-										indicator: "green"
-									});
-									this.refresh();
-								}
-							}
-						});
-					}
-				);
-			} else {
-				frappe.msgprint(__("Only SCHEDULED procedures can be claimed"));
-			}
-		}
 	},
 	
 	button: {

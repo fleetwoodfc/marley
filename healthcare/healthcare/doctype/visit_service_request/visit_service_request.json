@@ -1,0 +1,60 @@
+{
+ "actions": [],
+ "creation": "2026-02-05 10:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "service_request",
+  "template_type",
+  "template",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "service_request",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Service Request",
+   "options": "Service Request",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "service_request.template_dt",
+   "fieldname": "template_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Template Type",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "service_request.template_dn",
+   "fieldname": "template",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Template",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "service_request.status",
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-02-05 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Visit Service Request",
+ "owner": "Administrator",
+ "permissions": [],
+ "restrict_to_domain": "Healthcare",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

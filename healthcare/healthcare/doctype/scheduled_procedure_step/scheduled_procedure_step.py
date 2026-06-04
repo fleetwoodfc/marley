@@ -6,7 +6,7 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import now_datetime
 
-from healthcare.healthcare.dicom import generate_sop_instance_uid, generate_transaction_uid
+from healthcare.healthcare.dicom import generate_sop_instance_uid, generate_study_instance_uid, generate_transaction_uid
 
 
 # Valid state transitions per DICOM UPS specification
@@ -33,9 +33,12 @@ class ScheduledProcedureStep(Document):
     """
     
     def before_insert(self):
-        """Generate SOP Instance UID before inserting."""
+        """Generate SOP Instance UID and Study Instance UID before inserting."""
         if not self.sop_instance_uid:
             self.sop_instance_uid = generate_sop_instance_uid()
+        # Auto-generate study_instance_uid if not provided (required for MWL)
+        if not self.study_instance_uid:
+            self.study_instance_uid = generate_study_instance_uid()
     
     def validate(self):
         """Validate the Scheduled Procedure Step."""
@@ -85,6 +88,24 @@ class ScheduledProcedureStep(Document):
         # Queue UPS sync if state changed
         if self.has_value_changed("ups_state"):
             self.queue_ups_sync()
+            self.log_state_change()
+    
+    def log_state_change(self):
+        """Add audit comment for state changes."""
+        old_doc = self.get_doc_before_save()
+        old_state = old_doc.ups_state if old_doc else "New"
+        new_state = self.ups_state
+        
+        # Build comment text
+        comment_text = _("State changed from {0} to {1}").format(old_state, new_state)
+        
+        if new_state == "IN PROGRESS" and self.claimed_by:
+            comment_text += _(" by {0}").format(self.claimed_by)
+        elif new_state == "CANCELED" and hasattr(self, '_cancel_reason'):
+            comment_text += _(". Reason: {0}").format(self._cancel_reason)
+        
+        # Add audit comment
+        self.add_comment("Info", comment_text)
     
     def queue_ups_sync(self):
         """Queue a background job to sync state to DICOM server."""

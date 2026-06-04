@@ -1,6 +1,7 @@
 import json
 import requests
 from bs4 import BeautifulSoup
+from .radlex_index import query_index
 
 RADLEX_SEARCH_URL = "https://playbook.radlex.org/playbook/SearchRadlexAction"
 RADLEX_WEBSERVICE_CANDIDATES = [
@@ -121,16 +122,43 @@ def _try_webservice(query, timeout=5):
     return []
 
 
-def search_radlex(query):
+def _apply_filters(items, modality=None, body_part=None):
+    if not modality and not body_part:
+        return items
+    mod = (modality or "").strip().lower()
+    part = (body_part or "").strip().lower()
+    out = []
+    for it in items:
+        name = (it.get("name") or "").lower()
+        desc = (it.get("description") or "").lower()
+        combined = f"{name} {desc}"
+        if mod and mod not in combined:
+            continue
+        if part and part not in combined:
+            continue
+        out.append(it)
+    return out
+
+
+def search_radlex(query, modality=None, body_part=None):
     """Search RadLex Playbook for a given query string.
     Try the Playbook webservice first; if unavailable or returns no results,
     fall back to HTML scraping + scoring.
     Returns a list of dicts: {rpid, name, description}
     """
-    # 1) Try webservice endpoints
+    # 1) Try local index first for speed/reliability
+    try:
+        idx_results = query_index(query, modality=modality, body_part=body_part, limit=20)
+        if idx_results:
+            return _score_and_limit(idx_results, query)
+    except Exception:
+        pass
+
+    # 2) Try webservice endpoints
     try:
         ws_results = _try_webservice(query)
         if ws_results:
+            ws_results = _apply_filters(ws_results, modality, body_part)
             return _score_and_limit(ws_results, query)
     except Exception:
         # be tolerant — fall back to scraping

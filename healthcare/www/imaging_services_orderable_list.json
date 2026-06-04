@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "generated_by": "Imaging Services Menu",
+  "ordering_fields": [
+    {"name":"clinical_question","type":"text","required":true},
+    {"name":"body_part","type":"text","required":true},
+    {"name":"laterality","type":"enum","options":["Left","Right","Bilateral","NA"],"required":false},
+    {"name":"modality","type":"enum","options":["XRay","CT","MRI","US","NM","IR","Fluoro","DEXA","Dental"],"required":true},
+    {"name":"protocol","type":"text","required":false},
+    {"name":"use_iv_contrast","type":"enum","options":["Yes","No","Unsure"],"required":false},
+    {"name":"use_oral_contrast","type":"enum","options":["Yes","No"],"required":false},
+    {"name":"renal_function_provided","type":"boolean","required":false},
+    {"name":"pregnancy_status","type":"enum","options":["Pregnant","Not Pregnant","Unknown"],"required":false},
+    {"name":"patient_weight_kg","type":"number","required":false},
+    {"name":"priority","type":"enum","options":["Routine","Urgent","STAT"],"required":true},
+    {"name":"special_instructions","type":"text","required":false},
+    {"name":"referrer_contact","type":"text","required":false}
+  ],
+  "services": [
+    {"id":"XR-CHEST","name":"Chest X‑ray (PA/Lateral or Portable)","modality":"XRay","body_parts":["Chest"],"default_protocol":"PA and Lateral; portable if indicated","contrast":"No","estimate_min":15,"priority_default":"Routine","indications":["Cough","Shortness of breath","Trauma"],"ris_modality":"CR/DX","hl7_code_system":"CPT","example_cpt":"71046"},
+    {"id":"XR-SKELETAL","name":"Skeletal X‑ray (Extremity/Spine/Trauma Series)","modality":"XRay","body_parts":["Extremity","Spine"],"default_protocol":"Standard views per body part","contrast":"No","estimate_min":20,"priority_default":"Routine","indications":["Fracture","Dislocation","Bone pain"],"ris_modality":"CR/DX","hl7_code_system":"CPT","example_cpt":"(site-specific per body part)"},
+    {"id":"CT-HEAD-NC","name":"CT Head — Non‑contrast","modality":"CT","body_parts":["Head"],"default_protocol":"Non‑contrast axial with reformats","contrast":"No","estimate_min":15,"priority_default":"STAT","indications":["Head trauma","Stroke rule‑out","Acute headache"],"ris_modality":"CT","hl7_code_system":"CPT","example_cpt":"70450"},
+    {"id":"CT-ABDOMEN-PELVIS","name":"CT Abdomen/Pelvis","modality":"CT","body_parts":["Abdomen","Pelvis"],"default_protocol":"IV contrast ± oral contrast per protocol","contrast":"IV/Oral optional","estimate_min":30,"priority_default":"Routine","indications":["Abdominal pain","Trauma","Oncologic staging"],"ris_modality":"CT","hl7_code_system":"CPT","example_cpt":"74177"},
+    {"id":"CT-CTA","name":"CT Angiography (CTA)","modality":"CT","body_parts":["Vascular territory specified"],"default_protocol":"CTA protocol for target vessel (PE/stroke/aorta)","contrast":"IV required","estimate_min":20,"priority_default":"Urgent","indications":["Suspected PE","Aortic dissection","Vascular occlusion"],"ris_modality":"CT","hl7_code_system":"CPT","example_cpt":"(site-specific CTA CPT)"},
+    {"id":"MRI-BRAIN","name":"MRI Brain","modality":"MRI","body_parts":["Brain"],"default_protocol":"Brain MRI with/without contrast per indication","contrast":"Gadolinium optional","estimate_min":45,"priority_default":"Routine","indications":["Tumor","Demyelination","Infection","Seizures"],"ris_modality":"MR","hl7_code_system":"CPT","example_cpt":"70551/70552/70553"},
+    {"id":"MRI-SPINE","name":"MRI Spine","modality":"MRI","body_parts":["Cervical spine","Thoracic spine","Lumbar spine"],"default_protocol":"Spine MRI with appropriate sequences","contrast":"Gadolinium optional","estimate_min":30,"priority_default":"Routine","indications":["Radiculopathy","Cord compression","Post‑op assessment"],"ris_modality":"MR","hl7_code_system":"CPT","example_cpt":"72141/72146/72156 (per level)"},
+    {"id":"US-ABDOMEN","name":"Ultrasound Abdomen","modality":"US","body_parts":["Abdomen"],"default_protocol":"Right upper quadrant liver/gallbladder ± full abdominal survey","contrast":"No","estimate_min":30,"priority_default":"Routine","indications":["Abdominal pain","Jaundice","Follow‑up"],"ris_modality":"US","hl7_code_system":"CPT","example_cpt":"76700"},
+    {"id":"US-OB","name":"Obstetric Ultrasound","modality":"US","body_parts":["Pelvis","Fetus"],"default_protocol":"First/second/third trimester protocols as indicated","contrast":"No","estimate_min":30,"priority_default":"Routine","indications":["Pregnancy dating","Anomaly scan","Bleeding"],"ris_modality":"US","hl7_code_system":"CPT","example_cpt":"76805/76811/76812"},
+    {"id":"US-DOPPLER","name":"Vascular Doppler Ultrasound","modality":"US","body_parts":["Carotid","Lower extremity","Upper extremity","Renal"],"default_protocol":"Doppler waveform and duplex imaging","contrast":"No","estimate_min":30,"priority_default":"Urgent","indications":["DVT","Carotid stenosis","Renovascular disease"],"ris_modality":"US","hl7_code_system":"CPT","example_cpt":"93880/93970"},
+    {"id":"MAMM-SCREEN","name":"Mammography — Screening/Diagnostic","modality":"XRay","body_parts":["Breast"],"default_protocol":"2‑view screening or diagnostic views as needed; add tomosynthesis if available","contrast":"No (MRI separate)","estimate_min":30,"priority_default":"Routine","indications":["Screening","Palpable mass","Abnormal screening result"],"ris_modality":"MG/DBT","hl7_code_system":"CPT","example_cpt":"77067/77065"},
+    {"id":"FLUOR-BARIUM","name":"Fluoroscopy — Contrast Study (e.g., Barium Swallow)","modality":"Fluoro","body_parts":["GI tract","Urinary tract"],"default_protocol":"Study‑specific contrast protocol","contrast":"Oral/rectal/instilled as indicated","estimate_min":45,"priority_default":"Routine","indications":["Dysphagia","Suspected leak","Swallow dysfunction"],"ris_modality":"RF/FL","hl7_code_system":"CPT","example_cpt":"(study-specific CPT)"},
+    {"id":"IR-BIOPSY","name":"Interventional Radiology — Biopsy / Drainage","modality":"IR","body_parts":["Target organ specified"],"default_protocol":"Image‑guided biopsy/drainage per IR protocol","contrast":"IV often used","estimate_min":60,"priority_default":"Urgent","indications":["Tissue diagnosis","Abscess drainage","Cyst aspiration"],"ris_modality":"IR/XA","hl7_code_system":"CPT","example_cpt":"(image-guided biopsy/IR CPTs; combine guidance + procedure)"},
+    {"id":"NM-PETCT","name":"PET‑CT","modality":"NM","body_parts":["Whole body / specified region"],"default_protocol":"FDG PET/CT with fasting and glucose control","contrast":"Low‑dose CT for attenuation; diagnostic CT optional","estimate_min":90,"priority_default":"Routine","indications":["Oncology staging","Treatment response","Unknown primary"],"ris_modality":"PT/NM","hl7_code_system":"CPT","example_cpt":"78815 (example)"},
+    {"id":"DEXA","name":"DEXA — Bone Densitometry","modality":"DEXA","body_parts":["Lumbar spine","Hip"],"default_protocol":"Standard spine and hip BMD","contrast":"No","estimate_min":20,"priority_default":"Routine","indications":["Osteoporosis screening","Metabolic bone disease"],"ris_modality":"DX","hl7_code_system":"CPT","example_cpt":"77080/77081"},
+    {"id":"DENTAL-CBCT","name":"Dental / Cone‑beam CT","modality":"Dental","body_parts":["Maxillofacial"],"default_protocol":"CBCT protocol for dental/maxillofacial assessment","contrast":"No","estimate_min":15,"priority_default":"Routine","indications":["Impacted teeth","Implant planning","Facial trauma"],"ris_modality":"CT/OT","hl7_code_system":"CDT/CPT","example_cpt":"(dental CDT or site billing codes)"}
+  ]
+}

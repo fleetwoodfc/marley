@@ -234,6 +234,15 @@ class PatientEncounter(Document):
 					order.submit()
 					therapy.service_request = order.name
 
+		if self.radiology_prescription:
+			for radiology in self.radiology_prescription:
+				if radiology.radiology_template and not radiology.service_request:
+					radiology_template = frappe.get_doc("Radiology Procedure Template", radiology.radiology_template)
+					order = self.get_order_details(radiology_template, radiology)
+					order.insert(ignore_permissions=True, ignore_mandatory=True)
+					order.submit()
+					radiology.service_request = order.name
+
 	def make_medication_request(self):
 		if self.drug_prescription:
 			# make_medication_request

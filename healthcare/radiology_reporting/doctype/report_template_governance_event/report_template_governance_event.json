@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "creation": "2026-05-11 00:00:00.000000",
+ "description": "Audit event for a template version lifecycle decision. Child of Radiology Report Template Version.",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "istable": 1,
+ "field_order": [
+  "event_type",
+  "performed_by",
+  "performed_at",
+  "from_status",
+  "to_status",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Event Type",
+   "options": "Created\nSubmitted\nApproved\nRejected\nPublished\nSuperseded\nRetired\nImported\nExported",
+   "reqd": 1
+  },
+  {
+   "fieldname": "performed_by",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Performed By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "performed_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Performed At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_status",
+   "fieldtype": "Data",
+   "label": "From Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "to_status",
+   "fieldtype": "Data",
+   "label": "To Status",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Text",
+   "label": "Notes",
+   "description": "Governance notes or justification"
+  }
+ ],
+ "modified": "2026-05-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Radiology Reporting",
+ "name": "Report Template Governance Event",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

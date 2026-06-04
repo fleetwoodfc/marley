@@ -74,29 +74,32 @@ class ImagingServiceRequest(Document):
         
         The SPS is the UPS Workitem that gets pushed to the DICOM server.
         """
-        for rp in self.requested_procedures:
-            sps = self._create_sps_for_requested_procedure(rp)
+        for rp_link in self.requested_procedures:
+            # Dereference the Requested Procedure Link to get the actual doc
+            rp_doc = frappe.get_doc("Requested Procedure", rp_link.requested_procedure)
+            sps = self._create_sps_for_requested_procedure(rp_link, rp_doc)
             
             # Update the Requested Procedure with the SPS reference
             frappe.db.set_value(
                 "Requested Procedure",
-                rp.name,
+                rp_link.requested_procedure,
                 "scheduled_procedure_step",
                 sps.name
             )
     
-    def _create_sps_for_requested_procedure(self, rp):
+    def _create_sps_for_requested_procedure(self, rp_link, rp_doc):
         """
         Create a Scheduled Procedure Step for a Requested Procedure.
         
         Args:
-            rp: The Requested Procedure child row
+            rp_link: The Requested Procedure Link child row
+            rp_doc: The actual Requested Procedure document
         
         Returns:
             The created Scheduled Procedure Step document
         """
         # Get procedure type details
-        procedure_type = frappe.get_cached_doc("Procedure Type", rp.procedure_type)
+        procedure_type = frappe.get_cached_doc("Procedure Type", rp_doc.procedure_type)
         
         # Get default plan for protocol codes
         default_plan = procedure_type.get_default_plan()
@@ -108,26 +111,28 @@ class ImagingServiceRequest(Document):
         sps = frappe.get_doc({
             "doctype": "Scheduled Procedure Step",
             "imaging_service_request": self.name,
-            "requested_procedure": rp.name,
+            "requested_procedure": rp_link.requested_procedure,
             "patient": self.patient,
-            "study_instance_uid": rp.study_instance_uid,
+            "study_instance_uid": rp_link.study_instance_uid,
             "sop_instance_uid": generate_sop_instance_uid(),
-            "scheduled_datetime": rp.scheduled_datetime or self.order_datetime,
-            "modality": rp.modality or procedure_type.default_modality,
-            "procedure_step_label": rp.procedure_description or procedure_type.procedure_name,
+            "scheduled_datetime": rp_doc.scheduled_datetime or self.order_datetime,
+            "modality": rp_doc.modality or procedure_type.default_modality,
+            "procedure_step_label": rp_doc.procedure_description or procedure_type.procedure_name,
             "expected_duration": procedure_type.typical_duration,
             "ups_state": "SCHEDULED",
             "ups_sync_status": "pending"
         })
         
-        # Add protocol codes from the plan
+        # Add protocol codes from the plan.
+        # Protocol Code Item.code is a Link to Code Value.  We only append rows
+        # where a matching Code Value record actually exists; plain local/free-text
+        # codes are stored on the Procedure Plan and are visible there.
         for code in protocol_codes:
-            sps.append("protocol_codes", {
-                "code_value": code.get("code_value"),
-                "coding_scheme_designator": code.get("coding_scheme_designator"),
-                "code_meaning": code.get("code_meaning")
-            })
+            cv = code.get("code_value")
+            if cv and frappe.db.exists("Code Value", cv):
+                sps.append("protocol_codes", {"code": cv})
         
+        sps.flags.ignore_mandatory = True   # allow empty protocol_codes table
         sps.insert()
         return sps
     
@@ -138,9 +143,10 @@ class ImagingServiceRequest(Document):
     
     def cancel_scheduled_procedure_steps(self):
         """Cancel all Scheduled Procedure Steps that are still SCHEDULED."""
-        for rp in self.requested_procedures:
-            if rp.scheduled_procedure_step:
-                sps = frappe.get_doc("Scheduled Procedure Step", rp.scheduled_procedure_step)
+        for rp_link in self.requested_procedures:
+            rp_doc = frappe.get_doc("Requested Procedure", rp_link.requested_procedure)
+            if rp_doc.scheduled_procedure_step:
+                sps = frappe.get_doc("Scheduled Procedure Step", rp_doc.scheduled_procedure_step)
                 if sps.ups_state == "SCHEDULED":
                     sps.cancel_procedure("Order cancelled")
     
@@ -162,9 +168,10 @@ class ImagingServiceRequest(Document):
             return
         
         sps_list = []
-        for rp in self.requested_procedures:
-            if rp.scheduled_procedure_step:
-                sps = frappe.get_doc("Scheduled Procedure Step", rp.scheduled_procedure_step)
+        for rp_link in self.requested_procedures:
+            rp_doc = frappe.get_doc("Requested Procedure", rp_link.requested_procedure)
+            if rp_doc.scheduled_procedure_step:
+                sps = frappe.get_doc("Scheduled Procedure Step", rp_doc.scheduled_procedure_step)
                 sps_list.append(sps.ups_state)
         
         if not sps_list:

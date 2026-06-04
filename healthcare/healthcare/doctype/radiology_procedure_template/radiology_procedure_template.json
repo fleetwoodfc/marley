@@ -1,0 +1,306 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "field:template",
+ "creation": "2026-01-31 00:00:00.000000",
+ "description": "Radiology Procedure Template",
+ "doctype": "DocType",
+ "document_type": "Setup",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "template",
+  "modality",
+  "body_part",
+  "laterality",
+  "column_break_details",
+  "disabled",
+  "medical_department",
+  "description",
+  "procedure_type",
+  "contrast_section",
+  "contrast_required",
+  "contrast_type",
+  "column_break_contrast",
+  "preparation_instructions",
+  "billing_section",
+  "column_break_billing1",
+  "link_existing_item",
+  "item",
+  "item_code",
+  "item_group",
+  "column_break_billing2",
+  "is_billable",
+  "rate",
+  "codification_tab",
+  "codification_table",
+  "procedure_protocols_tab",
+  "procedure_protocols",
+  "service_request_defaults_tab",
+  "patient_care_type",
+  "staff_role"
+ ],
+ "fields": [
+  {
+   "fieldname": "template",
+   "fieldtype": "Data",
+   "in_global_search": 1,
+   "in_list_view": 1,
+   "label": "Template Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "modality",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Modality",
+   "options": "\nX-Ray\nCT\nMRI\nUltrasound\nFluoroscopy\nNuclear Medicine\nPET\nMammography",
+   "reqd": 1
+  },
+  {
+   "fieldname": "body_part",
+   "fieldtype": "Link",
+   "label": "Body Part",
+   "options": "Body Part"
+  },
+  {
+   "fieldname": "laterality",
+   "fieldtype": "Select",
+   "label": "Laterality",
+   "options": "\nN/A\nLeft\nRight\nBilateral"
+  },
+  {
+   "fieldname": "column_break_details",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "disabled",
+   "fieldtype": "Check",
+   "label": "Disabled"
+  },
+  {
+   "fieldname": "medical_department",
+   "fieldtype": "Link",
+   "label": "Medical Department",
+   "options": "Medical Department"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "ignore_xss_filter": 1,
+   "label": "Description",
+   "no_copy": 1,
+   "reqd": 1
+  },
+  {
+   "description": "Maps this template to a DICOM Procedure Type for Imaging Service Request creation",
+   "fieldname": "procedure_type",
+   "fieldtype": "Link",
+   "label": "Procedure Type",
+   "options": "Procedure Type"
+  },
+  {
+   "fieldname": "contrast_section",
+   "fieldtype": "Section Break",
+   "label": "Contrast & Preparation"
+  },
+  {
+   "default": "0",
+   "fieldname": "contrast_required",
+   "fieldtype": "Check",
+   "label": "Contrast Required"
+  },
+  {
+   "depends_on": "eval:doc.contrast_required",
+   "fieldname": "contrast_type",
+   "fieldtype": "Data",
+   "label": "Contrast Type"
+  },
+  {
+   "fieldname": "column_break_contrast",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "preparation_instructions",
+   "fieldtype": "Text",
+   "label": "Preparation Instructions"
+  },
+  {
+   "fieldname": "billing_section",
+   "fieldtype": "Section Break",
+   "label": "Billing"
+  },
+  {
+   "fieldname": "column_break_billing1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval: doc.__islocal",
+   "fieldname": "link_existing_item",
+   "fieldtype": "Check",
+   "label": "Link existing Item"
+  },
+  {
+   "depends_on": "eval: !doc.__islocal || doc.link_existing_item",
+   "fieldname": "item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Item",
+   "mandatory_depends_on": "eval:doc.link_existing_item",
+   "no_copy": 1,
+   "options": "Item",
+   "read_only_depends_on": "eval: !doc.__islocal"
+  },
+  {
+   "depends_on": "eval:!doc.link_existing_item || !doc.__islocal",
+   "fieldname": "item_code",
+   "fieldtype": "Data",
+   "label": "Item Code",
+   "mandatory_depends_on": "eval:!doc.link_existing_item",
+   "read_only_depends_on": "eval: !doc.__islocal"
+  },
+  {
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Item Group",
+   "options": "Item Group",
+   "read_only_depends_on": "eval:doc.link_existing_item",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_billing2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:!doc.link_existing_item || !doc.__islocal;",
+   "fieldname": "is_billable",
+   "fieldtype": "Check",
+   "label": "Is Billable"
+  },
+  {
+   "depends_on": "eval:doc.is_billable && (!doc.link_existing_item || !doc.__islocal)",
+   "fieldname": "rate",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Rate",
+   "mandatory_depends_on": "eval:doc.is_billable && !doc.link_existing_item"
+  },
+  {
+   "fieldname": "codification_tab",
+   "fieldtype": "Tab Break",
+   "label": "Medical Coding"
+  },
+  {
+   "fieldname": "codification_table",
+   "fieldtype": "Table",
+   "label": "Medical Codes",
+   "options": "Codification Table"
+  },
+  {
+   "fieldname": "procedure_protocols_tab",
+   "fieldtype": "Tab Break",
+   "label": "Procedure Protocols"
+  },
+  {
+   "description": "Define the protocol instructions for each procedure step in the workflow. Steps are grouped by phase (Acquisition, Post Processing, Reporting).",
+   "fieldname": "procedure_protocols",
+   "fieldtype": "Table",
+   "label": "Procedure Step Protocols",
+   "options": "Radiology Procedure Step Protocol"
+  },
+  {
+   "fieldname": "service_request_defaults_tab",
+   "fieldtype": "Tab Break",
+   "label": "Service Request Defaults"
+  },
+  {
+   "fieldname": "patient_care_type",
+   "fieldtype": "Link",
+   "label": "Patient Care Type",
+   "options": "Patient Care Type"
+  },
+  {
+   "fieldname": "staff_role",
+   "fieldtype": "Link",
+   "label": "Staff Role",
+   "options": "Role"
+  }
+ ],
+ "links": [
+  {
+   "link_doctype": "Radiology Procedure",
+   "link_fieldname": "radiology_template"
+  }
+ ],
+ "modified": "2026-02-18 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Radiology Procedure Template",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nursing User",
+   "share": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Physician",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "restrict_to_domain": "Healthcare",
+ "row_format": "Dynamic",
+ "search_fields": "template,modality",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "template",
+ "track_changes": 1,
+ "track_seen": 1
+}

@@ -29,3 +29,13 @@ healthcare.patches.v15_0.set_observation_and_diagnostic_report_status
 healthcare.patches.v16_0.set_template_dn_and_template_dt_in_appointment
 healthcare.patches.v15_0.add_discharge_summary_to_patient_history
 healthcare.patches.v15_0.add_custom_fields_if_not_exists
+healthcare.patches.migrate_procedure_step_renamed_doctypes
+# UPS Worklist Portal patches
+healthcare.ups_worklist_portal.patches.v1_0.load_ihe_rrr_wf_codesets
+healthcare.ups_worklist_portal.patches.backfill_procedure_step_label
+# Report Template Manager patches (014)
+# NOTE: No data backfill is required for existing Radiology Report records.
+# The report_template, report_template_version, and template_version_label fields
+# are additive and default to NULL. Existing reports retain their current values.
+# If a site wants to retroactively associate existing reports with templates,
+# run a custom one-off script using the resolve_template() API and apply_template_version().

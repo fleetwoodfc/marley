@@ -136,10 +136,46 @@ class Observation(Document):
 
 @frappe.whitelist()
 def get_observation_details(docname):
-	reference = frappe.get_value("Diagnostic Report", docname, ["docname", "ref_doctype"], as_dict=True)
+	reference = frappe.get_value(
+		"Diagnostic Report", docname,
+		["docname", "ref_doctype", "category", "radiology_report"],
+		as_dict=True,
+	)
 	observation = []
 
-	if reference.get("ref_doctype") == "Sales Invoice":
+	if reference.get("category") == "RAD" and reference.get("radiology_report"):
+		# Radiology path — get observations linked via the radiology report
+		linked_obs_str = frappe.db.get_value(
+			"Radiology Report", reference.get("radiology_report"), "linked_observations"
+		)
+		if linked_obs_str:
+			obs_names = [n.strip() for n in linked_obs_str.split(",") if n.strip()]
+			if obs_names:
+				observation = frappe.get_list(
+					"Observation",
+					fields=["*"],
+					filters={
+						"name": ["in", obs_names],
+						"parent_observation": "",
+						"status": ["!=", "Cancelled"],
+						"docstatus": ["!=", 2],
+					},
+					order_by="creation",
+				)
+		# Also check for observations linked via diagnostic_report name
+		if not observation:
+			observation = frappe.get_list(
+				"Observation",
+				fields=["*"],
+				filters={
+					"diagnostic_report": docname,
+					"parent_observation": "",
+					"status": ["!=", "Cancelled"],
+					"docstatus": ["!=", 2],
+				},
+				order_by="creation",
+			)
+	elif reference.get("ref_doctype") == "Sales Invoice":
 		observation = frappe.get_list(
 			"Observation",
 			fields=["*"],

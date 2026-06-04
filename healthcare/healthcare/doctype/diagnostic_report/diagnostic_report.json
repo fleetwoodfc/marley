@@ -16,6 +16,7 @@
   "practitioner_name",
   "column_break_v6l1",
   "company",
+  "category",
   "status",
   "naming_series",
   "ref_doctype",
@@ -23,6 +24,25 @@
   "sales_invoice_status",
   "reference_posting_date",
   "sample_collection",
+  "fhir_section",
+  "fhir_status",
+  "issued",
+  "effective_datetime",
+  "column_break_fhir",
+  "fhir_code",
+  "fhir_code_display",
+  "conclusion",
+  "radiology_section",
+  "radiology_report",
+  "imaging_service_request",
+  "accession_number",
+  "column_break_rad",
+  "modality",
+  "body_part",
+  "laterality",
+  "column_break_rad2",
+  "study_instance_uid",
+  "report_impression",
   "section_break_wtn1",
   "observation",
   "amended_from",
@@ -69,13 +89,148 @@
    "read_only": 1
   },
   {
+   "description": "Fields aligned with FHIR R4 DiagnosticReport resource",
+   "fieldname": "fhir_section",
+   "fieldtype": "Section Break",
+   "label": "FHIR Diagnostic Report"
+  },
+  {
+   "description": "FHIR DiagnosticReport.status (auto-derived from category-specific status)",
+   "fieldname": "fhir_status",
+   "fieldtype": "Select",
+   "label": "FHIR Status",
+   "options": "\nRegistered\nPartial\nPreliminary\nFinal\nAmended\nCorrected\nAppended\nCancelled\nEntered in Error",
+   "read_only": 1
+  },
+  {
+   "description": "DateTime this version was made available (FHIR DiagnosticReport.issued)",
+   "fieldname": "issued",
+   "fieldtype": "Datetime",
+   "label": "Issued",
+   "read_only": 1
+  },
+  {
+   "description": "Clinically relevant time for the report (FHIR DiagnosticReport.effective)",
+   "fieldname": "effective_datetime",
+   "fieldtype": "Datetime",
+   "label": "Effective Date/Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_fhir",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "LOINC or procedure code identifying the report type (FHIR DiagnosticReport.code)",
+   "fieldname": "fhir_code",
+   "fieldtype": "Data",
+   "label": "Report Code",
+   "read_only": 1
+  },
+  {
+   "description": "Human-readable display name for the report code",
+   "fieldname": "fhir_code_display",
+   "fieldtype": "Data",
+   "label": "Report Code Display",
+   "read_only": 1
+  },
+  {
+   "description": "Clinical conclusion / interpretation summary (FHIR DiagnosticReport.conclusion)",
+   "fieldname": "conclusion",
+   "fieldtype": "Text Editor",
+   "label": "Conclusion",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "eval:doc.category=='RAD';",
+   "description": "Radiology-specific details \u2014 populated from linked Radiology Report",
+   "fieldname": "radiology_section",
+   "fieldtype": "Section Break",
+   "label": "Radiology Detail"
+  },
+  {
+   "description": "Source Radiology Report document",
+   "fieldname": "radiology_report",
+   "fieldtype": "Link",
+   "label": "Radiology Report",
+   "options": "Radiology Report",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.category=='RAD'",
+   "fieldname": "imaging_service_request",
+   "fieldtype": "Link",
+   "label": "Imaging Service Request",
+   "options": "Imaging Service Request",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.category=='RAD'",
+   "description": "DICOM Accession Number from the imaging order",
+   "fieldname": "accession_number",
+   "fieldtype": "Data",
+   "label": "Accession Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_rad",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.category=='RAD'",
+   "fieldname": "modality",
+   "fieldtype": "Data",
+   "label": "Modality",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.category=='RAD'",
+   "fieldname": "body_part",
+   "fieldtype": "Data",
+   "label": "Body Part",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.category=='RAD'",
+   "fieldname": "laterality",
+   "fieldtype": "Data",
+   "label": "Laterality",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_rad2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.category=='RAD'",
+   "description": "DICOM Study Instance UID",
+   "fieldname": "study_instance_uid",
+   "fieldtype": "Data",
+   "label": "Study Instance UID",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.category=='RAD'",
+   "description": "Radiology impression / primary diagnostic statement from the Radiology Report",
+   "fieldname": "report_impression",
+   "fieldtype": "Text Editor",
+   "label": "Impression",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "collapsible": 1,
+   "depends_on": "eval:doc.category!='RAD'",
    "fieldname": "section_break_wtn1",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Lab Detail"
   },
   {
    "fieldname": "observation",
-   "fieldtype": "HTML",
-   "label": "Observation"
+   "fieldtype": "Link",
+   "label": "Observation",
+   "options": "Observation"
   },
   {
    "fetch_from": "patient.sex",
@@ -117,6 +272,7 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:doc.category=='LAB'",
    "fieldname": "sales_invoice_status",
    "fieldtype": "Data",
    "is_virtual": 1,
@@ -148,6 +304,15 @@
    "read_only": 1
   },
   {
+   "description": "FHIR DiagnosticReport.category \u2014 LAB (Laboratory), RAD (Radiology), PATH (Pathology), CARD (Cardiology)",
+   "fieldname": "category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Category",
+   "options": "\nLAB\nRAD\nPATH\nCARD\nOTHER"
+  },
+  {
    "fieldname": "title",
    "fieldtype": "Data",
    "hidden": 1,
@@ -172,7 +337,7 @@
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-25 09:36:33.783252",
+ "modified": "2026-02-21 13:20:15.261036",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Diagnostic Report",
@@ -190,6 +355,30 @@
    "role": "System Manager",
    "share": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Administrator",
+   "share": 1,
+   "write": 1
   }
  ],
  "row_format": "Dynamic",
@@ -199,6 +388,22 @@
   {
    "color": "Orange",
    "title": "Open"
+  },
+  {
+   "color": "Yellow",
+   "title": "Pending Review"
+  },
+  {
+   "color": "Blue",
+   "title": "Partially Approved"
+  },
+  {
+   "color": "Green",
+   "title": "Approved"
+  },
+  {
+   "color": "Red",
+   "title": "Rejected"
   }
  ],
  "title_field": "title",

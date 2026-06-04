@@ -12,7 +12,9 @@
   "value_set",
   "description",
   "column_break_ufln",
-  "status"
+  "status",
+  "members_section",
+  "members"
  ],
  "fields": [
   {
@@ -52,6 +54,17 @@
    "fieldname": "system_uri",
    "fieldtype": "Data",
    "label": "System URI"
+  },
+  {
+   "fieldname": "members_section",
+   "fieldtype": "Section Break",
+   "label": "Members"
+  },
+  {
+   "fieldname": "members",
+   "fieldtype": "Table",
+   "label": "Members",
+   "options": "Code Value Set Member"
   }
  ],
  "index_web_pages_for_search": 1,

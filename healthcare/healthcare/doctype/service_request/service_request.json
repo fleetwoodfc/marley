@@ -623,6 +623,10 @@
   {
    "link_doctype": "Therapy Session",
    "link_fieldname": "service_request"
+  },
+  {
+   "link_doctype": "Imaging Service Request",
+   "link_fieldname": "service_request"
   }
  ],
  "modified": "2025-12-25 09:36:32.576560",

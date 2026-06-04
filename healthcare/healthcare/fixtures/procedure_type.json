@@ -1,0 +1,167 @@
+[
+    {
+        "doctype": "Procedure Type",
+        "name": "CT Chest",
+        "procedure_type_name": "CT Chest",
+        "modality": "CT",
+        "body_part": null,
+        "description": "Computed Tomography scan of the chest, including lungs, heart, and mediastinum",
+        "is_billable": 1,
+        "default_duration": 30,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "CT Abdomen",
+        "procedure_type_name": "CT Abdomen",
+        "modality": "CT",
+        "body_part": null,
+        "description": "Computed Tomography scan of the abdomen, including liver, spleen, kidneys, and GI tract",
+        "is_billable": 1,
+        "default_duration": 30,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "CT Head",
+        "procedure_type_name": "CT Head",
+        "modality": "CT",
+        "body_part": null,
+        "description": "Computed Tomography scan of the head without contrast",
+        "is_billable": 1,
+        "default_duration": 20,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "MRI Brain",
+        "procedure_type_name": "MRI Brain",
+        "modality": "MR",
+        "body_part": null,
+        "description": "Magnetic Resonance Imaging of the brain",
+        "is_billable": 1,
+        "default_duration": 45,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "MRI Spine Lumbar",
+        "procedure_type_name": "MRI Spine Lumbar",
+        "modality": "MR",
+        "body_part": null,
+        "description": "Magnetic Resonance Imaging of the lumbar spine",
+        "is_billable": 1,
+        "default_duration": 40,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "MRI Knee",
+        "procedure_type_name": "MRI Knee",
+        "modality": "MR",
+        "body_part": null,
+        "description": "Magnetic Resonance Imaging of the knee joint",
+        "is_billable": 1,
+        "default_duration": 35,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "X-Ray Chest",
+        "procedure_type_name": "X-Ray Chest",
+        "modality": "DX",
+        "body_part": null,
+        "description": "Digital X-Ray of the chest, PA and lateral views",
+        "is_billable": 1,
+        "default_duration": 10,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "X-Ray Spine Cervical",
+        "procedure_type_name": "X-Ray Spine Cervical",
+        "modality": "DX",
+        "body_part": null,
+        "description": "Digital X-Ray of the cervical spine",
+        "is_billable": 1,
+        "default_duration": 15,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "X-Ray Hand",
+        "procedure_type_name": "X-Ray Hand",
+        "modality": "DX",
+        "body_part": null,
+        "description": "Digital X-Ray of the hand",
+        "is_billable": 1,
+        "default_duration": 10,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "Ultrasound Abdomen",
+        "procedure_type_name": "Ultrasound Abdomen",
+        "modality": "US",
+        "body_part": null,
+        "description": "Ultrasound examination of the abdomen including liver, gallbladder, pancreas, spleen, and kidneys",
+        "is_billable": 1,
+        "default_duration": 30,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "Ultrasound Pelvis",
+        "procedure_type_name": "Ultrasound Pelvis",
+        "modality": "US",
+        "body_part": null,
+        "description": "Ultrasound examination of the pelvis",
+        "is_billable": 1,
+        "default_duration": 25,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "Ultrasound Thyroid",
+        "procedure_type_name": "Ultrasound Thyroid",
+        "modality": "US",
+        "body_part": null,
+        "description": "Ultrasound examination of the thyroid gland",
+        "is_billable": 1,
+        "default_duration": 20,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "Mammography Bilateral",
+        "procedure_type_name": "Mammography Bilateral",
+        "modality": "MG",
+        "body_part": null,
+        "description": "Bilateral mammography screening or diagnostic",
+        "is_billable": 1,
+        "default_duration": 20,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "Fluoroscopy Upper GI",
+        "procedure_type_name": "Fluoroscopy Upper GI",
+        "modality": "RF",
+        "body_part": null,
+        "description": "Fluoroscopic examination of the upper gastrointestinal tract with contrast",
+        "is_billable": 1,
+        "default_duration": 30,
+        "procedure_codes": []
+    },
+    {
+        "doctype": "Procedure Type",
+        "name": "Nuclear Medicine Bone Scan",
+        "procedure_type_name": "Nuclear Medicine Bone Scan",
+        "modality": "NM",
+        "body_part": null,
+        "description": "Whole body bone scintigraphy",
+        "is_billable": 1,
+        "default_duration": 60,
+        "procedure_codes": []
+    }
+]

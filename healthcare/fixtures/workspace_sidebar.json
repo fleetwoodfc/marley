@@ -1,0 +1,33 @@
+[
+ {
+  "app": "healthcare",
+  "docstatus": 0,
+  "doctype": "Workspace Sidebar",
+  "for_user": null,
+  "header_icon": null,
+  "items": [
+   {
+    "child": 0,
+    "collapsible": 1,
+    "display_depends_on": null,
+    "filters": null,
+    "icon": "list",
+    "indent": 0,
+    "keep_closed": 0,
+    "label": "UPS Worklist",
+    "link_to": "UPS Worklist",
+    "link_type": "Workspace",
+    "navigate_to_tab": null,
+    "route_options": null,
+    "show_arrow": 0,
+    "type": "Link",
+    "url": null
+   }
+  ],
+  "modified": "2026-03-29 20:27:04",
+  "module": "UPS Worklist Portal",
+  "name": "UPS Worklist",
+  "standard": 1,
+  "title": "UPS Worklist"
+ }
+]

@@ -14,16 +14,18 @@ def get_context(context):
 	if not portal_entry or not portal_entry.enabled:
 		frappe.throw(_("Page not found"), frappe.DoesNotExistError)
 
-	# check if logged in
-	if frappe.session.user == "Guest":
-		frappe.local.flags.redirect_location = "/login?redirect-to=/patient-portal"
-		frappe.local.response["type"] = "redirect"
+	# Allow guest access for patient registration
+	# check if logged in - allow guests for registration
+	# if frappe.session.user == "Guest":
+	# 	frappe.local.flags.redirect_location = "/login?redirect-to=/patient-portal"
+	# 	frappe.local.response["type"] = "redirect"
 
-	# check role
-	if portal_entry.role and portal_entry.role not in frappe.get_roles(frappe.session.user):
+	# check role - skip for guests
+	if portal_entry.role and frappe.session.user != "Guest" and portal_entry.role not in frappe.get_roles(frappe.session.user):
 		frappe.throw(_("Not permitted"), frappe.PermissionError)
 
-	if frappe.session.user != "Administrator" and not frappe.db.exists(
+	# For logged-in users, check if they are linked to a patient
+	if frappe.session.user != "Administrator" and frappe.session.user != "Guest" and not frappe.db.exists(
 		"Patient", {"status": "Active", "user_id": frappe.session.user}
 	):
 		frappe.throw(

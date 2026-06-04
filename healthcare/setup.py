@@ -828,12 +828,24 @@ def create_healthcare_item_groups():
 
 
 def create_customer_groups():
+	parent_group = _("All Customer Groups")
+	# Ensure the root customer group exists before creating children
+	if not frappe.db.exists("Customer Group", parent_group):
+		insert_record([
+			{
+				"doctype": "Customer Group",
+				"customer_group_name": parent_group,
+				"is_group": 1,
+				"parent_customer_group": "",
+			}
+		])
+
 	records = [
 		{
 			"doctype": "Customer Group",
 			"customer_group_name": _("Insurance Payor"),
 			"is_group": 0,
-			"parent_customer_group": _("All Customer Groups"),
+			"parent_customer_group": parent_group,
 		}
 	]
 	insert_record(records)
@@ -888,6 +900,37 @@ def setup_service_request_masters():
 		{"doctype": "Patient Care Type", "patient_care_type": _("Preventive")},
 		{"doctype": "Patient Care Type", "patient_care_type": _("Intervention")},
 		{"doctype": "Patient Care Type", "patient_care_type": _("Diagnostic")},
+		# Service Request Categories
+		{
+			"doctype": "Service Request Category",
+			"category": _("Laboratory"),
+			"patient_care_type": "Diagnostic",
+		},
+		{
+			"doctype": "Service Request Category",
+			"category": _("Radiology"),
+			"patient_care_type": "Diagnostic",
+		},
+		{
+			"doctype": "Service Request Category",
+			"category": _("Clinical Procedure"),
+			"patient_care_type": "Intervention",
+		},
+		{
+			"doctype": "Service Request Category",
+			"category": _("Therapy"),
+			"patient_care_type": "Intervention",
+		},
+		{
+			"doctype": "Service Request Category",
+			"category": _("Nursing"),
+			"patient_care_type": "Intervention",
+		},
+		{
+			"doctype": "Service Request Category",
+			"category": _("Consultation"),
+			"patient_care_type": "Diagnostic",
+		},
 		{
 			"doctype": "Code System",
 			"uri": "http://hl7.org/fhir/request-intent",

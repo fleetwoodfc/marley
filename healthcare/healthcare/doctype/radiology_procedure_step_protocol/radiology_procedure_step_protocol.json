@@ -1,0 +1,136 @@
+{
+ "actions": [],
+ "creation": "2026-02-18 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "procedure_step_type",
+  "phase",
+  "step_description",
+  "column_break_1",
+  "sequence",
+  "is_mandatory",
+  "can_skip",
+  "section_break_protocol",
+  "protocol_instructions",
+  "section_break_params",
+  "parameters",
+  "expected_duration",
+  "column_break_params",
+  "equipment_notes",
+  "safety_notes"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "procedure_step_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Procedure Step Type",
+   "options": "Procedure Step Type",
+   "reqd": 1
+  },
+  {
+   "columns": 1,
+   "fetch_from": "procedure_step_type.phase",
+   "fieldname": "phase",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Phase",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "procedure_step_type.description",
+   "fieldname": "step_description",
+   "fieldtype": "Small Text",
+   "hidden": 1,
+   "label": "Step Description",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "sequence",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Sequence"
+  },
+  {
+   "columns": 1,
+   "default": "0",
+   "fieldname": "is_mandatory",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Mandatory"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_skip",
+   "fieldtype": "Check",
+   "label": "Can Skip"
+  },
+  {
+   "fieldname": "section_break_protocol",
+   "fieldtype": "Section Break",
+   "label": "Protocol Instructions"
+  },
+  {
+   "columns": 4,
+   "fieldname": "protocol_instructions",
+   "fieldtype": "Text Editor",
+   "in_list_view": 1,
+   "label": "Protocol Instructions"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_params",
+   "fieldtype": "Section Break",
+   "label": "Technical Parameters"
+  },
+  {
+   "description": "Technical parameters specific to this step (e.g. kVp, mAs, slice thickness, contrast dose, sequence parameters)",
+   "fieldname": "parameters",
+   "fieldtype": "Small Text",
+   "label": "Technical Parameters"
+  },
+  {
+   "fetch_from": "procedure_step_type.typical_duration",
+   "fieldname": "expected_duration",
+   "fieldtype": "Int",
+   "label": "Expected Duration (min)"
+  },
+  {
+   "fieldname": "column_break_params",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "equipment_notes",
+   "fieldtype": "Small Text",
+   "label": "Equipment Notes"
+  },
+  {
+   "fieldname": "safety_notes",
+   "fieldtype": "Small Text",
+   "label": "Safety Notes"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-02-18 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Radiology Procedure Step Protocol",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "sequence",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 1
+}

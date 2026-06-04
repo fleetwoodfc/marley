@@ -1,0 +1,35 @@
+[
+ {
+  "code_system": "DCM",
+  "description": "DICOM modality codes permitted on UPS Reporting Worklist Items and Radiology Reports. Restricts the modality picker to the subset of DCM modality codes relevant to diagnostic imaging workflows.",
+  "docstatus": 0,
+  "doctype": "Code Value Set",
+  "modified": "2026-05-31 14:49:52.008290",
+  "name": "UPS Modality",
+  "status": null,
+  "system_uri": null,
+  "value_set": "UPS Modality"
+ },
+ {
+  "code_system": "DCM",
+  "description": "DICOM scheduling priority codes used to assign urgency to Unified Procedure Steps. Restricts the priority picker to the four standard DICOM priority levels.",
+  "docstatus": 0,
+  "doctype": "Code Value Set",
+  "modified": "2026-05-31 14:49:52.735610",
+  "name": "UPS Scheduling Priority",
+  "status": null,
+  "system_uri": null,
+  "value_set": "UPS Scheduling Priority"
+ },
+ {
+  "code_system": "SCT",
+  "description": "SNOMED CT anatomic region codes used to qualify the body region in UPS scheduled procedure steps. Restricts the body-region picker to the anatomical sites encountered in routine diagnostic radiology.",
+  "docstatus": 0,
+  "doctype": "Code Value Set",
+  "modified": "2026-05-31 14:49:52.744203",
+  "name": "UPS Anatomic Region",
+  "status": null,
+  "system_uri": null,
+  "value_set": "UPS Anatomic Region"
+ }
+]

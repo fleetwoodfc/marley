@@ -80,11 +80,16 @@ def get_practitioners(department):
 	)
 
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_patients():
+	# Protect against empty patient lists which may produce an invalid SQL `IN ()` clause
+	patient_names = get_patients_with_relations()
+	if not patient_names:
+		return []
+
 	return frappe.db.get_all(
 		"Patient",
-		filters={"status": "Active", "name": ["in", get_patients_with_relations()]},
+		filters={"status": "Active", "name": ["in", patient_names]},
 		fields=["name as value", "patient_name as label"],
 	)
 

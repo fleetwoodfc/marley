@@ -50,6 +50,10 @@ class ServiceRequest(ServiceRequestController):
 		if self.insurance_policy and not self.insurance_coverage:
 			self.make_insurance_coverage()
 
+		# Bridge: Create Imaging Service Request for radiology orders
+		if self.template_dt == "Radiology Procedure Template":
+			self._create_imaging_service_request()
+
 	def on_update_after_submit(self):
 		if self.billing_status == "Pending" and self.insurance_policy and not self.insurance_coverage:
 			self.make_insurance_coverage()
@@ -77,6 +81,177 @@ class ServiceRequest(ServiceRequestController):
 		if self.insurance_coverage:
 			coverage = frappe.get_doc("Patient Insurance Coverage", self.insurance_coverage)
 			coverage.cancel()
+
+		# Cancel linked ISR if it was created from this SR
+		self._cancel_imaging_service_request()
+
+	# ── Imaging Service Request bridge ────────────────────────────────────
+
+	# Map human-readable RPT modality → DICOM modality code
+	_MODALITY_MAP = {
+		"X-Ray": "DX",
+		"CT": "CT",
+		"MRI": "MR",
+		"Ultrasound": "US",
+		"Fluoroscopy": "RF",
+		"Nuclear Medicine": "NM",
+		"PET": "PT",
+		"Mammography": "MG",
+	}
+
+	# Map SR priority Code Value → ISR priority Select value
+	_PRIORITY_MAP = {
+		"Routine-Priority": "ROUTINE",
+		"Urgent-Priority": "HIGH",
+		"ASAP-Priority": "HIGH",
+		"STAT-Priority": "STAT",
+	}
+
+	# Map RPT laterality → Procedure Type laterality
+	_LATERALITY_MAP = {
+		"N/A": "",
+		"Left": "Left",
+		"Right": "Right",
+		"Bilateral": "Both",
+	}
+
+	def _create_imaging_service_request(self):
+		"""
+		Bridge a radiology Service Request to an Imaging Service Request.
+
+		Flow:
+		  1. Load the Radiology Procedure Template
+		  2. Resolve or auto-create the DICOM Procedure Type
+		  3. Create a Requested Procedure (standalone doc)
+		  4. Create an ISR containing a Requested Procedure Link row
+		  5. Submit the ISR (triggers accession number, SPS creation)
+		  6. Store the back-references on both documents
+		"""
+		template = frappe.get_doc("Radiology Procedure Template", self.template_dn)
+
+		# ── 1. Resolve Procedure Type ────────────────────────────────────
+		procedure_type = self._resolve_procedure_type(template)
+
+		# ── 2. Map priority ──────────────────────────────────────────────
+		isr_priority = self._PRIORITY_MAP.get(self.priority, "ROUTINE")
+
+		# ── 3. Create Requested Procedure ────────────────────────────────
+		rp = frappe.get_doc({
+			"doctype": "Requested Procedure",
+			"procedure_type": procedure_type,
+			"reason_for_request": self.comment or self.order_description or "",
+			"scheduled_datetime": (
+				f"{self.occurrence_date} {self.occurrence_time}"
+				if self.occurrence_date
+				else now_datetime()
+			),
+		})
+		rp.insert(ignore_permissions=True)
+
+		# ── 4. Build the ISR ─────────────────────────────────────────────
+		isr = frappe.get_doc({
+			"doctype": "Imaging Service Request",
+			"order_datetime": now_datetime(),
+			"priority": isr_priority,
+			"patient": self.patient,
+			"requesting_practitioner": self.practitioner,
+			"clinical_indication": self.comment or self.order_description or "",
+			"service_request": self.name,
+			"radiology_procedure_template": self.template_dn,
+			"requested_procedures": [
+				{
+					"requested_procedure": rp.name,
+					"study_instance_uid": "",  # generated in ISR.validate()
+				}
+			],
+		})
+		isr.insert(ignore_permissions=True)
+		isr.submit()
+
+		# ── 5. Link ISR back to the Service Request ─────────────────────
+		self.db_set({
+			"order_reference_doctype": "Imaging Service Request",
+			"order_reference_name": isr.name,
+		})
+
+		frappe.msgprint(
+			_("Imaging Service Request {0} created with accession number {1}").format(
+				frappe.utils.get_link_to_form("Imaging Service Request", isr.name),
+				isr.accession_number,
+			),
+			indicator="green",
+			alert=True,
+		)
+
+	def _resolve_procedure_type(self, template):
+		"""
+		Find or auto-create the DICOM Procedure Type for this RPT.
+
+		Priority:
+		  1. Explicit ``procedure_type`` link on the RPT
+		  2. Matching Procedure Type by name
+		  3. Auto-create a new Procedure Type from RPT attributes
+		"""
+		# 1. Explicit link
+		if template.get("procedure_type"):
+			return template.procedure_type
+
+		# 2. Try name match
+		if frappe.db.exists("Procedure Type", template.name):
+			# persist the link for next time
+			frappe.db.set_value(
+				"Radiology Procedure Template", template.name,
+				"procedure_type", template.name,
+			)
+			return template.name
+
+		# 3. Auto-create
+		dicom_modality = self._MODALITY_MAP.get(template.modality, "OT")
+		pt_laterality = self._LATERALITY_MAP.get(template.laterality or "", "")
+		pt = frappe.get_doc({
+			"doctype": "Procedure Type",
+			"procedure_name": template.name,
+			"description": template.description,
+			"default_modality": dicom_modality,
+			"body_part": template.body_part,
+			"laterality": pt_laterality,
+			"contrast_required": "Required" if template.contrast_required else "No",
+			"is_active": 1,
+			"is_billable": template.is_billable,
+			"item": template.item,
+		})
+		pt.insert(ignore_permissions=True)
+
+		# persist the link on the RPT
+		frappe.db.set_value(
+			"Radiology Procedure Template", template.name,
+			"procedure_type", pt.name,
+		)
+
+		frappe.msgprint(
+			_("Auto-created Procedure Type {0}").format(
+				frappe.utils.get_link_to_form("Procedure Type", pt.name)
+			),
+			indicator="blue",
+			alert=True,
+		)
+		return pt.name
+
+	def _cancel_imaging_service_request(self):
+		"""Cancel the ISR that was created from this Service Request."""
+		if self.order_reference_doctype != "Imaging Service Request":
+			return
+		if not self.order_reference_name:
+			return
+
+		isr = frappe.get_doc("Imaging Service Request", self.order_reference_name)
+		if isr.docstatus == 1 and isr.status != "Cancelled":
+			isr.cancel()
+			frappe.msgprint(
+				_("Imaging Service Request {0} cancelled").format(isr.name),
+				indicator="orange",
+				alert=True,
+			)
 
 	def set_order_details(self):
 		if not self.template_dt and not self.template_dn:
@@ -124,8 +299,13 @@ class ServiceRequest(ServiceRequestController):
 			dt = "Therapy Session"
 		elif self.template_dt == "Observation Template":
 			dt = "Observation"
+		elif self.template_dt == "Radiology Procedure Template":
+			dt = "Radiology Procedure"
+		else:
+			return
 		dt_name = frappe.db.get_value(dt, {"service_request": self.name})
-		frappe.db.set_value(dt, dt_name, "invoiced", invoiced)
+		if dt_name:
+			frappe.db.set_value(dt, dt_name, "invoiced", invoiced)
 
 
 @frappe.whitelist()
@@ -403,6 +583,7 @@ def create_observation(service_request, appointment=None):
 
 def insert_diagnostic_report(doc, sample_collection=None):
 	diagnostic_report = frappe.new_doc("Diagnostic Report")
+	diagnostic_report.category = "LAB"
 	diagnostic_report.company = doc.company
 	diagnostic_report.patient = doc.patient
 	diagnostic_report.ref_doctype = doc.source_doc
@@ -469,3 +650,63 @@ def make_appointment(source_name, target_doc=None, ignore_permissions=False):
 	)
 
 	return doclist
+
+
+@frappe.whitelist()
+def make_radiology_procedure(service_request, appointment=None):
+	"""Create a Radiology Procedure from a Service Request."""
+	if not service_request:
+		return
+
+	service_request = frappe.get_cached_doc("Service Request", service_request)
+
+	if service_request.template_dt != "Radiology Procedure Template":
+		frappe.throw(
+			_("Service Request is not for Radiology Procedure"),
+			title=_("Invalid Template Type"),
+		)
+
+	if (
+		frappe.db.get_single_value("Healthcare Settings", "process_service_request_only_if_paid")
+		and service_request.billing_status != "Invoiced"
+	):
+		frappe.throw(
+			_("Service Request need to be invoiced before proceeding"),
+			title=_("Payment Required"),
+		)
+
+	radiology_template = frappe.get_doc("Radiology Procedure Template", service_request.template_dn)
+
+	doc = frappe.new_doc("Radiology Procedure")
+	doc.radiology_template = service_request.template_dn
+	doc.service_request = service_request.name
+	doc.appointment = appointment
+	doc.company = service_request.company
+	doc.patient = service_request.patient
+	doc.patient_name = service_request.patient_name
+	doc.patient_sex = service_request.patient_gender
+	doc.patient_age = service_request.patient_age_data
+	doc.inpatient_record = service_request.inpatient_record
+	doc.practitioner = service_request.practitioner
+	doc.start_date = service_request.occurrence_date
+	doc.start_time = service_request.occurrence_time
+	doc.medical_department = service_request.medical_department or radiology_template.medical_department
+	doc.invoiced = 1 if service_request.billing_status == "Invoiced" else 0
+	doc.status = "Scheduled"
+
+	# Copy radiology-specific fields from template
+	doc.modality = radiology_template.modality
+	doc.body_part = radiology_template.body_part
+	doc.laterality = radiology_template.laterality
+	doc.contrast_used = radiology_template.contrast_required
+	doc.contrast_type = radiology_template.contrast_type
+
+	# Copy codification table
+	if not doc.codification_table and radiology_template.codification_table:
+		for code in radiology_template.codification_table:
+			doc.append(
+				"codification_table",
+				(frappe.copy_doc(code)).as_dict(),
+			)
+
+	return doc

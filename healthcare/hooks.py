@@ -23,7 +23,18 @@ add_to_apps_screen = [
 # ------------------
 # include js, css files in header of desk.html
 # app_include_css = "/assets/healthcare/css/healthcare.css"
-app_include_js = "healthcare.bundle.js"
+
+# Include RadLex search JS for relevant doctypes
+# Load radlex_search globally to avoid doctype loading issues during development
+app_include_js = [
+	"/assets/healthcare/js/healthcare.bundle.js",
+	"/assets/healthcare/js/radlex_search.js",
+]
+doctype_js = {
+	"Procedure Type": "public/js/radlex_search.js",
+	"Procedure Step Type": "public/js/radlex_search.js",
+	"Sales Invoice": "public/js/sales_invoice.js",
+}
 
 # include js, css files in header of web template
 # web_include_css = "/assets/healthcare/css/healthcare.css"
@@ -40,7 +51,7 @@ app_include_js = "healthcare.bundle.js"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-doctype_js = {"Sales Invoice": "public/js/sales_invoice.js"}
+# `doctype_js` mappings are defined above (merged to include RadLex mappings)
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -80,6 +91,22 @@ jinja = {
 before_install = "healthcare.install.before_install"
 after_install = "healthcare.setup.setup_healthcare"
 
+# Fixtures
+# --------
+# Standard data to be installed with the app
+
+fixtures = [
+	{"dt": "Procedure Step Type", "filters": [["is_system", "=", 1]]},
+	# UPS Worklist Portal fixtures -----------------------------------------------
+	{"dt": "Role", "filters": [["role_name", "in", ["UPS Technologist", "UPS Supervisor", "UPS Integration Engineer"]]]},
+	# Report Template Manager fixtures -------------------------------------------
+	{"dt": "Role", "filters": [["role_name", "in", ["Radiology Template Author", "Radiology Template Approver", "Radiology Template Publisher"]]]},
+	{"dt": "UPS DICOM Code", "filters": [["name", "like", "%"]]},
+	{"dt": "AE Mapping", "filters": [["name", "like", "%"]]},
+	{"dt": "Workspace Sidebar", "filters": [["name", "=", "UPS Worklist"]]},
+	{"dt": "Desktop Icon", "filters": [["name", "=", "UPS Worklist"]]},
+]
+
 # Uninstallation
 # ------------
 
@@ -103,7 +130,9 @@ after_uninstall = "healthcare.uninstall.after_uninstall"
 # has_permission = {
 # 	"Event": "frappe.desk.doctype.event.event.has_permission",
 # }
-
+has_permission = {
+	"UPS Instance": "healthcare.ups_worklist_portal.permissions.ups_instance_permission",
+}
 # DocType Class
 # ---------------
 # Override standard doctype classes
@@ -138,8 +167,14 @@ doc_events = {
 		"validate": "healthcare.healthcare.doctype.insurance_claim.insurance_claim.validate_payment_entry_and_set_claim_fields",
 	},
 	"Scheduled Procedure Step": {
-		"on_update": "healthcare.healthcare.dicom.ups_sync.on_scheduled_procedure_step_update",
-		"after_insert": "healthcare.healthcare.dicom.ups_sync.on_scheduled_procedure_step_insert",
+		"on_update": [
+			"healthcare.healthcare.dicom.ups_sync.on_scheduled_procedure_step_update",
+			"healthcare.healthcare.dicom.mwl_events.on_sps_update",
+		],
+		"after_insert": [
+			"healthcare.healthcare.dicom.ups_sync.on_scheduled_procedure_step_insert",
+			"healthcare.healthcare.dicom.mwl_events.on_sps_insert",
+		],
 	},
 }
 
@@ -152,6 +187,18 @@ scheduler_events = {
 		"healthcare.healthcare.doctype.fee_validity.fee_validity.update_validity_status",
 		"healthcare.healthcare.doctype.inpatient_record.inpatient_record.add_occupied_service_unit_in_ip_to_billables",
 	],
+	"cron": {
+		# Sync pending UPS workitems every 5 minutes
+		"*/5 * * * *": [
+			"healthcare.healthcare.dicom.ups_sync.sync_pending_workitems",
+			# UPS Worklist Portal: poll active UPS instances for new events
+			"healthcare.ups_worklist_portal.tasks.poll_ups_events",
+		],
+		# Reconcile UPS states every 30 minutes
+		"*/30 * * * *": [
+			"healthcare.healthcare.dicom.ups_sync.reconcile_ups_states",
+		],
+	},
 }
 
 # Scheduled Tasks
@@ -298,4 +345,10 @@ treeviews = [
 
 company_data_to_be_ignored = [
 	"Healthcare Service Unit",
+]
+
+# UPS Worklist Portal website routes
+website_route_rules = [
+	{"from_route": "/ups-worklist-dashboard", "to_route": "ups-worklist-dashboard"},
+	{"from_route": "/ups-worklist", "to_route": "ups_worklist"},
 ]

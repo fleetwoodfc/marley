@@ -5,43 +5,34 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "code_value",
-  "coding_scheme_designator",
-  "code_meaning",
-  "column_break_1",
-  "coding_scheme_version"
+  "code",
+  "code_system",
+  "display"
  ],
  "fields": [
   {
-   "fieldname": "code_value",
-   "fieldtype": "Data",
+   "fieldname": "code",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Code Value",
+   "label": "Code",
+   "options": "Code Value",
    "reqd": 1
   },
   {
-   "fieldname": "coding_scheme_designator",
-   "fieldtype": "Select",
+   "fetch_from": "code.code_system",
+   "fieldname": "code_system",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Code System",
-   "options": "CPT\nLOINC\nSNOMED-CT\nLOCAL\nDCM",
-   "reqd": 1
+   "read_only": 1
   },
   {
-   "fieldname": "code_meaning",
+   "fetch_from": "code.display",
+   "fieldname": "display",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Code Meaning",
-   "reqd": 1
-  },
-  {
-   "fieldname": "column_break_1",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "coding_scheme_version",
-   "fieldtype": "Data",
-   "label": "Code Version"
+   "label": "Display",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 0,

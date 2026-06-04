@@ -1,0 +1,38 @@
+[
+ {
+  "code_system": "DCM",
+  "complete": 0,
+  "custom": 0,
+  "description": "DICOM Controlled Terminology — the primary coding system for DICOM-defined modalities, priorities, anatomical regions, and UPS procedure concepts.",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Code System",
+  "experimental": 0,
+  "immutable": 0,
+  "is_fhir_defined": 0,
+  "modified": "2026-05-31 14:49:36.830900",
+  "name": "DCM",
+  "oid": "1.2.840.10008.2.16.4",
+  "status": null,
+  "uri": "http://dicom.nema.org/resources/ontology/DCM",
+  "version": null
+ },
+ {
+  "code_system": "SCT",
+  "complete": 0,
+  "custom": 0,
+  "description": "SNOMED Clinical Terms — used for anatomic region coding on UPS scheduled procedure steps.",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Code System",
+  "experimental": 0,
+  "immutable": 0,
+  "is_fhir_defined": 0,
+  "modified": "2026-05-31 14:49:37.369492",
+  "name": "SCT",
+  "oid": "2.16.840.1.113883.6.96",
+  "status": null,
+  "uri": "http://snomed.info/sct",
+  "version": null
+ }
+]

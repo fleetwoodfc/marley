@@ -1,0 +1,179 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-05-11 00:00:00.000000",
+ "description": "Defines how a published template version is resolved for a reporting context. Priority and scope fields determine conflict resolution.",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "template_section",
+  "report_template",
+  "template_version",
+  "naming_series",
+  "column_break_template",
+  "active",
+  "priority",
+  "scope_section",
+  "organization",
+  "language",
+  "column_break_scope",
+  "modality",
+  "body_part",
+  "radiology_procedure_template"
+ ],
+ "fields": [
+  {
+   "fieldname": "template_section",
+   "fieldtype": "Section Break",
+   "label": "Template"
+  },
+  {
+   "fieldname": "report_template",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Report Template",
+   "options": "Radiology Report Template",
+   "reqd": 1
+  },
+  {
+   "fieldname": "template_version",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Template Version",
+   "options": "Radiology Report Template Version",
+   "reqd": 1,
+   "description": "Must be a Published version"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "RTMPL-A-.YYYY.-.#####",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_template",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Active",
+   "default": "1",
+   "description": "Assignment is available for context resolution"
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Int",
+   "label": "Priority",
+   "default": "10",
+   "description": "Lower number = higher priority in conflict resolution"
+  },
+  {
+   "fieldname": "scope_section",
+   "fieldtype": "Section Break",
+   "label": "Resolution Scope"
+  },
+  {
+   "fieldname": "organization",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Organization",
+   "options": "Company",
+   "description": "Optional organization/site scope. Leave blank for global."
+  },
+  {
+   "fieldname": "language",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Language",
+   "description": "Language scope (ISO 639-1). Leave blank to match any."
+  },
+  {
+   "fieldname": "column_break_scope",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "modality",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Modality",
+   "description": "Modality match (e.g. CT, MR). Leave blank to match any."
+  },
+  {
+   "fieldname": "body_part",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Body Part",
+   "description": "Body-part match. Leave blank to match any."
+  },
+  {
+   "fieldname": "radiology_procedure_template",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Radiology Procedure Template",
+   "options": "Radiology Procedure Template",
+   "description": "Optional direct link to a Radiology Procedure Template for precise resolution"
+  }
+ ],
+ "links": [],
+ "modified": "2026-05-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Radiology Reporting",
+ "name": "Radiology Report Template Assignment",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Radiology Template Publisher",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Radiology Template Author",
+   "share": 1,
+   "write": 0
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "read": 1,
+   "report": 1,
+   "role": "Radiology Template Approver"
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

@@ -1,0 +1,110 @@
+[
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Patient Check-in",
+    "description": "Patient arrives and checks in at the front desk. Verify patient identity and appointment details.",
+    "phase": "Acquisition",
+    "typical_duration": 5,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Patient Preparation",
+    "description": "Prepare patient for the imaging procedure. Review safety screening, remove metal objects, change into gown if required.",
+    "phase": "Acquisition",
+    "typical_duration": 10,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Patient Positioning",
+    "description": "Position patient on the imaging table according to protocol requirements.",
+    "phase": "Acquisition",
+    "typical_duration": 5,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Image Acquisition",
+    "description": "Acquire diagnostic images according to the imaging protocol.",
+    "phase": "Acquisition",
+    "typical_duration": 15,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Contrast Administration",
+    "description": "Administer IV contrast agent if required by the protocol. Monitor patient for adverse reactions.",
+    "phase": "Acquisition",
+    "typical_duration": 10,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Image Reconstruction",
+    "description": "Reconstruct raw imaging data into diagnostic images using standard reconstruction algorithms.",
+    "phase": "Post Processing",
+    "typical_duration": 10,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Image Enhancement",
+    "description": "Apply image enhancement techniques such as windowing, filtering, or artifact correction.",
+    "phase": "Post Processing",
+    "typical_duration": 5,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "3D Rendering",
+    "description": "Create 3D volume renderings, multiplanar reconstructions, or MIP images as required.",
+    "phase": "Post Processing",
+    "typical_duration": 15,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Quality Review",
+    "description": "Review acquired images for technical quality. Verify all required anatomy is captured and image quality is diagnostic.",
+    "phase": "Post Processing",
+    "typical_duration": 5,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Preliminary Read",
+    "description": "Initial image review by radiology resident or trainee before attending radiologist review.",
+    "phase": "Reporting",
+    "typical_duration": 10,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Final Interpretation",
+    "description": "Attending radiologist interprets images and formulates diagnostic impression.",
+    "phase": "Reporting",
+    "typical_duration": 15,
+    "is_system": 1,
+    "is_active": 1
+  },
+  {
+    "doctype": "Procedure Step Type",
+    "step_name": "Report Finalization",
+    "description": "Dictate, review, and sign final radiology report. Communicate critical findings as required.",
+    "phase": "Reporting",
+    "typical_duration": 5,
+    "is_system": 1,
+    "is_active": 1
+  }
+]

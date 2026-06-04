@@ -8,6 +8,9 @@
  "field_order": [
   "procedure_name",
   "description",
+  "radlex_rpid",
+  "radlex_name",
+  "radlex_description",
   "default_modality",
   "column_break_1",
   "body_part",
@@ -22,7 +25,9 @@
   "contrast_section",
   "contrast_required",
   "column_break_contrast",
-  "preparation_instructions"
+  "preparation_instructions",
+  "workflow_steps_section",
+  "workflow_steps"
  ],
  "fields": [
   {
@@ -48,6 +53,23 @@
    "options": "CT\nMR\nUS\nXA\nNM\nPT\nCR\nDX\nMG\nRF\nOT",
    "reqd": 1
   },
+    {
+     "fieldname": "radlex_rpid",
+     "fieldtype": "Data",
+     "label": "RadLex RPID"
+    },
+    {
+     "fieldname": "radlex_name",
+     "fieldtype": "Data",
+     "label": "RadLex Name",
+     "read_only": 1
+    },
+    {
+     "fieldname": "radlex_description",
+     "fieldtype": "Text",
+     "label": "RadLex Description",
+     "read_only": 1
+    },
   {
    "fieldname": "column_break_1",
    "fieldtype": "Column Break"
@@ -102,7 +124,7 @@
    "fieldname": "codification_table",
    "fieldtype": "Table",
    "label": "Codes",
-   "options": "Codification Table Row"
+   "options": "Protocol Code Item"
   },
   {
    "fieldname": "contrast_section",
@@ -123,6 +145,18 @@
    "fieldname": "preparation_instructions",
    "fieldtype": "Text",
    "label": "Preparation Instructions"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "workflow_steps_section",
+   "fieldtype": "Section Break",
+   "label": "Workflow Steps"
+  },
+  {
+   "fieldname": "workflow_steps",
+   "fieldtype": "Table",
+   "label": "Steps",
+   "options": "Procedure Step"
   }
  ],
  "index_web_pages_for_search": 1,

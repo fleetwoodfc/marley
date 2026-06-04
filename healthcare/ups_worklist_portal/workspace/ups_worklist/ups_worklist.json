@@ -1,0 +1,118 @@
+{
+ "app": "healthcare",
+ "charts": [],
+ "content": "[{\"id\":\"S1_shortcut_dashboard\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"UPS Worklist Dashboard\",\"col\":4}},{\"id\":\"S2_shortcut_instance\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"UPS Instance\",\"col\":4}},{\"id\":\"S3_shortcut_settings\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"UPS Integration Settings\",\"col\":4}},{\"id\":\"H1_main\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Worklist</span>\",\"col\":12}},{\"id\":\"C1_doclinks\",\"type\":\"card\",\"data\":{\"card_name\":\"Worklist DocTypes\",\"col\":4}},{\"id\":\"C2_settings\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}}]",
+ "creation": "2026-02-24 00:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "list",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "UPS Worklist",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Worklist DocTypes",
+   "link_count": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "UPS Instance",
+   "link_count": 0,
+   "link_to": "UPS Instance",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "UPS Event",
+   "link_count": 0,
+   "link_to": "UPS Event",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Settings",
+   "link_count": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "AE Mapping",
+   "link_count": 0,
+   "link_to": "AE Mapping",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "UPS Integration Settings",
+   "link_count": 0,
+   "link_to": "UPS Integration Settings",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-03-29 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "UPS Worklist",
+ "name": "UPS Worklist",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 99,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "format": "",
+   "label": "UPS Worklist Dashboard",
+   "link_to": "ups-worklist-dashboard",
+   "stats_filter": "",
+   "type": "Page"
+  },
+  {
+   "color": "Green",
+   "doc_view": "",
+   "format": "",
+   "label": "UPS Instance",
+   "link_to": "UPS Instance",
+   "stats_filter": "",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "format": "",
+   "label": "UPS Integration Settings",
+   "link_to": "UPS Integration Settings",
+   "stats_filter": "",
+   "type": "DocType"
+  }
+ ],
+ "title": "UPS Worklist",
+ "type": "Workspace",
+ "quick_lists": []
+}

@@ -14,6 +14,10 @@
   "ups_sync_status",
   "ups_sync_error",
   "ups_sync_at",
+  "mwl_sync_section",
+  "mwl_sync_status",
+  "mwl_sync_at",
+  "mwl_sync_error",
   "references_section",
   "imaging_service_request",
   "requested_procedure",
@@ -99,6 +103,32 @@
    "read_only": 1
   },
   {
+   "fieldname": "mwl_sync_section",
+   "fieldtype": "Section Break",
+   "label": "MWL Sync Status",
+   "collapsible": 1,
+   "depends_on": "eval:doc.modality"
+  },
+  {
+   "fieldname": "mwl_sync_status",
+   "fieldtype": "Select",
+   "label": "MWL Sync Status",
+   "options": "\nsynced\npending\nerror\nnot_applicable",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mwl_sync_at",
+   "fieldtype": "Datetime",
+   "label": "MWL Synced At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "mwl_sync_error",
+   "fieldtype": "Small Text",
+   "label": "MWL Sync Error",
+   "read_only": 1
+  },
+  {
    "fieldname": "references_section",
    "fieldtype": "Section Break",
    "label": "References"
@@ -108,9 +138,7 @@
    "fieldtype": "Link",
    "in_standard_filter": 1,
    "label": "Imaging Service Request",
-   "options": "Imaging Service Request",
-   "read_only": 1,
-   "reqd": 1
+   "options": "Imaging Service Request"
   },
   {
    "fieldname": "requested_procedure",
@@ -134,9 +162,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Patient",
-   "options": "Patient",
-   "read_only": 1,
-   "reqd": 1
+   "options": "Patient"
   },
   {
    "fetch_from": "patient.patient_name",
@@ -279,6 +305,7 @@
    "write": 1
   },
   {
+   "create": 1,
    "email": 1,
    "export": 1,
    "print": 1,
@@ -289,7 +316,15 @@
   },
   {
    "read": 1,
-   "role": "Physician"
+   "report": 1,
+   "role": "Physician",
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Nursing User",
+   "write": 1
   }
  ],
  "restrict_to_domain": "Healthcare",

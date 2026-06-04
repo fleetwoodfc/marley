@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "creation": "2026-05-11 00:00:00.000000",
+ "description": "A single validation finding from template content validation. Child of Radiology Report Template Version.",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "istable": 1,
+ "field_order": [
+  "severity",
+  "rule_code",
+  "blocking",
+  "message",
+  "location_hint"
+ ],
+ "fields": [
+  {
+   "fieldname": "severity",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Severity",
+   "options": "Error\nWarning\nInfo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rule_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Rule Code",
+   "description": "Validation rule identifier"
+  },
+  {
+   "fieldname": "blocking",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Blocking",
+   "description": "Whether this finding blocks approval/publication"
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Message",
+   "description": "Actionable explanation of the finding"
+  },
+  {
+   "fieldname": "location_hint",
+   "fieldtype": "Data",
+   "label": "Location Hint",
+   "description": "Optional content location or context reference"
+  }
+ ],
+ "modified": "2026-05-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Radiology Reporting",
+ "name": "Report Template Validation Finding",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC"
+}

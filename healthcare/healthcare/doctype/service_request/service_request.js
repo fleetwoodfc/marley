@@ -49,6 +49,7 @@ frappe.ui.form.on("Service Request", {
 				"Appointment Type",
 				"Observation Template",
 				"Healthcare Activity",
+				"Radiology Procedure Template",
 			];
 			return {
 				filters: {
@@ -254,6 +255,36 @@ frappe.ui.form.on("Service Request", {
 				},
 				__("Create"),
 			);
+		} else if (frm.doc.template_dt === "Radiology Procedure Template") {
+			frm.add_custom_button(
+				__("Radiology Procedure"),
+				function () {
+					frappe.db
+						.get_value(
+							"Radiology Procedure",
+							{ service_request: frm.doc.name, docstatus: ["!=", 2] },
+							"name",
+						)
+						.then(r => {
+							if (Object.keys(r.message).length == 0) {
+								frm.trigger("make_radiology_procedure");
+							} else {
+								if (r.message && r.message.name) {
+									frappe.set_route(
+										"Form",
+										"Radiology Procedure",
+										r.message.name,
+									);
+									frappe.show_alert({
+										message: __("Radiology Procedure is already created"),
+										indicator: "info",
+									});
+								}
+							}
+						});
+				},
+				__("Create"),
+			);
 		}
 
 		frm.page.set_inner_btn_group_as_primary(__("Create"));
@@ -320,6 +351,21 @@ frappe.ui.form.on("Service Request", {
 						indicator: indicator,
 					});
 					frappe.set_route("Form", r.message[1], r.message[0]);
+				}
+			},
+		});
+	},
+
+	make_radiology_procedure: function (frm) {
+		frappe.call({
+			method: "healthcare.healthcare.doctype.service_request.service_request.make_radiology_procedure",
+			args: { service_request: frm.doc.name },
+			freeze: true,
+			freeze_message: __("Creating Radiology Procedure..."),
+			callback: function (r) {
+				if (r.message) {
+					var doclist = frappe.model.sync(r.message);
+					frappe.set_route("Form", doclist[0].doctype, doclist[0].name);
 				}
 			},
 		});

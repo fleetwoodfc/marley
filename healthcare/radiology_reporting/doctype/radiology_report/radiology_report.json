@@ -1,0 +1,642 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-02-19 00:00:00.000000",
+ "description": "A structured radiology diagnostic report following IHE RRR-WF/IRA report lifecycle (Draft→Preliminary→Final→Amended→Cancelled). Maps to FHIR DiagnosticReport for radiology.",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "report_header_section",
+  "naming_series",
+  "report_status",
+  "report_priority",
+  "column_break_header",
+  "report_datetime",
+  "signed_datetime",
+  "amendment_datetime",
+  "patient_section",
+  "patient",
+  "patient_name",
+  "patient_age",
+  "patient_sex",
+  "column_break_patient",
+  "referring_practitioner",
+  "referring_practitioner_name",
+  "clinical_indication",
+  "study_section",
+  "imaging_service_request",
+  "accession_number",
+  "column_break_study",
+  "radiology_procedure",
+  "radiology_procedure_template",
+  "modality",
+  "body_part",
+  "laterality",
+  "column_break_study2",
+  "study_instance_uid",
+  "study_datetime",
+  "number_of_series",
+  "number_of_instances",
+  "practitioner_section",
+  "reporting_radiologist",
+  "reporting_radiologist_name",
+  "column_break_practitioner",
+  "reviewing_radiologist",
+  "reviewing_radiologist_name",
+  "column_break_practitioner2",
+  "transcriptionist",
+  "transcriptionist_name",
+  "report_content_section",
+  "technique",
+  "comparison",
+  "clinical_information",
+  "findings_section",
+  "findings",
+  "impression_section",
+  "impression",
+  "conclusion_section",
+  "conclusion",
+  "recommendations_section",
+  "recommendations",
+  "addenda_section",
+  "addenda",
+  "links_section",
+  "diagnostic_report",
+  "reporting_session",
+  "column_break_links",
+  "linked_observations",
+  "communication_section",
+  "critical_result",
+  "critical_result_communicated_to",
+  "critical_result_communicated_at",
+  "column_break_comm",
+  "communication_method",
+  "communication_notes",
+  "metadata_section",
+  "report_format",
+  "dictation_file",
+  "column_break_meta",
+  "signed_by",
+  "signed_by_name",
+  "template_provenance_section",
+  "report_template",
+  "report_template_version",
+  "template_version_label",
+  "amended_section"
+ ],
+ "fields": [
+  {
+   "fieldname": "report_header_section",
+   "fieldtype": "Section Break",
+   "label": "Report Header"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "RAD-RPT-.YYYY.-.#####",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "report_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Report Status",
+   "options": "Draft\nPreliminary\nFinal\nAmended\nCancelled",
+   "default": "Draft",
+   "reqd": 1,
+   "description": "Report lifecycle per FHIR DiagnosticReport status and IHE RRR-WF"
+  },
+  {
+   "fieldname": "report_priority",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Priority",
+   "options": "\nRoutine\nUrgent\nSTAT\nASAP",
+   "description": "Report priority, inherited from the imaging service request"
+  },
+  {
+   "fieldname": "column_break_header",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "report_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Report Date/Time",
+   "description": "Date/time the report was initially created"
+  },
+  {
+   "fieldname": "signed_datetime",
+   "fieldtype": "Datetime",
+   "label": "Signed Date/Time",
+   "depends_on": "eval:doc.report_status=='Final' || doc.report_status=='Amended'",
+   "description": "Date/time of electronic signature / finalization"
+  },
+  {
+   "fieldname": "amendment_datetime",
+   "fieldtype": "Datetime",
+   "label": "Amendment Date/Time",
+   "depends_on": "eval:doc.report_status=='Amended'"
+  },
+  {
+   "fieldname": "patient_section",
+   "fieldtype": "Section Break",
+   "label": "Patient"
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Patient",
+   "options": "Patient",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "patient.patient_name",
+   "fieldname": "patient_name",
+   "fieldtype": "Data",
+   "label": "Patient Name",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "patient.sex",
+   "fieldname": "patient_sex",
+   "fieldtype": "Data",
+   "label": "Sex",
+   "read_only": 1
+  },
+  {
+   "fieldname": "patient_age",
+   "fieldtype": "Data",
+   "label": "Age",
+   "read_only": 1,
+   "description": "Age at time of study"
+  },
+  {
+   "fieldname": "column_break_patient",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "referring_practitioner",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Referring Practitioner",
+   "options": "Healthcare Practitioner"
+  },
+  {
+   "fetch_from": "referring_practitioner.practitioner_name",
+   "fieldname": "referring_practitioner_name",
+   "fieldtype": "Data",
+   "label": "Referring Practitioner Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "clinical_indication",
+   "fieldtype": "Small Text",
+   "label": "Clinical Indication",
+   "description": "Clinical reason for the imaging study (reason for exam)"
+  },
+  {
+   "fieldname": "study_section",
+   "fieldtype": "Section Break",
+   "label": "Study Information"
+  },
+  {
+   "fieldname": "imaging_service_request",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Imaging Service Request",
+   "options": "Imaging Service Request"
+  },
+  {
+   "fetch_from": "imaging_service_request.accession_number",
+   "fieldname": "accession_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Accession Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_study",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "radiology_procedure",
+   "fieldtype": "Link",
+   "label": "Radiology Procedure",
+   "options": "Radiology Procedure"
+  },
+  {
+   "fieldname": "radiology_procedure_template",
+   "fieldtype": "Link",
+   "label": "Procedure Template",
+   "options": "Radiology Procedure Template",
+   "description": "The procedure template used to generate the report structure"
+  },
+  {
+   "fieldname": "modality",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Modality",
+   "options": "\nX-Ray\nCT\nMRI\nUltrasound\nFluoroscopy\nNuclear Medicine\nPET\nMammography"
+  },
+  {
+   "fieldname": "body_part",
+   "fieldtype": "Link",
+   "label": "Body Part",
+   "options": "Body Part"
+  },
+  {
+   "fieldname": "laterality",
+   "fieldtype": "Select",
+   "label": "Laterality",
+   "options": "\nN/A\nLeft\nRight\nBilateral"
+  },
+  {
+   "fieldname": "column_break_study2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "study_instance_uid",
+   "fieldtype": "Data",
+   "label": "Study Instance UID",
+   "description": "DICOM Study Instance UID"
+  },
+  {
+   "fieldname": "study_datetime",
+   "fieldtype": "Datetime",
+   "label": "Study Date/Time"
+  },
+  {
+   "fieldname": "number_of_series",
+   "fieldtype": "Int",
+   "label": "Number of Series"
+  },
+  {
+   "fieldname": "number_of_instances",
+   "fieldtype": "Int",
+   "label": "Number of Instances"
+  },
+  {
+   "fieldname": "practitioner_section",
+   "fieldtype": "Section Break",
+   "label": "Practitioners"
+  },
+  {
+   "fieldname": "reporting_radiologist",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Reporting Radiologist",
+   "options": "Healthcare Practitioner",
+   "reqd": 1,
+   "description": "The radiologist who authored / dictated the report"
+  },
+  {
+   "fetch_from": "reporting_radiologist.practitioner_name",
+   "fieldname": "reporting_radiologist_name",
+   "fieldtype": "Data",
+   "label": "Reporting Radiologist Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_practitioner",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "reviewing_radiologist",
+   "fieldtype": "Link",
+   "label": "Reviewing Radiologist",
+   "options": "Healthcare Practitioner",
+   "description": "Overreading / reviewing radiologist (IHE RRR-WF overread use case)"
+  },
+  {
+   "fetch_from": "reviewing_radiologist.practitioner_name",
+   "fieldname": "reviewing_radiologist_name",
+   "fieldtype": "Data",
+   "label": "Reviewing Radiologist Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_practitioner2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "transcriptionist",
+   "fieldtype": "Link",
+   "label": "Transcriptionist",
+   "options": "Healthcare Practitioner"
+  },
+  {
+   "fetch_from": "transcriptionist.practitioner_name",
+   "fieldname": "transcriptionist_name",
+   "fieldtype": "Data",
+   "label": "Transcriptionist Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "report_content_section",
+   "fieldtype": "Section Break",
+   "label": "Report Content"
+  },
+  {
+   "fieldname": "technique",
+   "fieldtype": "Small Text",
+   "label": "Technique",
+   "description": "Description of imaging technique, contrast, positioning, etc."
+  },
+  {
+   "fieldname": "comparison",
+   "fieldtype": "Small Text",
+   "label": "Comparison",
+   "description": "Prior studies used for comparison"
+  },
+  {
+   "fieldname": "clinical_information",
+   "fieldtype": "Small Text",
+   "label": "Clinical Information",
+   "description": "Relevant clinical history provided"
+  },
+  {
+   "fieldname": "findings_section",
+   "fieldtype": "Section Break",
+   "label": "Findings"
+  },
+  {
+   "fieldname": "findings",
+   "fieldtype": "Table",
+   "label": "Findings",
+   "options": "Report Finding",
+   "description": "Structured findings — organ-by-organ or system-by-system observations"
+  },
+  {
+   "fieldname": "impression_section",
+   "fieldtype": "Section Break",
+   "label": "Impression"
+  },
+  {
+   "fieldname": "impression",
+   "fieldtype": "Text Editor",
+   "label": "Impression",
+   "description": "Summary interpretation — most important diagnoses appear first"
+  },
+  {
+   "fieldname": "conclusion_section",
+   "fieldtype": "Section Break",
+   "label": "Conclusion"
+  },
+  {
+   "fieldname": "conclusion",
+   "fieldtype": "Small Text",
+   "label": "Conclusion",
+   "description": "Brief summary / final diagnostic statement"
+  },
+  {
+   "fieldname": "recommendations_section",
+   "fieldtype": "Section Break",
+   "label": "Recommendations"
+  },
+  {
+   "fieldname": "recommendations",
+   "fieldtype": "Text Editor",
+   "label": "Recommendations",
+   "description": "Follow-up recommendations, additional imaging, clinical correlation"
+  },
+  {
+   "fieldname": "addenda_section",
+   "fieldtype": "Section Break",
+   "label": "Addenda",
+   "description": "Amendments and addenda per IHE RRR-WF amendment workflow"
+  },
+  {
+   "fieldname": "addenda",
+   "fieldtype": "Table",
+   "label": "Addenda",
+   "options": "Report Addendum"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "links_section",
+   "fieldtype": "Section Break",
+   "label": "Links"
+  },
+  {
+   "fieldname": "diagnostic_report",
+   "fieldtype": "Link",
+   "label": "Diagnostic Report",
+   "options": "Diagnostic Report",
+   "description": "Link to the FHIR-aligned Diagnostic Report document"
+  },
+  {
+   "fieldname": "reporting_session",
+   "fieldtype": "Link",
+   "label": "Reporting Session",
+   "options": "Reporting Session",
+   "description": "The session during which this report was created"
+  },
+  {
+   "fieldname": "column_break_links",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "linked_observations",
+   "fieldtype": "Small Text",
+   "label": "Linked Observation IDs",
+   "description": "Comma-separated list of Observation document names",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "communication_section",
+   "fieldtype": "Section Break",
+   "label": "Critical Result Communication",
+   "description": "ACR Practice Parameter for Communication of Diagnostic Imaging Findings"
+  },
+  {
+   "default": "0",
+   "fieldname": "critical_result",
+   "fieldtype": "Check",
+   "label": "Critical/Urgent Result",
+   "description": "Flag for urgent or unexpected findings requiring immediate communication"
+  },
+  {
+   "depends_on": "eval:doc.critical_result",
+   "fieldname": "critical_result_communicated_to",
+   "fieldtype": "Data",
+   "label": "Communicated To"
+  },
+  {
+   "depends_on": "eval:doc.critical_result",
+   "fieldname": "critical_result_communicated_at",
+   "fieldtype": "Datetime",
+   "label": "Communicated At"
+  },
+  {
+   "fieldname": "column_break_comm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.critical_result",
+   "fieldname": "communication_method",
+   "fieldtype": "Select",
+   "label": "Communication Method",
+   "options": "\nPhone\nIn-Person\nSecure Message\nPage"
+  },
+  {
+   "depends_on": "eval:doc.critical_result",
+   "fieldname": "communication_notes",
+   "fieldtype": "Small Text",
+   "label": "Communication Notes"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "metadata_section",
+   "fieldtype": "Section Break",
+   "label": "Metadata"
+  },
+  {
+   "fieldname": "report_format",
+   "fieldtype": "Select",
+   "label": "Report Format",
+   "options": "Narrative\nStructured\nSynoptic",
+   "default": "Narrative"
+  },
+  {
+   "fieldname": "dictation_file",
+   "fieldtype": "Attach",
+   "label": "Dictation File",
+   "description": "Audio dictation file attachment"
+  },
+  {
+   "fieldname": "column_break_meta",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "signed_by",
+   "fieldtype": "Link",
+   "label": "Signed By",
+   "options": "Healthcare Practitioner",
+   "read_only": 1,
+   "description": "Practitioner who electronically signed the report"
+  },
+  {
+   "fetch_from": "signed_by.practitioner_name",
+   "fieldname": "signed_by_name",
+   "fieldtype": "Data",
+   "label": "Signed By Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_section",
+   "fieldtype": "Section Break",
+   "hide": 1
+  },
+  {
+   "fieldname": "template_provenance_section",
+   "fieldtype": "Section Break",
+   "label": "Report Template",
+   "collapsible": 1,
+   "depends_on": "eval:doc.report_template"
+  },
+  {
+   "fieldname": "report_template",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Report Template",
+   "options": "Radiology Report Template",
+   "read_only": 1,
+   "description": "Template definition used to initialize this report"
+  },
+  {
+   "fieldname": "report_template_version",
+   "fieldtype": "Link",
+   "label": "Template Version",
+   "options": "Radiology Report Template Version",
+   "read_only": 1,
+   "description": "Exact published version applied when this report was created"
+  },
+  {
+   "fieldname": "template_version_label",
+   "fieldtype": "Data",
+   "label": "Template Version Label",
+   "read_only": 1,
+   "description": "Denormalized version label for audit/export convenience"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [
+  {
+   "link_doctype": "Reporting Session",
+   "link_fieldname": "current_report_context"
+  },
+  {
+   "link_doctype": "Reporting Worklist Item",
+   "link_fieldname": "radiology_report"
+  }
+ ],
+ "modified": "2026-05-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Radiology Reporting",
+ "name": "Radiology Report",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Physician",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nursing User",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "restrict_to_domain": "Healthcare",
+ "search_fields": "patient_name, accession_number, reporting_radiologist_name",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "",
+ "track_changes": 1,
+ "track_seen": 1
+}

@@ -56,6 +56,8 @@ class Tag:
 	ScheduledStationGeographicLocationCodeSequence = "00404027"
 	ScheduledProcessingApplicationsCodeSequence = "00404034"
 	ScheduledHumanPerformersSequence = "00404034"
+	ScheduledProcedureStepPriority = "00741200"  # Required: ROUTINE, STAT, etc.
+	InputReadinessState = "00404041"  # Required: INCOMPLETE, UNAVAILABLE, READY
 	
 	# Input/Output
 	InputInformationSequence = "00404021"
@@ -141,13 +143,29 @@ class Workitem:
 	input_information: List[Dict] = field(default_factory=list)
 	output_information: List[Dict] = field(default_factory=list)
 	custom_attributes: Dict[str, Any] = field(default_factory=dict)
+	# Required UPS fields
+	priority: str = "MEDIUM"  # LOW, MEDIUM, HIGH
+	input_readiness_state: str = "READY"  # INCOMPLETE, UNAVAILABLE, READY
 	
-	def to_dicom_json(self) -> Dict[str, Any]:
-		"""Convert to DICOM JSON format for API requests."""
+	def to_dicom_json(self, include_uid: bool = False) -> Dict[str, Any]:
+		"""Convert to DICOM JSON format for API requests.
+		
+		Args:
+			include_uid: Whether to include SOP Instance UID in payload.
+			            Set to False for create requests (UID goes in URL).
+		"""
 		data = {}
 		
-		if self.uid:
+		# Only include UID if explicitly requested (not for create requests)
+		if include_uid and self.uid:
 			data[Tag.SOPInstanceUID] = {"vr": "UI", "Value": [self.uid]}
+		
+		# Required fields for UPS
+		data[Tag.ScheduledProcedureStepPriority] = {"vr": "CS", "Value": [self.priority]}
+		data[Tag.InputReadinessState] = {"vr": "CS", "Value": [self.input_readiness_state]}
+		
+		# MUST include ProcedureStepState - required by dcm4chee
+		data[Tag.ProcedureStepState] = {"vr": "CS", "Value": [self.procedure_step_state.value]}
 		
 		if self.scheduled_start_datetime:
 			dt_str = self.scheduled_start_datetime.strftime("%Y%m%d%H%M%S")
@@ -540,15 +558,111 @@ class UpsRSClient:
 		"""
 		return self.change_state(uid, ProcedureStepState.IN_PROGRESS)
 	
-	def complete_workitem(self, uid: str, transaction_uid: str) -> None:
+	def complete_workitem(
+		self,
+		uid: str,
+		transaction_uid: str,
+		performed_procedure_start: Optional[datetime] = None,
+		performed_procedure_end: Optional[datetime] = None,
+		performed_workitem_code: Optional[DicomCode] = None,
+		performed_station_name: Optional[DicomCode] = None
+	) -> None:
 		"""
-		Complete a workitem.
+		Complete a workitem with Final State Requirements.
+		
+		This is a two-step process:
+		1. Update the workitem with UnifiedProcedureStepPerformedProcedureSequence (Final State Requirements)
+		2. Change the state to COMPLETED
 		
 		Args:
 			uid: Workitem UID
 			transaction_uid: Transaction UID from start_workitem
+			performed_procedure_start: When procedure started (defaults to now)
+			performed_procedure_end: When procedure ended (defaults to now)
+			performed_workitem_code: Code for the performed workitem
+			performed_station_name: Name of the station that performed it
+			
+		Note:
+			DICOM UPS requires Final State Requirements in UnifiedProcedureStepPerformedProcedureSequence (00741216):
+			- PerformedProcedureStepStartDateTime (0040,4050)
+			- PerformedProcedureStepEndDateTime (0040,4051)
+			- PerformedWorkitemCodeSequence (0040,4019)
+			- PerformedStationNameCodeSequence (0040,4028)
 		"""
-		self.change_state(uid, ProcedureStepState.COMPLETED, transaction_uid)
+		now = datetime.now()
+		start_dt = performed_procedure_start or now
+		end_dt = performed_procedure_end or now
+		
+		# Build UnifiedProcedureStepPerformedProcedureSequence item (00741216)
+		performed_procedure_item = {
+			# PerformedProcedureStepStartDateTime (required)
+			"00404050": {"vr": "DT", "Value": [start_dt.strftime("%Y%m%d%H%M%S")]},
+			# PerformedProcedureStepEndDateTime (required)
+			"00404051": {"vr": "DT", "Value": [end_dt.strftime("%Y%m%d%H%M%S")]},
+		}
+		
+		# Add PerformedWorkitemCodeSequence (required for completion)
+		if performed_workitem_code:
+			performed_procedure_item["00404019"] = {
+				"vr": "SQ",
+				"Value": [performed_workitem_code.to_dict()]
+			}
+		else:
+			# Default workitem code if not provided
+			performed_procedure_item["00404019"] = {
+				"vr": "SQ",
+				"Value": [{
+					"00080100": {"vr": "SH", "Value": ["121726"]},  # Code Value
+					"00080102": {"vr": "SH", "Value": ["DCM"]},  # Coding Scheme Designator
+					"00080104": {"vr": "LO", "Value": ["Acquisition"]}  # Code Meaning
+				}]
+			}
+		
+		# Add PerformedStationNameCodeSequence (required for completion)
+		if performed_station_name:
+			performed_procedure_item["00404028"] = {
+				"vr": "SQ", 
+				"Value": [performed_station_name.to_dict()]
+			}
+		else:
+			# Default station name if not provided
+			performed_procedure_item["00404028"] = {
+				"vr": "SQ",
+				"Value": [{
+					"00080100": {"vr": "SH", "Value": ["DEFAULT"]},  # Code Value
+					"00080102": {"vr": "SH", "Value": ["99LOCAL"]},  # Coding Scheme Designator
+					"00080104": {"vr": "LO", "Value": ["Default Station"]}  # Code Meaning
+				}]
+			}
+		
+		# Step 1: Update the workitem with the PerformedProcedureSequence
+		# This is done via POST /workitems/{uid} with the transaction UID
+		update_url = self._url(f"workitems/{uid}")
+		update_data = {
+			Tag.TransactionUID: {"vr": "UI", "Value": [transaction_uid]},
+			# UnifiedProcedureStepPerformedProcedureSequence (00741216)
+			"00741216": {
+				"vr": "SQ",
+				"Value": [performed_procedure_item]
+			}
+		}
+		
+		frappe.logger().info(f"UPS-RS: Updating workitem {uid} with PerformedProcedureSequence")
+		response = self.session.post(update_url, json=update_data, timeout=self.timeout)
+		self._handle_response(response)
+		
+		# Step 2: Change state to COMPLETED
+		state_url = self._url(f"workitems/{uid}/state/{self.aet}")
+		state_data = {
+			Tag.TransactionUID: {"vr": "UI", "Value": [transaction_uid]},
+			Tag.ProcedureStepState: {"vr": "CS", "Value": [ProcedureStepState.COMPLETED.value]},
+		}
+		
+		frappe.logger().info(f"UPS-RS: Changing workitem {uid} state to COMPLETED")
+		response = self.session.put(state_url, json=state_data, timeout=self.timeout)
+		self._handle_response(response)
+		
+		frappe.logger().info(f"UPS-RS: Completed workitem {uid}")
 	
 	def cancel_workitem(self, uid: str, transaction_uid: str) -> None:
 		"""

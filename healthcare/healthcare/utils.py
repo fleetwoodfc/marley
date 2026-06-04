@@ -1688,6 +1688,7 @@ def create_sample_collection(doc, patient):
 def insert_diagnostic_report(doc, patient, sample_collection=None):
 	if not frappe.db.exists("Diagnostic Report", {"docname": doc.name}):
 		diagnostic_report = frappe.new_doc("Diagnostic Report")
+		diagnostic_report.category = "LAB"
 		diagnostic_report.company = doc.company
 		diagnostic_report.patient = patient
 		diagnostic_report.ref_doctype = doc.doctype

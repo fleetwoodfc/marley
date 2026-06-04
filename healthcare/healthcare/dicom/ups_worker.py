@@ -30,17 +30,26 @@ from healthcare.healthcare.dicom.ups_rs import (
 	Tag,
 	UpsEvent,
 )
+from healthcare.healthcare.dicom.ups_events import UPSEventHandler
 
 
 class UpsEventWorker:
 	"""
 	Background worker that listens to UPS-RS WebSocket events
 	and dispatches them to Frappe realtime.
+	
+	This worker:
+	1. Establishes WebSocket connection to dcm4chee-arc
+	2. Subscribes to UPS events (global or filtered)
+	3. Routes events to UPSEventHandler for processing
+	4. Publishes updates to Frappe realtime for connected browsers
 	"""
 	
 	def __init__(self, client: UpsRSClient):
 		self.client = client
+		self.event_handler = UPSEventHandler()
 		self._running = False
+		self._subscription_aet = None
 	
 	async def on_event(self, event_type: str, data: dict):
 		"""
@@ -57,7 +66,7 @@ class UpsEventWorker:
 		if Tag.SOPInstanceUID in data and "Value" in data[Tag.SOPInstanceUID]:
 			workitem_uid = data[Tag.SOPInstanceUID]["Value"][0]
 		
-		# Publish to Frappe realtime
+		# Publish raw event to Frappe realtime
 		frappe.publish_realtime(
 			"ups_event",
 			{
@@ -68,118 +77,37 @@ class UpsEventWorker:
 			after_commit=False
 		)
 		
-		# Handle specific event types
-		if event_type == UpsEvent.STATE_REPORT.value:
-			await self._handle_state_change(workitem_uid, data)
-		elif event_type == UpsEvent.CANCEL_REQUEST.value:
-			await self._handle_cancel_request(workitem_uid, data)
+		# Delegate to event handler for Scheduled Procedure Step updates
+		event = {
+			"event_type": event_type,
+			"workitem_uid": workitem_uid,
+			"workitem": data,
+			"data": data
+		}
+		self.event_handler.handle_event(event)
 	
-	async def _handle_state_change(self, workitem_uid: str, data: dict):
-		"""Handle workitem state change event."""
-		if Tag.ProcedureStepState not in data:
-			return
-		
-		new_state = data[Tag.ProcedureStepState].get("Value", [None])[0]
-		if not new_state:
-			return
-		
-		frappe.logger().info(f"UPS Workitem {workitem_uid} state changed to {new_state}")
-		
-		# Look up linked Radiology Procedure and update status
-		try:
-			procedures = frappe.get_all(
-				"Radiology Procedure",
-				filters={"ups_workitem_uid": workitem_uid},
-				pluck="name"
-			)
-			
-			for proc_name in procedures:
-				frappe.db.set_value(
-					"Radiology Procedure",
-					proc_name,
-					"ups_state",
-					new_state
-				)
-				
-				# Map UPS state to procedure status
-				status_map = {
-					"SCHEDULED": "Scheduled",
-					"IN PROGRESS": "In Progress",
-					"COMPLETED": "Completed",
-					"CANCELED": "Cancelled",
-				}
-				
-				if new_state in status_map:
-					frappe.db.set_value(
-						"Radiology Procedure",
-						proc_name,
-						"status",
-						status_map[new_state]
-					)
-				
-				frappe.db.commit()
-				
-				# Publish update to connected clients
-				frappe.publish_realtime(
-					"radiology_procedure_updated",
-					{"name": proc_name, "ups_state": new_state},
-					doctype="Radiology Procedure",
-					docname=proc_name
-				)
-		except Exception as e:
-			frappe.log_error(f"Error updating Radiology Procedure from UPS event: {e}")
-	
-	async def _handle_cancel_request(self, workitem_uid: str, data: dict):
-		"""Handle cancellation request event."""
-		reason = None
-		if Tag.ReasonForCancellation in data and "Value" in data[Tag.ReasonForCancellation]:
-			reason = data[Tag.ReasonForCancellation]["Value"][0]
-		
-		frappe.logger().info(f"UPS Cancellation requested for {workitem_uid}: {reason}")
-		
-		# Create a notification for the cancellation request
-		try:
-			procedures = frappe.get_all(
-				"Radiology Procedure",
-				filters={"ups_workitem_uid": workitem_uid},
-				fields=["name", "patient", "practitioner"]
-			)
-			
-			for proc in procedures:
-				# Create notification
-				frappe.get_doc({
-					"doctype": "Notification Log",
-					"subject": f"Cancellation requested for Radiology Procedure {proc.name}",
-					"email_content": f"Reason: {reason or 'Not specified'}",
-					"for_user": proc.practitioner if proc.practitioner else frappe.session.user,
-					"document_type": "Radiology Procedure",
-					"document_name": proc.name,
-					"type": "Alert",
-				}).insert(ignore_permissions=True)
-				
-				frappe.publish_realtime(
-					"ups_cancel_request",
-					{
-						"procedure": proc.name,
-						"patient": proc.patient,
-						"reason": reason
-					}
-				)
-		except Exception as e:
-			frappe.log_error(f"Error handling UPS cancellation request: {e}")
-	
-	async def run(self, subscribe_global: bool = True):
+	async def run(self, subscribe_global: bool = True, filter_criteria: dict = None):
 		"""
 		Start the event worker.
 		
 		Args:
 			subscribe_global: Whether to subscribe to global worklist
+			filter_criteria: Optional filter criteria for subscription (modality, station, etc.)
 		"""
 		self._running = True
 		
-		# Subscribe to worklist
+		# Subscribe to worklist (global or filtered)
 		if subscribe_global:
-			self.client.subscribe_worklist()
+			result = self.client.subscribe_worklist()
+			if result:
+				self._subscription_aet = result.get("aet")
+				frappe.logger().info(f"Subscribed to global worklist as {self._subscription_aet}")
+		elif filter_criteria:
+			# Filtered subscription based on criteria
+			result = self.client.subscribe_filtered_worklist(filter_criteria)
+			if result:
+				self._subscription_aet = result.get("aet")
+				frappe.logger().info(f"Subscribed to filtered worklist: {filter_criteria}")
 		
 		# Start WebSocket listener
 		await self.client.subscribe_websocket(
@@ -191,10 +119,19 @@ class UpsEventWorker:
 	async def stop(self):
 		"""Stop the event worker."""
 		self._running = False
+		
+		# Unsubscribe from worklist
+		if self._subscription_aet:
+			try:
+				self.client.unsubscribe_worklist()
+				frappe.logger().info("Unsubscribed from worklist")
+			except Exception as e:
+				frappe.logger().warning(f"Error unsubscribing: {e}")
+		
 		await self.client.close_websocket()
 
 
-def start_worker(settings_name: str = None):
+def start_worker(settings_name: str = None, filter_criteria: dict = None):
 	"""
 	Start the UPS event worker.
 	
@@ -202,12 +139,16 @@ def start_worker(settings_name: str = None):
 	
 	Args:
 		settings_name: Optional name of DICOM server settings
+		filter_criteria: Optional filter criteria for subscription
 	"""
 	client = get_ups_client(settings_name)
 	worker = UpsEventWorker(client)
 	
 	try:
-		asyncio.run(worker.run())
+		asyncio.run(worker.run(
+			subscribe_global=(filter_criteria is None),
+			filter_criteria=filter_criteria
+		))
 	except KeyboardInterrupt:
 		frappe.logger().info("UPS Event Worker stopped by user")
 	except Exception as e:

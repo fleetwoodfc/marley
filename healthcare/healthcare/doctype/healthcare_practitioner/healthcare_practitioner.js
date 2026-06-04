@@ -3,6 +3,12 @@
 
 frappe.ui.form.on("Healthcare Practitioner", {
 	setup: function (frm) {
+		frm.set_query("user_id", function () {
+			return {
+				query: "healthcare.healthcare.doctype.healthcare_practitioner.healthcare_practitioner.get_users_in_healthcare_practitioners_group",
+			};
+		});
+
 		frm.set_query("account", "accounts", function (doc, cdt, cdn) {
 			let d = locals[cdt][cdn];
 			return {

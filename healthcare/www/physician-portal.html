@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Physicians Imaging Order Portal</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:20px;color:#222}
+    label{display:block;margin-top:8px;font-weight:600}
+    select,input,textarea{width:100%;padding:8px;margin-top:4px;box-sizing:border-box}
+    .row{display:flex;gap:12px}
+    .col{flex:1}
+    .container{max-width:980px;margin:0 auto}
+    .panel{border:1px solid #ddd;padding:12px;border-radius:6px;margin-top:12px;background:#fbfbfb}
+    button{padding:8px 12px;margin-top:12px}
+    pre{background:#111;color:#e6e6e6;padding:12px;border-radius:6px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Imaging Order Portal (Physicians)</h1>
+    <p>Select a service, complete clinical details, preview FHIR ProcedureRequest, download or POST to a FHIR endpoint.</p>
+
+    <div class="panel">
+      <label for="serviceSelect">Imaging Service</label>
+      <select id="serviceSelect"><option>Loading...</option></select>
+
+      <label style="margin-top:12px">Upload ProcedureRequest / ServiceRequest JSON</label>
+      <input id="uploadInput" type="file" accept="application/json">
+
+      <div id="serviceSummary" style="margin-top:8px;color:#444"></div>
+
+      <div id="orderFields"></div>
+
+      <button id="previewBtn">Preview FHIR ProcedureRequest</button>
+      <button id="downloadBtn">Download JSON</button>
+      <button id="postBtn">POST to FHIR endpoint</button>
+      <button id="submitToAppBtn">Submit to Healthcare App</button>
+
+      <div style="margin-top:12px">
+        <label for="fhirEndpoint">FHIR POST endpoint (leave blank to skip):</label>
+        <input id="fhirEndpoint" placeholder="https://fhir.example.org/fhir/ProcedureRequest">
+      </div>
+
+    </div>
+
+    <div class="panel">
+      <h3>FHIR ProcedureRequest Preview</h3>
+      <pre id="preview">(preview will appear here)</pre>
+    </div>
+  </div>
+
+  <script>
+    const orderablesUrl = '/imaging_services_orderable_list.json';
+    let catalog = null;
+
+    async function loadCatalog(){
+      const res = await fetch(orderablesUrl);
+      catalog = await res.json();
+      populateServices();
+    }
+
+    function populateServices(){
+      const sel = document.getElementById('serviceSelect');
+      sel.innerHTML = '';
+      catalog.services.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = `${s.name} (${s.modality})`;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener('change', renderForService);
+      renderForService();
+    }
+
+    function renderForService(){
+      const id = document.getElementById('serviceSelect').value;
+      const service = catalog.services.find(s => s.id === id);
+      const sum = document.getElementById('serviceSummary');
+      sum.textContent = `${service.name} — default protocol: ${service.default_protocol}; approx ${service.estimate_min} min`;
+
+      const container = document.getElementById('orderFields');
+      container.innerHTML = '';
+
+      // Basic patient and order fields
+      container.innerHTML += `<label>Patient MRN</label><input id="patientMrn" placeholder="MRN12345">`;
+      container.innerHTML += `<label>Patient Name</label><input id="patientName" placeholder="Family, Given">`;
+      container.innerHTML += `<div class="row"><div class="col"><label>Occurrence DateTime</label><input id="occurrence" type="datetime-local"></div><div class="col"><label>Priority</label><select id="priority"></select></div></div>`;
+
+      // populate priority options
+      const psel = document.getElementById('priority');
+      ['Routine','Urgent','STAT'].forEach(p => { const o = document.createElement('option'); o.value=p; o.text=p; if(p===service.priority_default) o.selected=true; psel.appendChild(o); });
+
+      // dynamic ordering_fields
+      catalog.ordering_fields.forEach(field => {
+        if(['clinical_question','body_part','laterality','use_iv_contrast','use_oral_contrast','pregnancy_status','patient_weight_kg','special_instructions','referrer_contact'].includes(field.name)){
+          const label = document.createElement('label');
+          label.textContent = field.name.replace(/_/g,' ');
+          container.appendChild(label);
+
+          if(field.type === 'enum'){
+            const sel = document.createElement('select'); sel.id = field.name;
+            (field.options||[]).forEach(opt=>{ const o=document.createElement('option'); o.value=opt; o.text=opt; sel.appendChild(o); });
+            container.appendChild(sel);
+          } else if(field.type === 'boolean'){
+            const cb = document.createElement('select'); cb.id=field.name; ['','true','false'].forEach(v=>{const o=document.createElement('option'); o.value=v; o.text=v; cb.appendChild(o);}); container.appendChild(cb);
+          } else if(field.type === 'text' || field.type === 'number'){
+            const inp = document.createElement(field.type==='number'?'input':'input'); inp.id = field.name; if(field.type==='number') inp.type='number'; container.appendChild(inp);
+          }
+        }
+      });
+
+      // prefill some values
+      document.getElementById('clinical_question').value = service.indications ? service.indications.join('; ') : '';
+      document.getElementById('body_part').value = (service.body_parts||[]).join(', ');
+      document.getElementById('patient_weight_kg')?.setAttribute('placeholder','kg');
+    }
+
+    // Client-side converter: ProcedureRequest -> ServiceRequest (basic mapping)
+    function convertProcedureRequestToServiceRequest(proc){
+      if(!proc || typeof proc !== 'object') return null;
+      if(proc.resourceType === 'ServiceRequest') return JSON.parse(JSON.stringify(proc));
+
+      const sr = JSON.parse(JSON.stringify(proc));
+      sr.resourceType = 'ServiceRequest';
+      if(!sr.intent) sr.intent = 'order';
+      // ensure requester present
+      if(!sr.requester && proc.requester) sr.requester = proc.requester;
+      // minimal validation hint
+      const missing = [];
+      if(!sr.subject) missing.push('subject');
+      if(!sr.code) missing.push('code');
+      if(missing.length){
+        sr.extension = sr.extension || [];
+        sr.extension.push({ url: 'http://example.org/fhir/StructureDefinition/validation-missing-fields', valueString: missing.join(',') });
+      }
+      return sr;
+    }
+
+    // Build a minimal ProcedureRequest from the portal form fields
+    function buildProcedureRequest(){
+      const service = catalog && catalog.services && catalog.services.find(s=>s.id===document.getElementById('serviceSelect').value);
+      const code = { text: service ? service.name : (document.getElementById('serviceSelect').value || 'Service') };
+
+      const subject = {};
+      const mrn = (document.getElementById('patientMrn')||{}).value || '';
+      const pname = (document.getElementById('patientName')||{}).value || '';
+      if(mrn){
+        if(mrn.startsWith('Patient/')) subject.reference = mrn;
+        else subject.identifier = { value: mrn };
+      }
+      if(pname) subject.display = pname;
+
+      const pr = { resourceType: 'ProcedureRequest', intent: 'order', status: 'requested', code: code, subject: subject };
+
+      const occ = (document.getElementById('occurrence')||{}).value;
+      if(occ){
+        try{ pr.occurrenceDateTime = new Date(occ).toISOString(); }catch(e){}
+      }
+
+      const priority = (document.getElementById('priority')||{}).value;
+      if(priority) pr.priority = priority;
+
+      const clinical = (document.getElementById('clinical_question')||{}).value;
+      if(clinical) pr.reasonCode = [{ text: clinical }];
+
+      // Attach an extension linking back to the selected orderable service id
+      if(service && service.id){ pr.extension = [{ url: 'http://example.org/fhir/orderable-service-id', valueString: service.id }]; }
+
+      return pr;
+    }
+
+    document.getElementById('uploadInput').addEventListener('change', async (ev)=>{
+      const f = ev.target.files && ev.target.files[0];
+      if(!f) return;
+      try{
+        const text = await f.text();
+        const obj = JSON.parse(text);
+        let resource = obj;
+        if(Array.isArray(obj) && obj.length===1) resource = obj[0];
+        if(resource.resourceType === 'ProcedureRequest'){
+          resource = convertProcedureRequestToServiceRequest(resource);
+        }
+        // populate portal fields from resource
+        if(resource){
+          // set preview
+          document.getElementById('preview').textContent = JSON.stringify(resource, null, 2);
+          // populate some form fields if available
+          const mrn = resource.subject && (resource.subject.identifier && resource.subject.identifier.value || resource.subject.reference || resource.subject.display);
+          document.getElementById('patientMrn').value = mrn || '';
+          const pname = resource.subject && resource.subject.display;
+          document.getElementById('patientName').value = pname || '';
+          if(resource.occurrenceDateTime) document.getElementById('occurrence').value = new Date(resource.occurrenceDateTime).toISOString().slice(0,16);
+          if(resource.priority) document.getElementById('priority').value = resource.priority;
+          if(resource.reasonCode && resource.reasonCode.length) document.getElementById('clinical_question').value = resource.reasonCode.map(r=>r.text||'').join('; ');
+          // try to select service from extension orderable id
+          const ext = (resource.extension||[]).find(e=>e.url && e.url.includes('orderable-service-id'));
+          if(ext && ext.valueString){ const s = catalog.services.find(x=>x.id===ext.valueString); if(s) document.getElementById('serviceSelect').value = s.id; }
+        }
+      }catch(err){ alert('Failed to parse uploaded JSON: '+err.message); }
+    });
+
+    document.getElementById('previewBtn').addEventListener('click', ()=>{
+      const pr = buildProcedureRequest();
+      document.getElementById('preview').textContent = JSON.stringify(pr, null, 2);
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', ()=>{
+      const pr = buildProcedureRequest();
+      const blob = new Blob([JSON.stringify(pr,null,2)],{type:'application/json'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      const fname = (pr && pr.code && (pr.code.text || (pr.code.coding && pr.code.coding[0] && pr.code.coding[0].display))) || 'order';
+      a.download = String(fname).replace(/[^a-z0-9]/gi,'_').slice(0,120) + '.json';
+      a.click();
+    });
+
+    document.getElementById('postBtn').addEventListener('click', async ()=>{
+      const endpoint = document.getElementById('fhirEndpoint').value.trim();
+      if(!endpoint){ alert('No FHIR endpoint configured. Enter a URL to POST.'); return; }
+      const pr = buildProcedureRequest();
+      try{
+        const res = await fetch(endpoint, { method:'POST', headers:{'Content-Type':'application/fhir+json'}, body: JSON.stringify(pr) });
+        if(res.ok){ alert('Submitted successfully (HTTP '+res.status+')'); } else { alert('Submission failed: HTTP '+res.status); }
+      }catch(e){ alert('Error: '+e.message); }
+    });
+
+    // Submit current preview to Healthcare app server endpoint
+    async function portalSubmitToHealthcareApp(){
+      // Validate preview JSON
+      const previewText = document.getElementById('preview').textContent;
+      if(!previewText || previewText.trim()==='(preview will appear here)'){
+        alert('No Procedure/ServiceRequest preview available to submit.');
+        return;
+      }
+
+      let resource;
+      try{
+        resource = JSON.parse(previewText);
+      }catch(parseErr){
+        alert('Preview is not valid JSON. Please click "Preview FHIR ProcedureRequest" first.');
+        return;
+      }
+
+      if(resource.resourceType === 'ProcedureRequest'){
+        resource = convertProcedureRequestToServiceRequest(resource);
+      }
+
+      const endpoint = '/api/method/healthcare.healthcare.api.physician_portal.submit_fhir_order_whitelisted';
+      try{
+        // read CSRF token from cookie if present (Frappe stores it in session data)
+        function readCookie(name){
+          const m = document.cookie.match(new RegExp('(^| )'+name+'=([^;]+)'));
+          return m ? decodeURIComponent(m[2]) : null;
+        }
+        const csrf = readCookie('csrf_token') || readCookie('csrf-token') || readCookie('csrf');
+
+        const headers = { 'Content-Type': 'application/json' };
+        if(csrf){ headers['X-Frappe-CSRF-Token'] = csrf; }
+
+        const resp = await fetch(endpoint, {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers,
+          body: JSON.stringify({ fhir_json: resource })
+        });
+
+        // read raw text first to handle non-JSON responses (HTML login page, errors)
+        const text = await resp.text();
+        let data = null;
+        try{ data = text ? JSON.parse(text) : null; } catch(_) { data = null; }
+
+        if(!resp.ok){
+          const server_msg = data && data._server_messages ? data._server_messages : text || resp.statusText;
+          alert('Submission failed (HTTP ' + resp.status + '): ' + server_msg);
+          return;
+        }
+
+        const created = (data && (data.message || (data.data && data.data.name))) || text || 'OK';
+        alert('Service Request created: ' + created);
+      }catch(e){
+        alert('Submit error: ' + e.message + '\n\nTip: ensure you are authenticated to the Frappe site (same origin) or use API token auth.');
+      }
+    }
+
+    document.getElementById('submitToAppBtn').addEventListener('click', portalSubmitToHealthcareApp);
+
+    // load
+    loadCatalog().catch(e=>{document.getElementById('serviceSelect').innerHTML='<option>Error loading catalog</option>'; console.error(e)});
+  </script>
+</body>
+</html>

@@ -50,6 +50,15 @@
   "ups_sync_section",
   "ups_sync_retry_enabled",
   "max_ups_sync_retries",
+  "mwl_settings_section",
+  "enable_mwl_sync",
+  "mwl_rs_url",
+  "mwl_rs_username",
+  "mwl_rs_password",
+  "column_break_mwl",
+  "auto_create_mwl_on_schedule",
+  "auto_delete_mwl_on_start",
+  "auto_delete_mwl_on_cancel",
   "billing_accounts",
   "healthcare_service_items",
   "inpatient_visit_charge_item",
@@ -267,6 +276,68 @@
    "fieldname": "max_ups_sync_retries",
    "fieldtype": "Int",
    "label": "Max Sync Retries"
+  },
+  {
+   "fieldname": "mwl_settings_section",
+   "fieldtype": "Section Break",
+   "label": "Modality Worklist Settings",
+   "depends_on": "eval:doc.enable_ups_sync || doc.enable_mwl_sync"
+  },
+  {
+   "default": "0",
+   "description": "Enable synchronization of Scheduled Procedure Steps with dcm4chee Modality Worklist",
+   "fieldname": "enable_mwl_sync",
+   "fieldtype": "Check",
+   "label": "Enable MWL Sync"
+  },
+  {
+   "depends_on": "eval:doc.enable_mwl_sync",
+   "description": "Base URL for MWL-RS endpoints (e.g., http://localhost:8080/dcm4chee-arc/aets/DCM4CHEE/rs). Defaults to UPS-RS URL if not set.",
+   "fieldname": "mwl_rs_url",
+   "fieldtype": "Data",
+   "label": "MWL-RS URL"
+  },
+  {
+   "depends_on": "eval:doc.enable_mwl_sync",
+   "description": "Optional Basic Auth username for MWL-RS endpoint",
+   "fieldname": "mwl_rs_username",
+   "fieldtype": "Data",
+   "label": "MWL-RS Username"
+  },
+  {
+   "depends_on": "eval:doc.enable_mwl_sync",
+   "description": "Optional Basic Auth password for MWL-RS endpoint",
+   "fieldname": "mwl_rs_password",
+   "fieldtype": "Password",
+   "label": "MWL-RS Password"
+  },
+  {
+   "fieldname": "column_break_mwl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "description": "Automatically create MWL item when Scheduled Procedure Step enters SCHEDULED state",
+   "fieldname": "auto_create_mwl_on_schedule",
+   "fieldtype": "Check",
+   "label": "Auto-create on Schedule",
+   "depends_on": "eval:doc.enable_mwl_sync"
+  },
+  {
+   "default": "1",
+   "description": "Automatically remove MWL item when procedure starts (IN PROGRESS state)",
+   "fieldname": "auto_delete_mwl_on_start",
+   "fieldtype": "Check",
+   "label": "Auto-remove on Start",
+   "depends_on": "eval:doc.enable_mwl_sync"
+  },
+  {
+   "default": "1",
+   "description": "Automatically remove MWL item when procedure is cancelled",
+   "fieldname": "auto_delete_mwl_on_cancel",
+   "fieldtype": "Check",
+   "label": "Auto-remove on Cancel",
+   "depends_on": "eval:doc.enable_mwl_sync"
   },
   {
    "fieldname": "laboratory_sms_alerts",

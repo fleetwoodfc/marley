@@ -1,0 +1,278 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-05-11 00:00:00.000000",
+ "description": "A specific versioned instance of a Radiology Report Template, containing governed MRRT-compatible content and lifecycle state.",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "identity_section",
+  "report_template",
+  "version_label",
+  "naming_series",
+  "column_break_identity",
+  "lifecycle_status",
+  "language",
+  "locale",
+  "content_section",
+  "mrrt_title",
+  "mrrt_html",
+  "source_file",
+  "checksum",
+  "lineage_section",
+  "replaces_version",
+  "replacement_version",
+  "column_break_lineage",
+  "effective_from",
+  "effective_to",
+  "validation_section",
+  "validation_status",
+  "validation_summary",
+  "validation_findings",
+  "governance_section",
+  "approval_notes",
+  "governance_events"
+ ],
+ "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Version Identity"
+  },
+  {
+   "fieldname": "report_template",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Report Template",
+   "options": "Radiology Report Template",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "version_label",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Version Label",
+   "reqd": 1,
+   "description": "Human-readable version label (e.g. 1.0, 2.1-draft)"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "RTMPL-V-.YYYY.-.#####",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "column_break_identity",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "lifecycle_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Lifecycle Status",
+   "options": "Draft\nReview Ready\nApproved\nPublished\nSuperseded\nRetired",
+   "default": "Draft",
+   "reqd": 1,
+   "description": "Governance lifecycle state",
+   "search_index": 1
+  },
+  {
+   "fieldname": "language",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Language",
+   "default": "en",
+   "description": "Language of this version (ISO 639-1)"
+  },
+  {
+   "fieldname": "locale",
+   "fieldtype": "Data",
+   "label": "Locale",
+   "description": "Optional locale/region variant (e.g. en-US)"
+  },
+  {
+   "fieldname": "content_section",
+   "fieldtype": "Section Break",
+   "label": "Template Content"
+  },
+  {
+   "fieldname": "mrrt_title",
+   "fieldtype": "Data",
+   "label": "MRRT Title",
+   "description": "Document title carried in the exchanged template"
+  },
+  {
+   "fieldname": "mrrt_html",
+   "fieldtype": "Long Text",
+   "label": "MRRT HTML Content",
+   "description": "Canonical MRRT-compatible content body"
+  },
+  {
+   "fieldname": "source_file",
+   "fieldtype": "Attach",
+   "label": "Source File",
+   "description": "Optional uploaded/imported MRRT package file"
+  },
+  {
+   "fieldname": "checksum",
+   "fieldtype": "Data",
+   "label": "Content Checksum",
+   "read_only": 1,
+   "description": "SHA-256 hash of mrrt_html for change detection and audit"
+  },
+  {
+   "fieldname": "lineage_section",
+   "fieldtype": "Section Break",
+   "label": "Version Lineage"
+  },
+  {
+   "fieldname": "replaces_version",
+   "fieldtype": "Link",
+   "label": "Replaces Version",
+   "options": "Radiology Report Template Version",
+   "description": "Prior version superseded by this one"
+  },
+  {
+   "fieldname": "replacement_version",
+   "fieldtype": "Link",
+   "label": "Replacement Version",
+   "options": "Radiology Report Template Version",
+   "read_only": 1,
+   "description": "Successor version, set when this version is superseded"
+  },
+  {
+   "fieldname": "column_break_lineage",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "effective_from",
+   "fieldtype": "Datetime",
+   "label": "Effective From",
+   "description": "Publication start date/time"
+  },
+  {
+   "fieldname": "effective_to",
+   "fieldtype": "Datetime",
+   "label": "Effective To",
+   "description": "Retirement/supersession boundary, if set"
+  },
+  {
+   "fieldname": "validation_section",
+   "fieldtype": "Section Break",
+   "label": "Validation"
+  },
+  {
+   "fieldname": "validation_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Validation Status",
+   "options": "Not Run\nPassed\nWarnings\nFailed",
+   "default": "Not Run",
+   "reqd": 1
+  },
+  {
+   "fieldname": "validation_summary",
+   "fieldtype": "Small Text",
+   "label": "Validation Summary",
+   "read_only": 1
+  },
+  {
+   "fieldname": "validation_findings",
+   "fieldtype": "Table",
+   "label": "Validation Findings",
+   "options": "Report Template Validation Finding"
+  },
+  {
+   "fieldname": "governance_section",
+   "fieldtype": "Section Break",
+   "label": "Governance"
+  },
+  {
+   "fieldname": "submitted_by",
+   "fieldtype": "Data",
+   "label": "Submitted By",
+   "read_only": 1,
+   "in_list_view": 0,
+   "in_standard_filter": 0,
+   "description": "Set automatically when version is submitted for review. Used to enforce 4-eyes approval rule."
+  },
+  {
+   "fieldname": "approval_notes",
+   "fieldtype": "Text",
+   "label": "Approval / Publisher Notes"
+  },
+  {
+   "fieldname": "governance_events",
+   "fieldtype": "Table",
+   "label": "Governance Events",
+   "options": "Report Template Governance Event",
+   "read_only": 1
+  }
+ ],
+ "links": [],
+ "modified": "2026-05-11 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Radiology Reporting",
+ "name": "Radiology Report Template Version",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Radiology Template Author",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Radiology Template Approver",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Radiology Template Publisher",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "import": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

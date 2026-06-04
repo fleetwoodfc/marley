@@ -1,0 +1,193 @@
+{
+  "actions": [],
+  "allow_rename": 0,
+  "autoname": "CR-.#####",
+  "creation": "2026-02-11 12:00:00.000000",
+  "doctype": "DocType",
+  "engine": "InnoDB",
+  "field_order": [
+    "details_section",
+    "scheduled_procedure_step",
+    "patient",
+    "patient_name",
+    "column_break_1",
+    "requester",
+    "requested_at",
+    "reason",
+    "status_section",
+    "status",
+    "column_break_status",
+    "decision_by",
+    "decision_at",
+    "decision_reason",
+    "amended_from"
+  ],
+  "fields": [
+    {
+      "fieldname": "details_section",
+      "fieldtype": "Section Break",
+      "label": "Request Details"
+    },
+    {
+      "fieldname": "scheduled_procedure_step",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Scheduled Procedure Step",
+      "options": "Scheduled Procedure Step",
+      "reqd": 1
+    },
+    {
+      "fetch_from": "scheduled_procedure_step.patient",
+      "fieldname": "patient",
+      "fieldtype": "Link",
+      "label": "Patient",
+      "options": "Patient",
+      "read_only": 1
+    },
+    {
+      "fetch_from": "patient.patient_name",
+      "fieldname": "patient_name",
+      "fieldtype": "Data",
+      "label": "Patient Name",
+      "read_only": 1
+    },
+    {
+      "fieldname": "column_break_1",
+      "fieldtype": "Column Break"
+    },
+    {
+      "default": "__user",
+      "fieldname": "requester",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "label": "Requester",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "default": "Now",
+      "fieldname": "requested_at",
+      "fieldtype": "Datetime",
+      "label": "Requested At",
+      "read_only": 1
+    },
+    {
+      "fieldname": "reason",
+      "fieldtype": "Small Text",
+      "in_list_view": 1,
+      "label": "Reason for Cancellation",
+      "reqd": 1
+    },
+    {
+      "fieldname": "status_section",
+      "fieldtype": "Section Break",
+      "label": "Decision"
+    },
+    {
+      "default": "Pending",
+      "fieldname": "status",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Status",
+      "options": "Pending\nAccepted\nDeclined\nWithdrawn"
+    },
+    {
+      "fieldname": "column_break_status",
+      "fieldtype": "Column Break"
+    },
+    {
+      "fieldname": "decision_by",
+      "fieldtype": "Link",
+      "label": "Decision By",
+      "options": "User",
+      "read_only": 1
+    },
+    {
+      "fieldname": "decision_at",
+      "fieldtype": "Datetime",
+      "label": "Decision At",
+      "read_only": 1
+    },
+    {
+      "fieldname": "decision_reason",
+      "fieldtype": "Small Text",
+      "label": "Decision Reason"
+    },
+    {
+      "fieldname": "amended_from",
+      "fieldtype": "Link",
+      "label": "Amended From",
+      "no_copy": 1,
+      "options": "Cancellation Request",
+      "print_hide": 1,
+      "read_only": 1
+    }
+  ],
+  "index_web_pages_for_search": 1,
+  "is_submittable": 0,
+  "links": [
+    {
+      "link_doctype": "Scheduled Procedure Step",
+      "link_fieldname": "scheduled_procedure_step"
+    }
+  ],
+  "modified": "2026-02-11 12:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Healthcare",
+  "name": "Cancellation Request",
+  "naming_rule": "Expression (old style)",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 0,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 0,
+      "email": 1,
+      "export": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Healthcare Administrator",
+      "share": 1,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 0,
+      "email": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Physician",
+      "write": 0
+    },
+    {
+      "create": 1,
+      "delete": 0,
+      "email": 1,
+      "print": 1,
+      "read": 1,
+      "report": 1,
+      "role": "Laboratory User",
+      "write": 0
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "states": [],
+  "title_field": "scheduled_procedure_step",
+  "track_changes": 1
+}

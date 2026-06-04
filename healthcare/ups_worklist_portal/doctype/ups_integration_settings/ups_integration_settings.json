@@ -1,0 +1,128 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "",
+ "creation": "2026-02-24 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "connection_section",
+  "ups_rs_url",
+  "dicom_aet",
+  "auth_type",
+  "auth_username",
+  "auth_password",
+  "request_timeout_seconds",
+  "sync_section",
+  "enable_ups_sync",
+  "max_sync_retries",
+  "ups_event_webhook_secret"
+ ],
+ "fields": [
+  {
+   "fieldname": "connection_section",
+   "fieldtype": "Section Break",
+   "label": "dcm4chee-arc Connection"
+  },
+  {
+   "fieldname": "ups_rs_url",
+   "fieldtype": "Data",
+   "in_list_view": 0,
+   "label": "UPS-RS Base URL",
+   "reqd": 1,
+   "description": "e.g. http://dcm4chee:8080/dcm4chee-arc/aets/DCM4CHEE/rs"
+  },
+  {
+   "fieldname": "dicom_aet",
+   "fieldtype": "Data",
+   "label": "Portal AE Title",
+   "reqd": 1,
+   "description": "AE Title this portal presents to dcm4chee (e.g. FRAPPE-PORTAL)"
+  },
+  {
+   "fieldname": "auth_type",
+   "fieldtype": "Select",
+   "label": "Authentication Type",
+   "options": "None\nBasic\nBearer",
+   "default": "None",
+   "reqd": 1
+  },
+  {
+   "fieldname": "auth_username",
+   "fieldtype": "Data",
+   "label": "Auth Username",
+   "depends_on": "eval:doc.auth_type!='None'"
+  },
+  {
+   "fieldname": "auth_password",
+   "fieldtype": "Password",
+   "label": "Auth Password / Token",
+   "permlevel": 1,
+   "depends_on": "eval:doc.auth_type!='None'"
+  },
+  {
+   "fieldname": "request_timeout_seconds",
+   "fieldtype": "Int",
+   "label": "Request Timeout (seconds)",
+   "default": "30"
+  },
+  {
+   "fieldname": "sync_section",
+   "fieldtype": "Section Break",
+   "label": "Sync & Polling"
+  },
+  {
+   "fieldname": "enable_ups_sync",
+   "fieldtype": "Check",
+   "label": "Enable UPS Sync",
+   "description": "Master toggle — enables scheduler polling and WebSocket sidecar"
+  },
+  {
+   "fieldname": "max_sync_retries",
+   "fieldtype": "Int",
+   "label": "Max Sync Retries",
+   "default": "4"
+  },
+  {
+   "fieldname": "ups_event_webhook_secret",
+   "fieldtype": "Password",
+   "label": "Webhook Secret",
+   "permlevel": 1,
+   "description": "For future inbound webhook validation"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-02-24 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "UPS Worklist",
+ "name": "UPS Integration Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "UPS Supervisor",
+   "permlevel": 0
+  },
+  {
+   "read": 1,
+   "role": "UPS Integration Engineer",
+   "permlevel": 0
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

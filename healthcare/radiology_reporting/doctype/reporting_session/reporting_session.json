@@ -1,0 +1,279 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-02-19 00:00:00.000000",
+ "description": "A radiologist's reporting session for reading and interpreting imaging studies. Based on IHE RRR-WF/IRA reporting session concept.",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "session_details_section",
+  "naming_series",
+  "session_id",
+  "status",
+  "radiologist",
+  "radiologist_name",
+  "column_break_details",
+  "started_at",
+  "ended_at",
+  "duration_minutes",
+  "session_type",
+  "location",
+  "worklist_section",
+  "studies_read",
+  "studies_pending",
+  "column_break_worklist",
+  "reports_drafted",
+  "reports_finalized",
+  "context_section",
+  "current_report_context",
+  "current_patient",
+  "current_study",
+  "column_break_context",
+  "hub_url",
+  "hub_topic",
+  "events_section",
+  "events"
+ ],
+ "fields": [
+  {
+   "fieldname": "session_details_section",
+   "fieldtype": "Section Break",
+   "label": "Session Details"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "RPT-SES-.YYYY.-.#####",
+   "reqd": 1,
+   "set_only_once": 1
+  },
+  {
+   "fieldname": "session_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Session ID",
+   "read_only": 1,
+   "unique": 1,
+   "description": "Unique session identifier used for FHIRcast topic coordination"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Active\nSuspended\nClosed",
+   "default": "Active",
+   "reqd": 1
+  },
+  {
+   "fieldname": "radiologist",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Radiologist",
+   "options": "Healthcare Practitioner",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "radiologist.practitioner_name",
+   "fieldname": "radiologist_name",
+   "fieldtype": "Data",
+   "label": "Radiologist Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_details",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "started_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Started At",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ended_at",
+   "fieldtype": "Datetime",
+   "label": "Ended At"
+  },
+  {
+   "fieldname": "duration_minutes",
+   "fieldtype": "Int",
+   "label": "Duration (min)",
+   "read_only": 1,
+   "description": "Auto-calculated from started_at and ended_at"
+  },
+  {
+   "fieldname": "session_type",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Session Type",
+   "options": "\nOn-site\nRemote\nTeleradiology",
+   "description": "RRR-WF distinguishes on-site from remote reading sessions"
+  },
+  {
+   "fieldname": "location",
+   "fieldtype": "Data",
+   "label": "Reading Location",
+   "description": "Physical or virtual reading station identifier"
+  },
+  {
+   "fieldname": "worklist_section",
+   "fieldtype": "Section Break",
+   "label": "Session Statistics"
+  },
+  {
+   "default": "0",
+   "fieldname": "studies_read",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Studies Read",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "studies_pending",
+   "fieldtype": "Int",
+   "label": "Studies Pending",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_worklist",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "reports_drafted",
+   "fieldtype": "Int",
+   "label": "Reports Drafted",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "reports_finalized",
+   "fieldtype": "Int",
+   "label": "Reports Finalized",
+   "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "context_section",
+   "fieldtype": "Section Break",
+   "label": "Current Context",
+   "description": "IHE IRA FHIRcast context tracking — the report/patient/study currently in focus"
+  },
+  {
+   "fieldname": "current_report_context",
+   "fieldtype": "Link",
+   "label": "Current Report",
+   "options": "Radiology Report",
+   "description": "The report context currently open (DiagnosticReport anchor context)"
+  },
+  {
+   "fieldname": "current_patient",
+   "fieldtype": "Link",
+   "label": "Current Patient",
+   "options": "Patient"
+  },
+  {
+   "fieldname": "current_study",
+   "fieldtype": "Link",
+   "label": "Current Study",
+   "options": "Imaging Service Request",
+   "description": "The ImagingStudy (ISR) for the current context"
+  },
+  {
+   "fieldname": "column_break_context",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "hub_url",
+   "fieldtype": "Data",
+   "label": "Hub URL",
+   "description": "FHIRcast Hub endpoint URL for this session"
+  },
+  {
+   "fieldname": "hub_topic",
+   "fieldtype": "Data",
+   "label": "Hub Topic",
+   "description": "FHIRcast session topic ID"
+  },
+  {
+   "fieldname": "events_section",
+   "fieldtype": "Section Break",
+   "label": "Session Events"
+  },
+  {
+   "fieldname": "events",
+   "fieldtype": "Table",
+   "label": "Events",
+   "options": "Reporting Session Event",
+   "description": "Audit trail of context changes and actions during this session"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [
+  {
+   "link_doctype": "Radiology Report",
+   "link_fieldname": "reporting_session"
+  },
+  {
+   "link_doctype": "Reporting Worklist Item",
+   "link_fieldname": "reporting_session"
+  }
+ ],
+ "modified": "2026-02-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Radiology Reporting",
+ "name": "Reporting Session",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Physician",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "restrict_to_domain": "Healthcare",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "radiologist_name",
+ "track_changes": 1,
+ "track_seen": 1
+}

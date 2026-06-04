@@ -213,6 +213,14 @@ frappe.ui.form.on("Patient Encounter", {
 			};
 		});
 
+		frm.set_query("radiology_template", "radiology_prescription", function () {
+			return {
+				filters: {
+					disabled: 0,
+				},
+			};
+		});
+
 		frm.set_query("appointment", function () {
 			return {
 				filters: {

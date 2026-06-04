@@ -1,0 +1,129 @@
+{
+ "actions": [],
+ "creation": "2026-02-19 00:00:00.000000",
+ "description": "Audit trail entry for a reporting session event, aligned with IHE IRA FHIRcast event model.",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "event_type",
+  "event_timestamp",
+  "column_break_1",
+  "actor",
+  "actor_name",
+  "section_break_context",
+  "report_context",
+  "patient",
+  "study_reference",
+  "column_break_context2",
+  "previous_status",
+  "new_status",
+  "section_break_detail",
+  "detail"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "event_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Event Type",
+   "options": "Session Started\nSession Suspended\nSession Resumed\nSession Closed\nContext Opened\nContext Closed\nContext Suspended\nContext Resumed\nReport Created\nReport Status Changed\nReport Signed\nReport Amended\nFinding Added\nFinding Updated\nAddendum Added\nError",
+   "reqd": 1
+  },
+  {
+   "columns": 2,
+   "fieldname": "event_timestamp",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Timestamp",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "actor",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Actor",
+   "options": "Healthcare Practitioner",
+   "description": "The practitioner who triggered this event"
+  },
+  {
+   "fetch_from": "actor.practitioner_name",
+   "fieldname": "actor_name",
+   "fieldtype": "Data",
+   "label": "Actor Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_context",
+   "fieldtype": "Section Break",
+   "label": "Context"
+  },
+  {
+   "columns": 2,
+   "fieldname": "report_context",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Report",
+   "options": "Radiology Report"
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "label": "Patient",
+   "options": "Patient"
+  },
+  {
+   "fieldname": "study_reference",
+   "fieldtype": "Link",
+   "label": "Study Reference",
+   "options": "Imaging Service Request"
+  },
+  {
+   "fieldname": "column_break_context2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "previous_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Previous Status"
+  },
+  {
+   "fieldname": "new_status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "New Status"
+  },
+  {
+   "fieldname": "section_break_detail",
+   "fieldtype": "Section Break",
+   "label": "Detail"
+  },
+  {
+   "fieldname": "detail",
+   "fieldtype": "Small Text",
+   "label": "Detail",
+   "description": "Free-text description of the event or error details"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-02-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Radiology Reporting",
+ "name": "Reporting Session Event",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "event_timestamp",
+ "sort_order": "ASC",
+ "states": [],
+ "track_changes": 0
+}

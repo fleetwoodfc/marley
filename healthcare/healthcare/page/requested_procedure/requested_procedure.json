@@ -1,0 +1,27 @@
+{
+ "content": null,
+ "creation": "2026-02-17 17:30:00.000000",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2026-02-17 17:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "requested-procedure",
+ "owner": "Administrator",
+ "page_name": "requested-procedure",
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Healthcare Administrator"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Requested Procedure"
+}

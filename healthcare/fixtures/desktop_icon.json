@@ -1,0 +1,24 @@
+[
+ {
+  "app": "healthcare",
+  "bg_color": null,
+  "docstatus": 0,
+  "doctype": "Desktop Icon",
+  "hidden": 0,
+  "icon": "list",
+  "icon_image": null,
+  "icon_type": "Link",
+  "label": "UPS Worklist",
+  "link": null,
+  "link_to": "UPS Worklist",
+  "link_type": "Workspace Sidebar",
+  "logo_url": null,
+  "modified": "2026-03-29 20:08:32",
+  "name": "UPS Worklist",
+  "parent_icon": "Marley Health",
+  "restrict_removal": 0,
+  "roles": [],
+  "sidebar": null,
+  "standard": 1
+ }
+]

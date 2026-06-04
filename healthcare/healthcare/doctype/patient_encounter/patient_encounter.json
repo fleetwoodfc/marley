@@ -55,6 +55,8 @@
   "lab_test_prescription",
   "sb_procedures",
   "procedure_prescription",
+  "sb_radiology",
+  "radiology_prescription",
   "rehabilitation_section",
   "therapies",
   "section_break_33",
@@ -253,6 +255,18 @@
    "label": "Clinical Procedures",
    "no_copy": 1,
    "options": "Procedure Prescription"
+  },
+  {
+   "fieldname": "sb_radiology",
+   "fieldtype": "Section Break",
+   "label": "Radiology"
+  },
+  {
+   "fieldname": "radiology_prescription",
+   "fieldtype": "Table",
+   "label": "Radiology Prescriptions",
+   "no_copy": 1,
+   "options": "Radiology Prescription"
   },
   {
    "fieldname": "encounter_comment",

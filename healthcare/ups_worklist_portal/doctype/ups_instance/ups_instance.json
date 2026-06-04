@@ -1,0 +1,340 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "prompt",
+ "naming_rule": "Set by user",
+ "creation": "2026-02-24 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "identity_section",
+  "ups_state",
+  "priority",
+  "scheduled_datetime",
+  "modality",
+  "scheduled_station_aet",
+  "scheduled_station_name",
+  "scheduled_station_class_code",
+  "procedure_section",
+  "requested_procedure_id",
+  "accession_number",
+  "study_instance_uid",
+  "protocol_name",
+  "procedure_description",
+  "performed_study_uid",
+  "addendum_for",
+  "patient_section",
+  "patient_id",
+  "patient_name",
+  "patient_birth_date",
+  "patient_sex",
+  "claim_section",
+  "scheduled_performer_aet",
+  "transaction_uid",
+  "performing_aet",
+  "claimed_by",
+  "claimed_at",
+  "cancel_section",
+  "cancel_requested_at",
+  "cancel_request_reason",
+  "sync_section",
+  "ups_sync_status",
+  "ups_sync_at",
+  "ups_sync_error",
+  "raw_payload"
+ ],
+ "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity & Routing"
+  },
+  {
+   "fieldname": "ups_state",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "UPS State",
+   "options": "SCHEDULED\nIN PROGRESS\nCOMPLETED\nCANCELED",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Priority",
+   "options": "HIGH\nMEDIUM\nLOW",
+   "reqd": 1
+  },
+  {
+   "fieldname": "scheduled_datetime",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Scheduled DateTime",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "modality",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Modality",
+   "search_index": 1
+  },
+  {
+   "fieldname": "scheduled_station_aet",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Scheduled Station AET",
+   "options": "AE Mapping",
+   "search_index": 1
+  },
+  {
+   "fieldname": "scheduled_station_name",
+   "fieldtype": "Data",
+   "label": "Scheduled Station Name"
+  },
+  {
+   "fieldname": "scheduled_station_class_code",
+   "fieldtype": "Data",
+   "label": "Scheduled Station Class Code",
+   "description": "Code value from DICOM Scheduled Station Class Code Sequence (0040,4026) — e.g. CTSCANNER. Extracted from raw_payload on sync; used to filter AE Mapping options when assigning."
+  },
+  {
+   "fieldname": "procedure_section",
+   "fieldtype": "Section Break",
+   "label": "Procedure References"
+  },
+  {
+   "fieldname": "requested_procedure_id",
+   "fieldtype": "Data",
+   "in_list_view": 0,
+   "label": "Requested Procedure ID"
+  },
+  {
+   "fieldname": "accession_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Accession Number",
+   "search_index": 1
+  },
+  {
+   "fieldname": "study_instance_uid",
+   "fieldtype": "Data",
+   "label": "Study Instance UID"
+  },
+  {
+   "fieldname": "protocol_name",
+   "fieldtype": "Data",
+   "label": "Protocol Name"
+  },
+  {
+   "fieldname": "procedure_description",
+   "fieldtype": "Small Text",
+   "label": "Procedure Description"
+  },
+  {
+   "fieldname": "performed_study_uid",
+   "fieldtype": "Data",
+   "label": "Performed Study UID"
+  },
+  {
+   "fieldname": "addendum_for",
+   "fieldtype": "Data",
+   "label": "Addendum For (UID)",
+   "read_only": 1,
+   "description": "If set, this workitem is an addendum to the referenced original workitem UID (IHE RRR-WF UC3)"
+  },
+  {
+   "fieldname": "patient_section",
+   "fieldtype": "Section Break",
+   "label": "Patient (display only)"
+  },
+  {
+   "fieldname": "patient_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Patient ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "patient_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Patient Name",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "patient_birth_date",
+   "fieldtype": "Date",
+   "label": "Date of Birth",
+   "read_only": 1
+  },
+  {
+   "fieldname": "patient_sex",
+   "fieldtype": "Select",
+   "label": "Sex",
+   "options": "M\nF\nO",
+   "read_only": 1
+  },
+  {
+   "fieldname": "claim_section",
+   "fieldtype": "Section Break",
+   "label": "Claim / Lock"
+  },
+  {
+   "fieldname": "scheduled_performer_aet",
+   "fieldtype": "Data",
+   "label": "Scheduled Performer AET",
+   "read_only": 1,
+   "search_index": 1,
+   "description": "AE Title of the assigned Task Performer (IHE RRR-WF Assigned Read, UC2/UC4)"
+  },
+  {
+   "fieldname": "transaction_uid",
+   "fieldtype": "Data",
+   "label": "Transaction UID",
+   "read_only": 1,
+   "description": "Generated at claim time; required for COMPLETE/CANCEL operations"
+  },
+  {
+   "fieldname": "performing_aet",
+   "fieldtype": "Data",
+   "label": "Performing AET",
+   "read_only": 1
+  },
+  {
+   "fieldname": "claimed_by",
+   "fieldtype": "Link",
+   "label": "Claimed By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "claimed_at",
+   "fieldtype": "Datetime",
+   "label": "Claimed At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cancel_section",
+   "fieldtype": "Section Break",
+   "label": "Cancel Request"
+  },
+  {
+   "fieldname": "cancel_requested_at",
+   "fieldtype": "Datetime",
+   "label": "Cancel Requested At",
+   "read_only": 1,
+   "description": "Timestamp when a cancel request was received (IHE RRR-WF UC5 Cancellation)"
+  },
+  {
+   "fieldname": "cancel_request_reason",
+   "fieldtype": "Small Text",
+   "label": "Cancel Request Reason",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sync_section",
+   "fieldtype": "Section Break",
+   "label": "Sync Status"
+  },
+  {
+   "fieldname": "ups_sync_status",
+   "fieldtype": "Select",
+   "label": "Sync Status",
+   "options": "synced\npending\nerror",
+   "default": "pending",
+   "search_index": 1
+  },
+  {
+   "fieldname": "ups_sync_at",
+   "fieldtype": "Datetime",
+   "label": "Last Sync At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "ups_sync_error",
+   "fieldtype": "Small Text",
+   "label": "Last Sync Error",
+   "read_only": 1
+  },
+  {
+   "fieldname": "raw_payload",
+   "fieldtype": "Long Text",
+   "label": "Raw DICOM+JSON Payload",
+   "permlevel": 1,
+   "read_only": 1,
+   "description": "Full DICOM+JSON from last dcm4chee-arc retrieval (restricted)"
+  }
+ ],
+ "is_submittable": 0,
+ "issingle": 0,
+ "links": [],
+ "modified": "2026-02-24 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "UPS Worklist",
+ "name": "UPS Instance",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "UPS Technologist",
+   "share": 0,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "UPS Supervisor",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "export": 1,
+   "report": 1,
+   "role": "UPS Integration Engineer"
+  },
+  {
+   "permlevel": 1,
+   "read": 1,
+   "role": "UPS Integration Engineer"
+  },
+  {
+   "permlevel": 1,
+   "read": 1,
+   "write": 1,
+   "role": "System Manager"
+  }
+ ],
+ "search_fields": "patient_name,patient_id,accession_number",
+ "sort_field": "scheduled_datetime",
+ "sort_order": "ASC",
+ "title_field": "patient_name",
+ "track_changes": 1
+}
