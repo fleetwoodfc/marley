@@ -5,13 +5,13 @@ from erpnext.accounts.doctype.sales_invoice.sales_invoice import SalesInvoice
 from erpnext.stock.get_item_details import ItemDetailsCtx, get_item_details
 
 
-class HealthcareSalesInvoice(SalesInvoice):
+class SalesInvoiceMixin:
 	def validate(self):
 		super().validate()
 		self.calculate_patient_insurance_coverage()
 
 	@frappe.whitelist()
-	def set_healthcare_services(self, checked_values):
+	def set_healthcare_services(self, checked_values: list[dict]) -> None:
 		for checked_item in checked_values:
 			item_line = self.append("items", {})
 			price_list, price_list_currency = frappe.db.get_values(
@@ -25,6 +25,7 @@ class HealthcareSalesInvoice(SalesInvoice):
 					"customer": frappe.db.get_value("Patient", self.patient, "customer"),
 					"selling_price_list": self.selling_price_list or price_list,
 					"price_list_currency": self.currency or price_list_currency,
+					"currency": self.currency or price_list_currency,
 					"plc_conversion_rate": 1.0,
 					"conversion_rate": 1.0,
 				}

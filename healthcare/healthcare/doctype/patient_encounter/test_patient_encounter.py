@@ -3,28 +3,23 @@
 
 
 import frappe
-from frappe.tests import IntegrationTestCase
 
-from healthcare.healthcare.doctype.patient_appointment.test_patient_appointment import (
-	create_appointment_type,
-)
 from healthcare.healthcare.doctype.patient_encounter.patient_encounter import PatientEncounter
+from healthcare.tests.utils import HealthcareTestSuite
 
 
-class TestPatientEncounter(IntegrationTestCase):
+class TestPatientEncounter(HealthcareTestSuite):
 	def setUp(self):
-		try:
-			gender_m = frappe.get_doc({"doctype": "Gender", "gender": "MALE"}).insert()
-			gender_f = frappe.get_doc({"doctype": "Gender", "gender": "FEMALE"}).insert()
-		except frappe.exceptions.DuplicateEntryError:
-			gender_m = frappe.get_doc({"doctype": "Gender", "gender": "MALE"})
-			gender_f = frappe.get_doc({"doctype": "Gender", "gender": "FEMALE"})
+		super().setUp()
+		gender_m = frappe.get_doc({"doctype": "Gender", "gender": "Male"})
+		gender_f = frappe.get_doc({"doctype": "Gender", "gender": "Female"})
 
 		self.patient_male = frappe.get_doc(
 			{
 				"doctype": "Patient",
 				"first_name": "John",
 				"sex": gender_m.gender,
+				"customer_group": "Individual",
 			}
 		).insert()
 		self.patient_female = frappe.get_doc(
@@ -32,13 +27,14 @@ class TestPatientEncounter(IntegrationTestCase):
 				"doctype": "Patient",
 				"first_name": "Curie",
 				"sex": gender_f.gender,
+				"customer_group": "Individual",
 			}
 		).insert()
 		self.practitioner = frappe.get_doc(
 			{
 				"doctype": "Healthcare Practitioner",
 				"first_name": "Doc",
-				"sex": "MALE",
+				"sex": "Male",
 			}
 		).insert()
 		try:
@@ -78,7 +74,7 @@ class TestPatientEncounter(IntegrationTestCase):
 				"doctype": "Patient Encounter",
 				"patient": self.patient_male.name,
 				"practitioner": self.practitioner.name,
-				"appointment_type": create_appointment_type().name,
+				"appointment_type": "_Test Appointment Type",
 			}
 		).insert()
 		plans = PatientEncounter.get_applicable_treatment_plans(encounter.as_dict())
@@ -89,7 +85,7 @@ class TestPatientEncounter(IntegrationTestCase):
 				"doctype": "Patient Encounter",
 				"patient": self.patient_female.name,
 				"practitioner": self.practitioner.name,
-				"appointment_type": create_appointment_type().name,
+				"appointment_type": "_Test Appointment Type",
 			}
 		).insert()
 		plans = PatientEncounter.get_applicable_treatment_plans(encounter.as_dict())

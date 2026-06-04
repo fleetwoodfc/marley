@@ -541,7 +541,7 @@ def get_inpatient_services_to_invoice(patient, company):
 					)
 					qty = 0.5
 					if hours_occupied > 0:
-						qty = hours_occupied / service_unit_type.no_of_hours
+						qty = hours_occupied / (service_unit_type.no_of_hours or 1)
 					if qty < service_unit_type.minimum_billable_qty:
 						qty = service_unit_type.minimum_billable_qty
 					services_to_invoice.append(
@@ -1452,75 +1452,6 @@ def render_doc_as_html(doctype, docname, exclude_fields=None):
 	return {"html": doc_html}
 
 
-def update_address_links(address, method):
-	"""
-	Hook validate Address
-	If Patient is linked in Address, also link the associated Customer
-	"""
-	if "Healthcare" not in frappe.get_active_domains():
-		return
-
-	patient_links = list(filter(lambda link: link.get("link_doctype") == "Patient", address.links))
-
-	for link in patient_links:
-		customer = frappe.db.get_value("Patient", link.get("link_name"), "customer")
-		if customer and not address.has_link("Customer", customer):
-			address.append("links", dict(link_doctype="Customer", link_name=customer))
-
-
-def update_patient_email_and_phone_numbers(contact, method):
-	"""
-	Hook validate Contact
-	Update linked Patients' primary mobile and phone numbers
-	"""
-	if "Healthcare" not in frappe.get_active_domains() or contact.flags.skip_patient_update:
-		return
-
-	if contact.is_primary_contact and (contact.email_id or contact.mobile_no or contact.phone):
-		patient_links = list(filter(lambda link: link.get("link_doctype") == "Patient", contact.links))
-
-		for link in patient_links:
-			contact_details = frappe.db.get_value(
-				"Patient", link.get("link_name"), ["email", "mobile", "phone"], as_dict=1
-			)
-			if contact.email_id and contact.email_id != contact_details.get("email"):
-				frappe.db.set_value("Patient", link.get("link_name"), "email", contact.email_id)
-			if contact.mobile_no and contact.mobile_no != contact_details.get("mobile"):
-				frappe.db.set_value("Patient", link.get("link_name"), "mobile", contact.mobile_no)
-			if contact.phone and contact.phone != contact_details.get("phone"):
-				frappe.db.set_value("Patient", link.get("link_name"), "phone", contact.phone)
-
-
-def before_tests():
-	# complete setup if missing
-	from frappe.desk.page.setup_wizard.setup_wizard import setup_complete
-
-	current_year = frappe.utils.now_datetime().year
-
-	if not frappe.get_list("Company"):
-		setup_complete(
-			{
-				"currency": "INR",
-				"full_name": "Test User",
-				"company_name": "Frappe Care LLC",
-				"timezone": "America/New_York",
-				"company_abbr": "WP",
-				"industry": "Healthcare",
-				"country": "United States",
-				"fy_start_date": f"{current_year}-01-01",
-				"fy_end_date": f"{current_year}-12-31",
-				"language": "english",
-				"company_tagline": "Testing",
-				"email": "test@erpnext.com",
-				"password": "test",
-				"chart_of_accounts": "Standard",
-				"domains": ["Healthcare"],
-			}
-		)
-
-		setup_healthcare()
-
-
 def create_healthcare_service_unit_tree_root(doc, method=None):
 	record = [
 		{
@@ -1709,6 +1640,7 @@ def insert_observation_and_sample_collection(
 		current_parent_observation = add_observation(
 			patient=patient,
 			template=grp.get("name"),
+			company=doc.company,
 			practitioner=doc.ref_practitioner,
 			invoice=doc.name,
 			child=child if child else "",
@@ -1765,12 +1697,13 @@ def insert_observation_and_sample_collection(
 					add_observation(
 						patient=patient,
 						template=comp,
+						company=doc.company,
 						practitioner=doc.ref_practitioner,
 						parent=current_parent_observation,
 						invoice=doc.name,
 						child=child if child else "",
 					)
-		# create sample_colleciton child row for sample_collection_reqd grouped templates
+		# create sample_collection child row for sample_collection_reqd grouped templates
 		if len(sample_reqd_component_obs) > 0:
 			for comp in sample_reqd_component_obs:
 				comp_details = frappe.get_value(
@@ -1806,6 +1739,7 @@ def insert_observation_and_sample_collection(
 			add_observation(
 				patient=patient,
 				template=grp.get("name"),
+				company=doc.company,
 				practitioner=doc.ref_practitioner,
 				invoice=doc.name,
 				child=child if child else "",

@@ -5,7 +5,6 @@
 import datetime
 
 import frappe
-from frappe.tests import IntegrationTestCase
 from frappe.utils import getdate, now_datetime
 
 from healthcare.healthcare.doctype.inpatient_medication_order.test_inpatient_medication_order import (
@@ -19,21 +18,21 @@ from healthcare.healthcare.doctype.inpatient_record.inpatient_record import (
 )
 from healthcare.healthcare.doctype.inpatient_record.test_inpatient_record import (
 	create_inpatient,
-	create_patient,
 	get_healthcare_service_unit,
 	mark_invoiced_inpatient_occupancy,
 )
 from healthcare.healthcare.report.inpatient_medication_orders.inpatient_medication_orders import (
 	execute,
 )
+from healthcare.tests.utils import HealthcareTestSuite
 
 
-class TestInpatientMedicationOrders(IntegrationTestCase):
-	@classmethod
-	def setUpClass(self):
+class TestInpatientMedicationOrders(HealthcareTestSuite):
+	def setUp(self):
+		super().setUp()
 		frappe.db.sql("delete from `tabInpatient Medication Order` where company='_Test Company'")
 		frappe.db.sql("delete from `tabInpatient Medication Entry` where company='_Test Company'")
-		self.patient = create_patient()
+		self.patient = "_Test IPD Patient"
 		self.ip_record = create_records(self.patient)
 
 	def test_inpatient_medication_orders_report(self):
@@ -51,7 +50,7 @@ class TestInpatientMedicationOrders(IntegrationTestCase):
 			{
 				"patient": "_Test IPD Patient",
 				"inpatient_record": self.ip_record.name,
-				"practitioner": None,
+				"healthcare_practitioner": None,
 				"drug": "Dextromethorphan",
 				"drug_name": "Dextromethorphan",
 				"dosage": 1.0,
@@ -64,7 +63,7 @@ class TestInpatientMedicationOrders(IntegrationTestCase):
 			{
 				"patient": "_Test IPD Patient",
 				"inpatient_record": self.ip_record.name,
-				"practitioner": None,
+				"healthcare_practitioner": None,
 				"drug": "Dextromethorphan",
 				"drug_name": "Dextromethorphan",
 				"dosage": 1.0,
@@ -77,7 +76,7 @@ class TestInpatientMedicationOrders(IntegrationTestCase):
 			{
 				"patient": "_Test IPD Patient",
 				"inpatient_record": self.ip_record.name,
-				"practitioner": None,
+				"healthcare_practitioner": None,
 				"drug": "Dextromethorphan",
 				"drug_name": "Dextromethorphan",
 				"dosage": 1.0,

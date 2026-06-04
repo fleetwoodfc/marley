@@ -331,7 +331,6 @@ def create_custom_records():
 	create_duration()
 	create_dosage()
 	create_dosage_form()
-	create_customer_groups()
 	create_healthcare_item_groups()
 	create_sensitivity()
 	setup_patient_history_settings()
@@ -849,8 +848,6 @@ def create_customer_groups():
 		}
 	]
 	insert_record(records)
-
-
 def get_item_group_records():
 	return [
 		{

@@ -222,8 +222,7 @@ def aggregate_and_return_observation_data(observations):
 
 	for obs in observations:
 		if not obs.get("has_component"):
-			if obs.get("permitted_data_type"):
-				obs_length += 1
+			obs_length += 1
 
 			if obs.get("permitted_data_type") == "Select" and obs.get("options"):
 				obs["options_list"] = obs.get("options").split("\n")
@@ -270,8 +269,7 @@ def return_child_observation_data_as_dict(child_observations, obs, obs_length=0)
 			if not grand_dict.get("obs_approved", False):
 				all_children_approved = False
 		else:
-			if child.get("permitted_data_type"):
-				obs_length += 1
+			obs_length += 1
 			if child.get("permitted_data_type") == "Select" and child.get("options"):
 				child["options_list"] = child.get("options").split("\n")
 			if child.get("specimen"):
@@ -359,39 +357,38 @@ def set_reference_string(child):
 
 
 @frappe.whitelist()
-def edit_observation(observation, data_type, result):
+def edit_observation(observation: str, data_type: str, result: str) -> None:
 	observation_doc = frappe.get_doc("Observation", observation)
 	if data_type in ["Range", "Ratio", "Quantity", "Numeric"]:
 		observation_doc.result_data = result
-	# elif data_type in ["Quantity", "Numeric"]:
-	# 	observation_doc.result_float = result
+
 	elif data_type == "Text":
 		observation_doc.result_text = result
 	observation_doc.save()
 
 
 @frappe.whitelist()
-def add_observation(**args):
+def add_observation(**kwargs):
 	observation_doc = frappe.new_doc("Observation")
 	observation_doc.posting_datetime = now_datetime()
-	observation_doc.patient = args.get("patient")
-	observation_doc.observation_template = args.get("template")
-	observation_doc.permitted_data_type = args.get("data_type")
-	observation_doc.reference_doctype = args.get("doc")
-	observation_doc.reference_docname = args.get("docname")
-	observation_doc.sales_invoice = args.get("invoice")
-	observation_doc.healthcare_practitioner = args.get("practitioner")
-	observation_doc.specimen = args.get("specimen")
-	if args.get("data_type") in ["Range", "Ratio", "Quantity", "Numeric"]:
-		observation_doc.result_data = args.get("result")
-	# elif data_type in ["Quantity", "Numeric"]:
-	# 	observation_doc.result_float = result
-	elif args.get("data_type") == "Text":
-		observation_doc.result_text = args.get("result")
-	if args.get("parent"):
-		observation_doc.parent_observation = args.get("parent")
-	observation_doc.sales_invoice_item = args.get("child") if args.get("child") else ""
-	observation_doc.service_request = args.get("service_request")
+	observation_doc.patient = kwargs.get("patient")
+	observation_doc.observation_template = kwargs.get("template")
+	observation_doc.permitted_data_type = kwargs.get("data_type")
+	observation_doc.reference_doctype = kwargs.get("doc")
+	observation_doc.reference_docname = kwargs.get("docname")
+	observation_doc.sales_invoice = kwargs.get("invoice")
+	observation_doc.healthcare_practitioner = kwargs.get("practitioner")
+	observation_doc.specimen = kwargs.get("specimen")
+	observation_doc.company = kwargs.get("company")
+	if kwargs.get("data_type") in ["Range", "Ratio", "Quantity", "Numeric"]:
+		observation_doc.result_data = kwargs.get("result")
+
+	elif kwargs.get("data_type") == "Text":
+		observation_doc.result_text = kwargs.get("result")
+	if kwargs.get("parent"):
+		observation_doc.parent_observation = kwargs.get("parent")
+	observation_doc.sales_invoice_item = kwargs.get("child") if kwargs.get("child") else ""
+	observation_doc.service_request = kwargs.get("service_request")
 	observation_doc.insert(ignore_permissions=True)
 	return observation_doc.name
 
@@ -709,10 +706,12 @@ def eval_condition_and_formula(d, data):
 
 	except Exception as err:
 		description = _("This error can be due to invalid formula.")
+		error_message = str(err)
 		message = _(
 			"""Error while evaluating the {0} {1} at row {2}. <br><br> <b>Error:</b> {3}
 			<br><br> <b>Hint:</b> {4}"""
-		).format(d.parenttype, get_link_to_form(d.parenttype, d.parent), d.idx, err, description)
+		).format(d.parenttype, get_link_to_form(d.parenttype, d.parent), d.idx, error_message, description)
+
 		frappe.throw(message, title=_("Error in formula"))
 
 

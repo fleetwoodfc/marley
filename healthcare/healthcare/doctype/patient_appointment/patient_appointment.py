@@ -4,6 +4,7 @@
 
 import datetime
 import json
+from typing import Optional
 
 import frappe
 from frappe import _
@@ -33,7 +34,7 @@ from healthcare.healthcare.doctype.healthcare_settings.healthcare_settings impor
 	get_receivable_account,
 )
 from healthcare.healthcare.doctype.patient_insurance_coverage.patient_insurance_coverage import (
-	make_insurance_coverage,
+	make_insurance_coverage as generate_insurance_coverage,
 )
 from healthcare.healthcare.utils import get_appointment_billing_item_and_rate
 
@@ -98,7 +99,7 @@ class PatientAppointment(Document):
 
 	def make_insurance_coverage(self):
 		billing_detail = get_appointment_billing_item_and_rate(self)
-		coverage = make_insurance_coverage(
+		coverage = generate_insurance_coverage(
 			patient=self.patient,
 			policy=self.insurance_policy,
 			company=self.company,
@@ -200,13 +201,15 @@ class PatientAppointment(Document):
 				["overlap_appointments", "service_unit_capacity"],
 			)
 			if allow_overlap:
-				service_unit_appointments = list(
-					filter(
-						lambda appointment: appointment["service_unit"] == self.service_unit
-						and appointment["patient"] != self.patient,
-						overlapping_appointments,
+				service_unit_appointments = [
+					appointment
+					for appointment in overlapping_appointments
+					if (
+						appointment["service_unit"] == self.service_unit
+						and appointment["patient"] != self.patient
 					)
-				)  # if same patient already booked, it should be an overlap
+				]
+
 				if len(service_unit_appointments) >= (service_unit_capacity or 1):
 					frappe.throw(
 						_("Not allowed, {} cannot exceed maximum capacity {}").format(
@@ -214,7 +217,7 @@ class PatientAppointment(Document):
 						),
 						MaximumCapacityError,
 					)
-				else:  # service_unit_appointments within capacity, remove from overlapping_appointments
+				else:
 					overlapping_appointments = [
 						appointment
 						for appointment in overlapping_appointments
@@ -694,11 +697,14 @@ def check_sales_invoice_exists(appointment):
 
 
 @frappe.whitelist()
-def get_availability_data(date, practitioner, appointment):
+def get_availability_data(
+	date: str, practitioner: str, appointment: str | dict | "PatientAppointment" | None = None
+):
 	"""
 	Get availability data of 'practitioner' on 'date'
 	:param date: Date to check in schedule
 	:param practitioner: Name of the practitioner
+	:param appointment: Appointment doc to validate fee validity
 	:return: dict containing a list of available slots, list of appointments and time of appointments
 	"""
 
@@ -726,6 +732,7 @@ def get_availability_data(date, practitioner, appointment):
 	):
 		available_slotes = get_availability_slots(practitioner_doc, date, appointment.appointment_type)
 
+	slot_details = []
 	if practitioner_doc.practitioner_schedules:
 		slot_details = get_available_slots(practitioner_doc, date)
 	elif not len(available_slotes):
@@ -907,7 +914,7 @@ def build_availability_data(availability, appointment_type, date, practitioner_d
 		allow_overlap, service_unit_capacity = frappe.db.get_value(
 			"Healthcare Service Unit",
 			availability_doc.service_unit,
-			["allow_appointments", "service_unit_capacity"],
+			["overlap_appointments", "service_unit_capacity"],
 		)
 
 	weekday = date.strftime("%A").lower()
@@ -1108,7 +1115,7 @@ def send_message(doc, message):
 
 
 @frappe.whitelist()
-def get_events(start, end, filters=None):
+def get_events(start: str, end: str, filters: str | None = None):
 	"""Returns events for Gantt / Calendar view rendering.
 
 	:param start: Start date-time.
@@ -1122,22 +1129,36 @@ def get_events(start, end, filters=None):
 	match_conditions = build_match_conditions("Patient Appointment")
 
 	if match_conditions:
-		conditions += "and" + match_conditions
+		conditions += " and " + match_conditions
+
+	query = """
+		select
+			`tabPatient Appointment`.name,
+			`tabPatient Appointment`.patient,
+			`tabPatient Appointment`.practitioner,
+			`tabPatient Appointment`.status,
+			`tabPatient Appointment`.duration,
+			timestamp(
+				`tabPatient Appointment`.appointment_date,
+				`tabPatient Appointment`.appointment_time
+			) as 'start',
+			`tabAppointment Type`.color
+		from
+			`tabPatient Appointment`
+		left join
+			`tabAppointment Type`
+		on
+			`tabPatient Appointment`.appointment_type = `tabAppointment Type`.name
+		where
+			(`tabPatient Appointment`.appointment_date between %(start)s and %(end)s)
+			and `tabPatient Appointment`.status != 'Cancelled'
+			and `tabPatient Appointment`.docstatus < 2
+	"""
+
+	query += conditions
 
 	data = frappe.db.sql(
-		f"""
-		select
-		`tabPatient Appointment`.name, `tabPatient Appointment`.patient,
-		`tabPatient Appointment`.practitioner, `tabPatient Appointment`.status,
-		`tabPatient Appointment`.duration,
-		timestamp(`tabPatient Appointment`.appointment_date, `tabPatient Appointment`.appointment_time) as 'start',
-		`tabAppointment Type`.color
-		from
-		`tabPatient Appointment`
-		left join `tabAppointment Type` on `tabPatient Appointment`.appointment_type=`tabAppointment Type`.name
-		where
-		(`tabPatient Appointment`.appointment_date between %(start)s and %(end)s)
-		and `tabPatient Appointment`.status != 'Cancelled' and `tabPatient Appointment`.docstatus < 2 {conditions}""",
+		query,
 		{"start": start, "end": end},
 		as_dict=True,
 		update={"allDay": 0},
