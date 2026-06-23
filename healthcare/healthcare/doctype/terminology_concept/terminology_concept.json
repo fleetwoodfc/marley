@@ -1,0 +1,100 @@
+{
+ "actions": [],
+ "allow_copy": 0,
+ "allow_rename": 1,
+ "autoname": "CIEL-.####",
+ "creation": "2026-06-23 00:00:00.000000",
+ "custom": 0,
+ "docstatus": 0,
+ "doctype": "DocType",
+ "document_type": "",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "ciel_concept_id",
+  "display_name",
+  "permitted_data_type",
+  "is_active",
+  "codings_section",
+  "codings"
+ ],
+ "fields": [
+  {
+   "fieldname": "ciel_concept_id",
+   "fieldtype": "Data",
+   "label": "CIEL Concept ID",
+   "reqd": 1,
+   "unique": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "display_name",
+   "fieldtype": "Data",
+   "label": "Display Name",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "permitted_data_type",
+   "fieldtype": "Select",
+   "label": "Data Type",
+   "options": "Quantity\nSelect\nText\nBoolean\nNumeric\nRange\nRatio\nTime\nDateTime\nPeriod\nAttach",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Active",
+   "default": "1",
+   "description": "Unchecked when CIEL retires the concept. Picker filters active only."
+  },
+  {
+   "fieldname": "codings_section",
+   "fieldtype": "Section Break",
+   "label": "Standard Codings"
+  },
+  {
+   "fieldname": "codings",
+   "fieldtype": "Table",
+   "label": "Codings",
+   "options": "Terminology Concept Coding"
+  }
+ ],
+ "hide_toolbar": 0,
+ "idx": 0,
+ "issingle": 0,
+ "istable": 0,
+ "max_attachments": 0,
+ "modified": "2026-06-23 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Terminology Concept",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Healthcare User"
+  }
+ ],
+ "quick_entry": 0,
+ "read_only": 0,
+ "sort_field": "display_name",
+ "sort_order": "ASC",
+ "track_changes": 0
+}

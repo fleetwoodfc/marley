@@ -1,0 +1,57 @@
+{
+ "actions": [],
+ "allow_copy": 1,
+ "allow_rename": 0,
+ "autoname": "autoname",
+ "creation": "2026-06-23 00:00:00.000000",
+ "custom": 0,
+ "docstatus": 0,
+ "doctype": "DocType",
+ "document_type": "",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "system",
+  "code",
+  "display"
+ ],
+ "fields": [
+  {
+   "fieldname": "system",
+   "fieldtype": "Data",
+   "label": "System URI",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "FHIR system URI e.g. http://loinc.org"
+  },
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "label": "Code",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "display",
+   "fieldtype": "Data",
+   "label": "Display",
+   "in_list_view": 1
+  }
+ ],
+ "hide_toolbar": 0,
+ "idx": 0,
+ "issingle": 0,
+ "istable": 1,
+ "max_attachments": 0,
+ "modified": "2026-06-23 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Terminology Concept Coding",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 0,
+ "read_only": 0,
+ "sort_field": "idx",
+ "sort_order": "ASC",
+ "track_changes": 0
+}
