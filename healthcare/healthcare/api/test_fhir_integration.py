@@ -425,11 +425,13 @@ class TestGetObservationForFhir(unittest.TestCase):
 
 # ── Coverage gap tests added after Step 7 audit ─────────────────────────────
 
+
 class TestGetImagingStudyByServiceRequest(unittest.TestCase):
 	@patch("healthcare.healthcare.api.fhir_integration._get_doc_or_raise")
 	def test_sr_not_found_raises(self, mock_get_doc):
 		mock_get_doc.side_effect = frappe.DoesNotExistError
 		from healthcare.healthcare.api.fhir_integration import get_imaging_study_by_service_request
+
 		with self.assertRaises(frappe.DoesNotExistError):
 			get_imaging_study_by_service_request("SR-NONE")
 
@@ -440,6 +442,7 @@ class TestGetImagingStudyByServiceRequest(unittest.TestCase):
 		mock_frappe.get_all.return_value = []
 		mock_frappe.throw.side_effect = frappe.DoesNotExistError
 		from healthcare.healthcare.api.fhir_integration import get_imaging_study_by_service_request
+
 		with self.assertRaises(frappe.DoesNotExistError):
 			get_imaging_study_by_service_request("SR-0001")
 
@@ -453,6 +456,7 @@ class TestGetImagingStudyByServiceRequest(unittest.TestCase):
 		mock_frappe.get_doc.side_effect = [MagicMock(), file_mock]
 		mock_frappe.get_all.return_value = [attachment_row]
 		from healthcare.healthcare.api.fhir_integration import get_imaging_study_by_service_request
+
 		result = get_imaging_study_by_service_request("SR-0001")
 		self.assertEqual(result["resourceType"], "ImagingStudy")
 
@@ -467,6 +471,7 @@ class TestGetImagingStudyByServiceRequest(unittest.TestCase):
 		mock_frappe.get_all.return_value = [attachment_row]
 		mock_frappe.throw.side_effect = Exception("invalid json")
 		from healthcare.healthcare.api.fhir_integration import get_imaging_study_by_service_request
+
 		with self.assertRaises(Exception):
 			get_imaging_study_by_service_request("SR-0001")
 
@@ -477,12 +482,19 @@ class TestServiceRequestEdgeCases(unittest.TestCase):
 	def _get_sr(self, mock_get_doc, mock_code_value, **sr_fields):
 		mock_code_value.return_value = "active"
 		defaults = {
-			"name": "SR-0001", "patient": "PAT-0001",
-			"practitioner": None, "referred_to_practitioner": None,
-			"status": "SR-STAT", "intent": "SR-INT", "priority": None,
-			"creation": "2026-06-20 09:00:00", "modified": "2026-06-20 10:00:00",
-			"template_dn": "Test", "template_dt": "Test",
-			"source_doc": "Manual", "order_group": None,
+			"name": "SR-0001",
+			"patient": "PAT-0001",
+			"practitioner": None,
+			"referred_to_practitioner": None,
+			"status": "SR-STAT",
+			"intent": "SR-INT",
+			"priority": None,
+			"creation": "2026-06-20 09:00:00",
+			"modified": "2026-06-20 10:00:00",
+			"template_dn": "Test",
+			"template_dt": "Test",
+			"source_doc": "Manual",
+			"order_group": None,
 		}
 		defaults.update(sr_fields)
 		doc = _make_doc(**defaults)
@@ -509,12 +521,19 @@ class TestObservationEdgeCases(unittest.TestCase):
 	def _get_obs(self, mock_get_doc, mock_code_value, **obs_fields):
 		mock_code_value.return_value = "final"
 		defaults = {
-			"name": "OBS-0001", "patient": "PAT-0001",
-			"service_request": None, "healthcare_practitioner": None,
-			"specimen": None, "status": "OBS-STAT",
-			"posting_datetime": None, "time_of_result": None,
-			"permitted_data_type": "Text", "observation_template": "Test",
-			"parent_observation": None, "note": None, "modified": None,
+			"name": "OBS-0001",
+			"patient": "PAT-0001",
+			"service_request": None,
+			"healthcare_practitioner": None,
+			"specimen": None,
+			"status": "OBS-STAT",
+			"posting_datetime": None,
+			"time_of_result": None,
+			"permitted_data_type": "Text",
+			"observation_template": "Test",
+			"parent_observation": None,
+			"note": None,
+			"modified": None,
 			"result_text": "Normal",
 		}
 		defaults.update(obs_fields)
@@ -548,10 +567,18 @@ class TestPatientEdgeCases(unittest.TestCase):
 	@patch("healthcare.healthcare.api.fhir_integration._get_doc_or_raise")
 	def _get_patient(self, mock_get_doc, **patient_fields):
 		defaults = {
-			"name": "PAT-0001", "patient_name": "Test Patient",
-			"first_name": "Test", "middle_name": None, "last_name": "Patient",
-			"sex": "Male", "dob": "1990-01-01", "email": None,
-			"mobile": None, "phone": None, "status": "Active", "modified": None,
+			"name": "PAT-0001",
+			"patient_name": "Test Patient",
+			"first_name": "Test",
+			"middle_name": None,
+			"last_name": "Patient",
+			"sex": "Male",
+			"dob": "1990-01-01",
+			"email": None,
+			"mobile": None,
+			"phone": None,
+			"status": "Active",
+			"modified": None,
 		}
 		defaults.update(patient_fields)
 		doc = _make_doc(**defaults)

@@ -192,9 +192,7 @@ def get_service_request_for_fhir(name: str):
 
 	codings = _build_codings_from_codification_table(doc.get("codification_table"))
 	accession_number = (
-		"ACC-{}-{}".format(str(doc.creation)[:10].replace("-", ""), doc.name)
-		if doc.creation
-		else doc.name
+		"ACC-{}-{}".format(str(doc.creation)[:10].replace("-", ""), doc.name) if doc.creation else doc.name
 	)
 
 	result = {
@@ -216,7 +214,7 @@ def get_service_request_for_fhir(name: str):
 		"status": _get_code_value(doc.status) or "unknown",
 		"intent": _get_code_value(doc.intent) or "order",
 		"priority": _get_code_value(doc.priority),
-		"subject": {"reference": "Patient/{}".format(doc.patient)},
+		"subject": {"reference": f"Patient/{doc.patient}"},
 		"code": {
 			"coding": codings,
 			"text": doc.template_dn,
@@ -231,10 +229,10 @@ def get_service_request_for_fhir(name: str):
 
 	requester = doc.practitioner or doc.referred_to_practitioner
 	if requester:
-		result["requester"] = {"reference": "Practitioner/{}".format(requester)}
+		result["requester"] = {"reference": f"Practitioner/{requester}"}
 
 	if doc.source_doc == "Patient Encounter" and doc.order_group:
-		result["encounter"] = {"reference": "Encounter/{}".format(doc.order_group)}
+		result["encounter"] = {"reference": f"Encounter/{doc.order_group}"}
 
 	return result
 
@@ -255,7 +253,7 @@ def get_observation_for_fhir(name: str):
 		"resourceType": "Observation",
 		"id": doc.name,
 		"status": _get_code_value(doc.status) or "unknown",
-		"subject": {"reference": "Patient/{}".format(doc.patient)},
+		"subject": {"reference": f"Patient/{doc.patient}"},
 		"code": {
 			"coding": codings,
 			"text": doc.observation_template or doc.name,
@@ -268,16 +266,16 @@ def get_observation_for_fhir(name: str):
 	}
 
 	if doc.service_request:
-		result["basedOn"] = [{"reference": "ServiceRequest/{}".format(doc.service_request)}]
+		result["basedOn"] = [{"reference": f"ServiceRequest/{doc.service_request}"}]
 
 	if doc.healthcare_practitioner:
-		result["performer"] = [{"reference": "Practitioner/{}".format(doc.healthcare_practitioner)}]
+		result["performer"] = [{"reference": f"Practitioner/{doc.healthcare_practitioner}"}]
 
 	if doc.specimen:
-		result["specimen"] = {"reference": "Specimen/{}".format(doc.specimen)}
+		result["specimen"] = {"reference": f"Specimen/{doc.specimen}"}
 
 	if doc.parent_observation:
-		result["derivedFrom"] = [{"reference": "Observation/{}".format(doc.parent_observation)}]
+		result["derivedFrom"] = [{"reference": f"Observation/{doc.parent_observation}"}]
 
 	if doc.note:
 		result["note"] = [{"text": doc.note}]
@@ -297,9 +295,7 @@ def get_imaging_study_by_service_request(sr_name: str):
 
 	TODO: Implement full attachment storage once dcm4chee_bridge.py is in place.
 	"""
-	frappe.logger("fhir_integration").info(
-		"get_imaging_study_by_service_request: %s", sr_name
-	)
+	frappe.logger("fhir_integration").info("get_imaging_study_by_service_request: %s", sr_name)
 	_get_doc_or_raise("Service Request", sr_name)
 
 	attachment = frappe.get_all(
@@ -325,6 +321,4 @@ def get_imaging_study_by_service_request(sr_name: str):
 	try:
 		return json.loads(file_doc.get_content())
 	except (ValueError, TypeError):
-		frappe.throw(
-			_("ImagingStudy attachment for {0} is not valid JSON").format(sr_name)
-		)
+		frappe.throw(_("ImagingStudy attachment for {0} is not valid JSON").format(sr_name))
