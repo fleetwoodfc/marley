@@ -137,6 +137,11 @@ doc_events = {
 		"on_cancel": "healthcare.healthcare.custom_doctype.payment_entry.manage_payment_entry_submit_cancel",
 		"validate": "healthcare.healthcare.doctype.insurance_claim.insurance_claim.validate_payment_entry_and_set_claim_fields",
 	},
+	"Service Request": {
+		# Async push to dcm4chee-arc-light on submit.
+		# Non-blocking — bridge failure logs an error but never rolls back the submit.
+		"on_submit": "healthcare.healthcare.api.dcm4chee_bridge.on_service_request_submit",
+	},
 }
 
 scheduler_events = {
@@ -147,6 +152,10 @@ scheduler_events = {
 		"healthcare.healthcare.doctype.patient_appointment.patient_appointment.update_appointment_status",
 		"healthcare.healthcare.doctype.fee_validity.fee_validity.update_validity_status",
 		"healthcare.healthcare.doctype.inpatient_record.inpatient_record.add_occupied_service_unit_in_ip_to_billables",
+		# dcm4chee: poll all submitted ServiceRequests for ImagingStudy completion
+		"healthcare.healthcare.api.dcm4chee_bridge.poll_all_open_service_requests",
+		# CIEL terminology: chunked sync (advances offset each run, full sync across ~14 days)
+		"healthcare.healthcare.api.ciel_sync.sync_ciel_concepts_chunk",
 	],
 }
 
