@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "creation": "2026-07-02 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "map_type",
+  "target_system",
+  "column_break_1",
+  "target_code",
+  "target_display"
+ ],
+ "fields": [
+  {
+   "fieldname": "map_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Map Type",
+   "search_index": 1
+  },
+  {
+   "fieldname": "target_system",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Target System",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "target_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Target Code",
+   "search_index": 1
+  },
+  {
+   "fieldname": "target_display",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Target Display"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-07-02 00:00:00.000000",
+ "modified_by": "Administrator",
+ "owner": "Administrator",
+ "module": "Healthcare",
+ "name": "CIEL Concept Mapping",
+ "permissions": [],
+ "restrict_to_domain": "Healthcare",
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

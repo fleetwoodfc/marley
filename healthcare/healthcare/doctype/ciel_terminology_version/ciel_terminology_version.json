@@ -1,0 +1,191 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "autoname": "format:CIEL-VER-{version_tag}",
+ "creation": "2026-07-02 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "version_tag",
+  "column_break_1",
+  "status",
+  "is_default",
+  "section_break_2",
+  "ocl_org",
+  "ocl_source",
+  "column_break_3",
+  "imported_at",
+  "released_at",
+  "section_break_4",
+  "concepts_imported",
+  "names_imported",
+  "mappings_imported",
+  "column_break_5",
+  "concepts_retired",
+  "import_errors",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "version_tag",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Version Tag",
+   "reqd": 1,
+   "search_index": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "importing",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "importing\nready\nfailed\nretired",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_default",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Default"
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break",
+   "label": "OCL Source"
+  },
+  {
+   "fieldname": "ocl_org",
+   "fieldtype": "Data",
+   "label": "OCL Org"
+  },
+  {
+   "fieldname": "ocl_source",
+   "fieldtype": "Data",
+   "label": "OCL Source"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "imported_at",
+   "fieldtype": "Datetime",
+   "label": "Imported At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "released_at",
+   "fieldtype": "Date",
+   "label": "Released At"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break",
+   "label": "Import Summary"
+  },
+  {
+   "default": "0",
+   "fieldname": "concepts_imported",
+   "fieldtype": "Int",
+   "label": "Concepts Imported"
+  },
+  {
+   "default": "0",
+   "fieldname": "names_imported",
+   "fieldtype": "Int",
+   "label": "Names Imported"
+  },
+  {
+   "default": "0",
+   "fieldname": "mappings_imported",
+   "fieldtype": "Int",
+   "label": "Mappings Imported"
+  },
+  {
+   "fieldname": "column_break_5",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "concepts_retired",
+   "fieldtype": "Int",
+   "label": "Concepts Retired"
+  },
+  {
+   "default": "0",
+   "fieldname": "import_errors",
+   "fieldtype": "Int",
+   "label": "Import Errors"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "links": [
+  {
+   "link_doctype": "CIEL Concept",
+   "link_fieldname": "terminology_version"
+  }
+ ],
+ "modified": "2026-07-02 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "CIEL Terminology Version",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Physician"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Nursing User"
+  }
+ ],
+ "restrict_to_domain": "Healthcare",
+ "row_format": "Dynamic",
+ "search_fields": "version_tag, status",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "version_tag",
+ "track_changes": 1
+}

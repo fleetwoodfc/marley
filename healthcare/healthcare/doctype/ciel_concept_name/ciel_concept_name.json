@@ -1,0 +1,76 @@
+{
+ "actions": [],
+ "creation": "2026-07-02 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "name_type",
+  "locale",
+  "column_break_1",
+  "name_text",
+  "preferred",
+  "column_break_2",
+  "voided"
+ ],
+ "fields": [
+  {
+   "fieldname": "name_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Name Type",
+   "options": "FULLY_SPECIFIED\nSHORT\nSYNONYM\nINDEX_TERM\nNULL",
+   "search_index": 1
+  },
+  {
+   "fieldname": "locale",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Locale",
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "name_text",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "preferred",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Preferred"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "voided",
+   "fieldtype": "Check",
+   "label": "Voided"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-07-02 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "CIEL Concept Name",
+ "owner": "Administrator",
+ "permissions": [],
+ "restrict_to_domain": "Healthcare",
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}
