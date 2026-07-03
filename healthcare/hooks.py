@@ -1,4 +1,6 @@
 app_name = "healthcare"
+
+commands = ["healthcare.commands.sync_ciel.sync_ciel"]
 app_title = "Marley Health"
 app_publisher = "earthians Health Informatics Pvt. Ltd."
 app_description = "Modern, Open Source HIS built on Frappe and ERPNext"
@@ -147,6 +149,7 @@ scheduler_events = {
 		"healthcare.healthcare.doctype.patient_appointment.patient_appointment.update_appointment_status",
 		"healthcare.healthcare.doctype.fee_validity.fee_validity.update_validity_status",
 		"healthcare.healthcare.doctype.inpatient_record.inpatient_record.add_occupied_service_unit_in_ip_to_billables",
+		"healthcare.terminology.tasks.sync_ciel_daily",
 	],
 }
 

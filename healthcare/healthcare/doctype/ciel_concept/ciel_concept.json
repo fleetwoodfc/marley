@@ -1,0 +1,148 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "autoname": "format:CIEL-{external_id}-{terminology_version}",
+ "creation": "2026-07-02 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "external_id",
+  "column_break_1",
+  "terminology_version",
+  "section_break_2",
+  "concept_class",
+  "datatype",
+  "column_break_3",
+  "retired",
+  "section_break_names",
+  "names",
+  "section_break_mappings",
+  "mappings"
+ ],
+ "fields": [
+  {
+   "fieldname": "external_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "External ID (CIEL)",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "terminology_version",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Terminology Version",
+   "options": "CIEL Terminology Version",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break",
+   "label": "Concept Details"
+  },
+  {
+   "fieldname": "concept_class",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Concept Class"
+  },
+  {
+   "fieldname": "datatype",
+   "fieldtype": "Data",
+   "label": "Datatype"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "retired",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Retired",
+   "search_index": 1
+  },
+  {
+   "fieldname": "section_break_names",
+   "fieldtype": "Section Break",
+   "label": "Names"
+  },
+  {
+   "fieldname": "names",
+   "fieldtype": "Table",
+   "label": "Names",
+   "options": "CIEL Concept Name"
+  },
+  {
+   "fieldname": "section_break_mappings",
+   "fieldtype": "Section Break",
+   "label": "Mappings"
+  },
+  {
+   "fieldname": "mappings",
+   "fieldtype": "Table",
+   "label": "Mappings",
+   "options": "CIEL Concept Mapping"
+  }
+ ],
+ "links": [],
+ "modified": "2026-07-02 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "CIEL Concept",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Physician"
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Nursing User"
+  }
+ ],
+ "restrict_to_domain": "Healthcare",
+ "row_format": "Dynamic",
+ "search_fields": "external_id, terminology_version",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "external_id",
+ "track_changes": 0
+}
